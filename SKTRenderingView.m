@@ -47,7 +47,7 @@
 
 #import "SKTRenderingView.h"
 #import "SKTError.h"
-#import "SKTGraphic.h"
+#import "Sketch-Swift.h"
 
 @interface SKTRenderingView ()
 - (instancetype)initWithCoder:(NSCoder *)coder NS_DESIGNATED_INITIALIZER;

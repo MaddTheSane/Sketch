@@ -63,7 +63,7 @@
 	NSData *descriptorData = [rgbColorDescriptor data];
 	if ([descriptorData length]==sizeof(RGBColor)) {
 	    const RGBColor *qdColor = (const RGBColor *)[descriptorData bytes];
-	    color = [NSColor colorWithCalibratedRed:((CGFloat)qdColor->red / 65535.0f) green:((CGFloat)qdColor->green / 65535.0f) blue:((CGFloat)qdColor->blue / 65535.0f) alpha:1.0];
+	    color = [NSColor colorWithCalibratedRed:((CGFloat)qdColor->red / USHRT_MAX) green:((CGFloat)qdColor->green / USHRT_MAX) blue:((CGFloat)qdColor->blue / USHRT_MAX) alpha:1.0];
 	}
 
     }
@@ -77,9 +77,9 @@
     // RGBColors contain 16-bit red, green, and blue components.
     NSColor *colorAsCalibratedRGB = [self colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
     RGBColor qdColor;
-    qdColor.red = (unsigned short)([colorAsCalibratedRGB redComponent] * 65535.0f);
-    qdColor.green = (unsigned short)([colorAsCalibratedRGB greenComponent] * 65535.0f);
-    qdColor.blue = (unsigned short)([colorAsCalibratedRGB blueComponent] * 65535.0f);
+    qdColor.red = (unsigned short)([colorAsCalibratedRGB redComponent] * USHRT_MAX);
+    qdColor.green = (unsigned short)([colorAsCalibratedRGB greenComponent] * USHRT_MAX);
+    qdColor.blue = (unsigned short)([colorAsCalibratedRGB blueComponent] * USHRT_MAX);
     return [NSAppleEventDescriptor descriptorWithDescriptorType:typeRGBColor bytes:&qdColor length:sizeof(RGBColor)];
 
 }

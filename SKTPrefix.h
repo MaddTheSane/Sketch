@@ -47,5 +47,6 @@
 
 #ifdef __OBJC__
 #import <Cocoa/Cocoa.h>
+#import "Sketch-Swift.h"
 #endif
 

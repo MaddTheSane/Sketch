@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6250" systemVersion="14B25" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6250"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="NSWindowController">
+            <connections>
+                <outlet property="window" destination="5" id="8"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application"/>
+        <window title="Grid" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="5" userLabel="Panel" customClass="NSPanel">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES" nonactivatingPanel="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" topStrut="YES"/>
+            <rect key="contentRect" x="540" y="512" width="306" height="168"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1057"/>
+            <view key="contentView" id="6">
+                <rect key="frame" x="1" y="1" width="306" height="168"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <box title="Title" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="20">
+                        <rect key="frame" x="152" y="86" width="137" height="64"/>
+                        <view key="contentView">
+                            <rect key="frame" x="2" y="2" width="133" height="60"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <colorWell translatesAutoresizingMaskIntoConstraints="NO" id="13">
+                                    <rect key="frame" x="61" y="15" width="56" height="34"/>
+                                    <color key="color" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <connections>
+                                        <binding destination="32" name="enabled" keyPath="mainWindow.windowController.grid.canSetColor" id="63"/>
+                                        <binding destination="32" name="value" keyPath="mainWindow.windowController.grid.color" id="64"/>
+                                    </connections>
+                                </colorWell>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="14">
+                                    <rect key="frame" x="13" y="24" width="42" height="17"/>
+                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Color:" id="76">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                    <connections>
+                                        <binding destination="32" name="enabled" keyPath="mainWindow.windowController.grid.canSetColor" id="62"/>
+                                    </connections>
+                                </textField>
+                            </subviews>
+                        </view>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="13" secondAttribute="trailing" constant="15" id="0RR-IU-Mhm"/>
+                            <constraint firstItem="14" firstAttribute="leading" secondItem="20" secondAttribute="leading" constant="14" id="CPe-dm-rqw"/>
+                            <constraint firstAttribute="bottom" secondItem="13" secondAttribute="bottom" constant="13" id="FWZ-Ab-jdu"/>
+                            <constraint firstItem="13" firstAttribute="top" secondItem="20" secondAttribute="top" constant="11" id="Jd0-3g-mjc"/>
+                            <constraint firstItem="13" firstAttribute="leading" secondItem="14" secondAttribute="trailing" constant="8" symbolic="YES" id="XcB-YV-8Jo"/>
+                            <constraint firstItem="14" firstAttribute="centerY" secondItem="13" secondAttribute="centerY" id="ao0-fx-k5u"/>
+                        </constraints>
+                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <font key="titleFont" metaFont="system"/>
+                    </box>
+                    <box title="Spacing" translatesAutoresizingMaskIntoConstraints="NO" id="16">
+                        <rect key="frame" x="17" y="16" width="272" height="66"/>
+                        <view key="contentView">
+                            <rect key="frame" x="2" y="2" width="268" height="46"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="10">
+                                    <rect key="frame" x="14" y="8" width="240" height="27"/>
+                                    <sliderCell key="cell" continuous="YES" alignment="left" maxValue="72" doubleValue="9" tickMarkPosition="below" numberOfTickMarks="17" sliderType="linear" id="73">
+                                        <font key="font" metaFont="system"/>
+                                    </sliderCell>
+                                    <connections>
+                                        <binding destination="32" name="enabled" keyPath="mainWindow.windowController.grid.canSetSpacing" id="66"/>
+                                        <binding destination="32" name="value" keyPath="mainWindow.windowController.grid.spacing" id="65"/>
+                                    </connections>
+                                </slider>
+                            </subviews>
+                        </view>
+                        <constraints>
+                            <constraint firstItem="10" firstAttribute="top" secondItem="16" secondAttribute="top" constant="31" id="B4C-vt-8Sf"/>
+                            <constraint firstAttribute="bottom" secondItem="10" secondAttribute="bottom" constant="7" id="dkD-EX-iR2"/>
+                            <constraint firstItem="10" firstAttribute="leading" secondItem="16" secondAttribute="leading" constant="15" id="qDd-BY-GJM"/>
+                            <constraint firstAttribute="trailing" secondItem="10" secondAttribute="trailing" constant="15" id="sfc-aA-d7K"/>
+                        </constraints>
+                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <font key="titleFont" metaFont="system"/>
+                    </box>
+                    <box title="Title" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="18">
+                        <rect key="frame" x="17" y="86" width="133" height="64"/>
+                        <view key="contentView">
+                            <rect key="frame" x="2" y="2" width="129" height="60"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <button verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="11">
+                                    <rect key="frame" x="14" y="33" width="101" height="18"/>
+                                    <buttonCell key="cell" type="check" title="Show Grid" imagePosition="left" alignment="left" inset="2" id="74">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="32" name="enabled" keyPath="mainWindow.windowController.grid.usable" id="68"/>
+                                        <binding destination="32" name="value" keyPath="mainWindow.windowController.grid.alwaysShown" id="67"/>
+                                    </connections>
+                                </button>
+                                <button translatesAutoresizingMaskIntoConstraints="NO" id="12">
+                                    <rect key="frame" x="14" y="9" width="101" height="22"/>
+                                    <buttonCell key="cell" type="check" title="Snap to Grid" imagePosition="left" alignment="left" inset="2" id="75">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="32" name="enabled" keyPath="mainWindow.windowController.grid.usable" id="70"/>
+                                        <binding destination="32" name="value" keyPath="mainWindow.windowController.grid.constraining" id="71"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                        </view>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="12" secondAttribute="bottom" constant="9" id="7O4-fM-39y"/>
+                            <constraint firstItem="11" firstAttribute="leading" secondItem="18" secondAttribute="leading" constant="15" id="BD5-2h-UIZ"/>
+                            <constraint firstItem="11" firstAttribute="top" secondItem="18" secondAttribute="top" constant="11" id="PZd-Qg-rtN"/>
+                            <constraint firstItem="11" firstAttribute="leading" secondItem="12" secondAttribute="leading" id="cvV-Oj-VpI"/>
+                            <constraint firstItem="11" firstAttribute="trailing" secondItem="12" secondAttribute="trailing" id="du1-6I-n1z"/>
+                            <constraint firstAttribute="trailing" secondItem="12" secondAttribute="trailing" constant="15" id="j5F-oT-dqU"/>
+                            <constraint firstItem="12" firstAttribute="top" secondItem="11" secondAttribute="bottom" constant="6" symbolic="YES" id="sXi-jU-n7D"/>
+                        </constraints>
+                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <font key="titleFont" metaFont="system"/>
+                    </box>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="18" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="20" symbolic="YES" id="2CA-k4-KSg"/>
+                    <constraint firstItem="16" firstAttribute="top" secondItem="18" secondAttribute="bottom" constant="8" symbolic="YES" id="3Qm-JT-bdJ"/>
+                    <constraint firstItem="18" firstAttribute="top" secondItem="6" secondAttribute="top" constant="20" symbolic="YES" id="AiU-k5-N6k"/>
+                    <constraint firstAttribute="trailing" secondItem="20" secondAttribute="trailing" constant="20" symbolic="YES" id="GXd-1e-QqJ"/>
+                    <constraint firstItem="16" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="20" symbolic="YES" id="bDY-mn-6jh"/>
+                    <constraint firstAttribute="centerX" secondItem="16" secondAttribute="centerX" id="gEw-7G-Ig1"/>
+                    <constraint firstItem="20" firstAttribute="leading" secondItem="18" secondAttribute="trailing" constant="8" symbolic="YES" id="gFa-MO-17H"/>
+                    <constraint firstAttribute="bottom" secondItem="16" secondAttribute="bottom" constant="20" symbolic="YES" id="hSK-RI-vyd"/>
+                    <constraint firstItem="16" firstAttribute="top" secondItem="20" secondAttribute="bottom" constant="8" symbolic="YES" id="hcm-fS-9xG"/>
+                    <constraint firstItem="20" firstAttribute="top" secondItem="6" secondAttribute="top" constant="20" symbolic="YES" id="y1b-xQ-l8M"/>
+                </constraints>
+            </view>
+            <connections>
+                <outlet property="delegate" destination="-2" id="30"/>
+            </connections>
+        </window>
+        <customObject id="32" userLabel="Shared App" customClass="NSApplication"/>
+    </objects>
+</document>

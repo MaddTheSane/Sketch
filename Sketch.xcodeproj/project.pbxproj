@@ -9,25 +9,10 @@
 /* Begin PBXBuildFile section */
 		2811962914C8F3B2004103CE /* ReadMe.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2811962814C8F3B2004103CE /* ReadMe.rtf */; };
 		3805D473084D7840003B3AAC /* Preferences.nib in Resources */ = {isa = PBXBuildFile; fileRef = 3805D471084D7840003B3AAC /* Preferences.nib */; };
-		381996CC083EBC270087C524 /* SKTGrid.h in Headers */ = {isa = PBXBuildFile; fileRef = 381996CA083EBC270087C524 /* SKTGrid.h */; };
-		381996CD083EBC270087C524 /* SKTGrid.m in Sources */ = {isa = PBXBuildFile; fileRef = 381996CB083EBC270087C524 /* SKTGrid.m */; };
 		3848302009FE857F00094A3A /* Sketch.sdef in Resources */ = {isa = PBXBuildFile; fileRef = 3848301F09FE857F00094A3A /* Sketch.sdef */; };
 		38492FE508EF710C002FA9E4 /* SKTZoomingScrollView.h in Headers */ = {isa = PBXBuildFile; fileRef = 38492FE308EF710C002FA9E4 /* SKTZoomingScrollView.h */; };
 		38492FE608EF710C002FA9E4 /* SKTZoomingScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 38492FE408EF710C002FA9E4 /* SKTZoomingScrollView.m */; };
-		386A7A480C2F433100217F5A /* SKTDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 386A7A460C2F433100217F5A /* SKTDocument.m */; };
 		386A7A490C2F433100217F5A /* SKTDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = 386A7A470C2F433100217F5A /* SKTDocument.h */; };
-		386A7A4C0C2F434500217F5A /* SKTCircle.h in Headers */ = {isa = PBXBuildFile; fileRef = 386A7A4A0C2F434500217F5A /* SKTCircle.h */; };
-		386A7A4D0C2F434500217F5A /* SKTCircle.m in Sources */ = {isa = PBXBuildFile; fileRef = 386A7A4B0C2F434500217F5A /* SKTCircle.m */; };
-		386A7A500C2F435100217F5A /* SKTGraphic.m in Sources */ = {isa = PBXBuildFile; fileRef = 386A7A4E0C2F435100217F5A /* SKTGraphic.m */; };
-		386A7A510C2F435100217F5A /* SKTGraphic.h in Headers */ = {isa = PBXBuildFile; fileRef = 386A7A4F0C2F435100217F5A /* SKTGraphic.h */; };
-		386A7A5A0C2F436300217F5A /* SKTLine.h in Headers */ = {isa = PBXBuildFile; fileRef = 386A7A520C2F436300217F5A /* SKTLine.h */; };
-		386A7A5B0C2F436300217F5A /* SKTRectangle.m in Sources */ = {isa = PBXBuildFile; fileRef = 386A7A530C2F436300217F5A /* SKTRectangle.m */; };
-		386A7A5C0C2F436300217F5A /* SKTImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 386A7A540C2F436300217F5A /* SKTImage.m */; };
-		386A7A5D0C2F436300217F5A /* SKTLine.m in Sources */ = {isa = PBXBuildFile; fileRef = 386A7A550C2F436300217F5A /* SKTLine.m */; };
-		386A7A5E0C2F436300217F5A /* SKTText.m in Sources */ = {isa = PBXBuildFile; fileRef = 386A7A560C2F436300217F5A /* SKTText.m */; };
-		386A7A5F0C2F436300217F5A /* SKTImage.h in Headers */ = {isa = PBXBuildFile; fileRef = 386A7A570C2F436300217F5A /* SKTImage.h */; };
-		386A7A600C2F436300217F5A /* SKTText.h in Headers */ = {isa = PBXBuildFile; fileRef = 386A7A580C2F436300217F5A /* SKTText.h */; };
-		386A7A610C2F436300217F5A /* SKTRectangle.h in Headers */ = {isa = PBXBuildFile; fileRef = 386A7A590C2F436300217F5A /* SKTRectangle.h */; };
 		386A7AB00C2F47BC00217F5A /* SKTRenderingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 386A7AAE0C2F47BC00217F5A /* SKTRenderingView.m */; };
 		386A7AB10C2F47BC00217F5A /* SKTRenderingView.h in Headers */ = {isa = PBXBuildFile; fileRef = 386A7AAF0C2F47BC00217F5A /* SKTRenderingView.h */; };
 		38AFB5760C2F908200AEF7A8 /* SKTError.strings in Resources */ = {isa = PBXBuildFile; fileRef = 38AFB5740C2F908200AEF7A8 /* SKTError.strings */; };
@@ -42,14 +27,6 @@
 		38D54A4B07D51A2A00514CB8 /* Inspector.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECEF3FE888A39C02AAC07 /* Inspector.nib */; };
 		38D54A4C07D51A2A00514CB8 /* ToolPalette.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECEF6FE888A39C02AAC07 /* ToolPalette.nib */; };
 		38D54A4D07D51A2A00514CB8 /* Draw2.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECEF9FE888A39C02AAC07 /* Draw2.nib */; };
-		38D54A5107D51A2A00514CB8 /* Line.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF00FE888A39C02AAC07 /* Line.tiff */; };
-		38D54A5207D51A2A00514CB8 /* Draw2App.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF01FE888A39C02AAC07 /* Draw2App.icns */; };
-		38D54A5407D51A2A00514CB8 /* Cross.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF03FE888A39C02AAC07 /* Cross.tiff */; };
-		38D54A5507D51A2A00514CB8 /* Arrow.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF04FE888A39C02AAC07 /* Arrow.tiff */; };
-		38D54A5607D51A2A00514CB8 /* TextGraphic.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF05FE888A39C02AAC07 /* TextGraphic.tiff */; };
-		38D54A5807D51A2A00514CB8 /* Circle.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF08FE888A39C02AAC07 /* Circle.tiff */; };
-		38D54A5907D51A2A00514CB8 /* Rectangle.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF0AFE888A39C02AAC07 /* Rectangle.tiff */; };
-		38D54A5A07D51A2A00514CB8 /* Draw2File.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF0BFE888A39C02AAC07 /* Draw2File.icns */; };
 		38D54A5C07D51A2A00514CB8 /* Sketch.scriptTerminology in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF0EFE888A39C02AAC07 /* Sketch.scriptTerminology */; };
 		38D54A5E07D51A2A00514CB8 /* Sketch.scriptSuite in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF12FE888A39C02AAC07 /* Sketch.scriptSuite */; };
 		38D54A5F07D51A2A00514CB8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF13FE888A39C02AAC07 /* InfoPlist.strings */; };
@@ -61,6 +38,16 @@
 		38D54A7307D51A2A00514CB8 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09B61A73FFA8B0EB11CA2CEA /* Cocoa.framework */; };
 		38FA46D10847B7AC002B08B0 /* SKTError.h in Headers */ = {isa = PBXBuildFile; fileRef = 38FA46CF0847B7AC002B08B0 /* SKTError.h */; };
 		38FA46D20847B7AC002B08B0 /* SKTError.m in Sources */ = {isa = PBXBuildFile; fileRef = 38FA46D00847B7AC002B08B0 /* SKTError.m */; };
+		550204BD1A1482170041CCC4 /* SKTGraphic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550204BC1A1482170041CCC4 /* SKTGraphic.swift */; };
+		55498F9B19FDC5B700C6DD72 /* SKTLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55498F9A19FDC5B700C6DD72 /* SKTLine.swift */; };
+		5566922A1A1AAF730017F070 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 556692291A1AAF730017F070 /* Images.xcassets */; };
+		559BDD2519FD8BDB002C5926 /* SKTGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559BDD2419FD8BDB002C5926 /* SKTGrid.swift */; };
+		55F930AA19FD912C00C50F57 /* SKTText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F930A919FD912C00C50F57 /* SKTText.swift */; };
+		55F930AF19FDB2AC00C50F57 /* SKTRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F930AE19FDB2AC00C50F57 /* SKTRectangle.swift */; };
+		55F930B119FDB40900C50F57 /* SKTCircle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F930B019FDB40900C50F57 /* SKTCircle.swift */; };
+		55F930B319FDB57600C50F57 /* SKTImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F930B219FDB57600C50F57 /* SKTImage.swift */; };
+		55FA95E21A1AA16E006440A4 /* SKTDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FA95E11A1AA16E006440A4 /* SKTDocument.swift */; };
+		55FA95E41A1AA308006440A4 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 55FA95E31A1AA308006440A4 /* Constants.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -97,25 +84,11 @@
 		26D1BC9902E4B4D608C917DD /* SKTPrefix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTPrefix.h; sourceTree = "<group>"; };
 		2811962814C8F3B2004103CE /* ReadMe.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = ReadMe.rtf; sourceTree = "<group>"; };
 		3805D472084D7840003B3AAC /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Preferences.nib; sourceTree = "<group>"; };
-		381996CA083EBC270087C524 /* SKTGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTGrid.h; sourceTree = "<group>"; };
-		381996CB083EBC270087C524 /* SKTGrid.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTGrid.m; sourceTree = "<group>"; };
 		3848301F09FE857F00094A3A /* Sketch.sdef */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = Sketch.sdef; sourceTree = "<group>"; tabWidth = 4; };
 		38492FE308EF710C002FA9E4 /* SKTZoomingScrollView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKTZoomingScrollView.h; sourceTree = "<group>"; };
 		38492FE408EF710C002FA9E4 /* SKTZoomingScrollView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKTZoomingScrollView.m; sourceTree = "<group>"; };
 		386A7A460C2F433100217F5A /* SKTDocument.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKTDocument.m; sourceTree = "<group>"; };
 		386A7A470C2F433100217F5A /* SKTDocument.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKTDocument.h; sourceTree = "<group>"; };
-		386A7A4A0C2F434500217F5A /* SKTCircle.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKTCircle.h; sourceTree = "<group>"; };
-		386A7A4B0C2F434500217F5A /* SKTCircle.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKTCircle.m; sourceTree = "<group>"; };
-		386A7A4E0C2F435100217F5A /* SKTGraphic.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKTGraphic.m; sourceTree = "<group>"; };
-		386A7A4F0C2F435100217F5A /* SKTGraphic.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKTGraphic.h; sourceTree = "<group>"; };
-		386A7A520C2F436300217F5A /* SKTLine.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKTLine.h; sourceTree = "<group>"; };
-		386A7A530C2F436300217F5A /* SKTRectangle.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKTRectangle.m; sourceTree = "<group>"; };
-		386A7A540C2F436300217F5A /* SKTImage.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKTImage.m; sourceTree = "<group>"; };
-		386A7A550C2F436300217F5A /* SKTLine.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKTLine.m; sourceTree = "<group>"; };
-		386A7A560C2F436300217F5A /* SKTText.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKTText.m; sourceTree = "<group>"; };
-		386A7A570C2F436300217F5A /* SKTImage.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKTImage.h; sourceTree = "<group>"; };
-		386A7A580C2F436300217F5A /* SKTText.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKTText.h; sourceTree = "<group>"; };
-		386A7A590C2F436300217F5A /* SKTRectangle.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKTRectangle.h; sourceTree = "<group>"; };
 		386A7AAE0C2F47BC00217F5A /* SKTRenderingView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKTRenderingView.m; sourceTree = "<group>"; };
 		386A7AAF0C2F47BC00217F5A /* SKTRenderingView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKTRenderingView.h; sourceTree = "<group>"; };
 		38AFB5750C2F908200AEF7A8 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/SKTError.strings; sourceTree = "<group>"; };
@@ -124,6 +97,18 @@
 		38D54A7607D51A2A00514CB8 /* Sketch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sketch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		38FA46CF0847B7AC002B08B0 /* SKTError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTError.h; sourceTree = "<group>"; };
 		38FA46D00847B7AC002B08B0 /* SKTError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTError.m; sourceTree = "<group>"; };
+		550204BC1A1482170041CCC4 /* SKTGraphic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SKTGraphic.swift; sourceTree = "<group>"; };
+		553818811A1871DF00F9270D /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		55498F9A19FDC5B700C6DD72 /* SKTLine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SKTLine.swift; sourceTree = "<group>"; };
+		556692291A1AAF730017F070 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Sketch/Images.xcassets; sourceTree = "<group>"; };
+		559BDD2319FD8BDB002C5926 /* Sketch-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Sketch-Bridging-Header.h"; sourceTree = "<group>"; };
+		559BDD2419FD8BDB002C5926 /* SKTGrid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SKTGrid.swift; sourceTree = "<group>"; };
+		55F930A919FD912C00C50F57 /* SKTText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SKTText.swift; sourceTree = "<group>"; };
+		55F930AE19FDB2AC00C50F57 /* SKTRectangle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SKTRectangle.swift; sourceTree = "<group>"; };
+		55F930B019FDB40900C50F57 /* SKTCircle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SKTCircle.swift; sourceTree = "<group>"; };
+		55F930B219FDB57600C50F57 /* SKTImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SKTImage.swift; sourceTree = "<group>"; };
+		55FA95E11A1AA16E006440A4 /* SKTDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SKTDocument.swift; sourceTree = "<group>"; };
+		55FA95E31A1AA308006440A4 /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Constants.m; path = Source/Constants.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,31 +127,27 @@
 			isa = PBXGroup;
 			children = (
 				2811962814C8F3B2004103CE /* ReadMe.rtf */,
+				553818811A1871DF00F9270D /* Constants.h */,
+				55FA95E31A1AA308006440A4 /* Constants.m */,
 				0A3ECEE3FE888A39C02AAC07 /* SKTAppDelegate.h */,
 				0A3ECEDAFE888A39C02AAC07 /* SKTAppDelegate.m */,
+				55FA95E11A1AA16E006440A4 /* SKTDocument.swift */,
 				386A7A470C2F433100217F5A /* SKTDocument.h */,
 				386A7A460C2F433100217F5A /* SKTDocument.m */,
 				0A3ECEE4FE888A39C02AAC07 /* SKTWindowController.h */,
 				0A3ECEDBFE888A39C02AAC07 /* SKTWindowController.m */,
 				0A3ECEE5FE888A39C02AAC07 /* SKTGraphicView.h */,
 				0A3ECEDCFE888A39C02AAC07 /* SKTGraphicView.m */,
-				386A7A4F0C2F435100217F5A /* SKTGraphic.h */,
-				386A7A4E0C2F435100217F5A /* SKTGraphic.m */,
-				386A7A4A0C2F434500217F5A /* SKTCircle.h */,
-				386A7A4B0C2F434500217F5A /* SKTCircle.m */,
-				386A7A570C2F436300217F5A /* SKTImage.h */,
-				386A7A540C2F436300217F5A /* SKTImage.m */,
-				386A7A520C2F436300217F5A /* SKTLine.h */,
-				386A7A550C2F436300217F5A /* SKTLine.m */,
-				386A7A590C2F436300217F5A /* SKTRectangle.h */,
-				386A7A530C2F436300217F5A /* SKTRectangle.m */,
-				386A7A580C2F436300217F5A /* SKTText.h */,
-				386A7A560C2F436300217F5A /* SKTText.m */,
+				550204BC1A1482170041CCC4 /* SKTGraphic.swift */,
+				55F930B019FDB40900C50F57 /* SKTCircle.swift */,
+				55F930B219FDB57600C50F57 /* SKTImage.swift */,
+				55498F9A19FDC5B700C6DD72 /* SKTLine.swift */,
+				55F930AE19FDB2AC00C50F57 /* SKTRectangle.swift */,
+				55F930A919FD912C00C50F57 /* SKTText.swift */,
 				38FA46CF0847B7AC002B08B0 /* SKTError.h */,
 				38FA46D00847B7AC002B08B0 /* SKTError.m */,
 				38AFB5740C2F908200AEF7A8 /* SKTError.strings */,
-				381996CA083EBC270087C524 /* SKTGrid.h */,
-				381996CB083EBC270087C524 /* SKTGrid.m */,
+				559BDD2419FD8BDB002C5926 /* SKTGrid.swift */,
 				386A7AAF0C2F47BC00217F5A /* SKTRenderingView.h */,
 				386A7AAE0C2F47BC00217F5A /* SKTRenderingView.m */,
 				0A3ECEE8FE888A39C02AAC07 /* SKTToolPaletteController.h */,
@@ -177,6 +158,7 @@
 				0A3ECEECFE888A39C02AAC07 /* SKTMain.m */,
 				26D1BC9902E4B4D608C917DD /* SKTPrefix.h */,
 				38C1482A0C3E2D03001085CE /* NSColor_SKTScripting.m */,
+				559BDD2319FD8BDB002C5926 /* Sketch-Bridging-Header.h */,
 				0A3ECF0DFE888A39C02AAC07 /* Resources */,
 				0A3ECF2DFE888A39C02AAC07 /* Notes */,
 				0A3ECF37FE888A39C02AAC07 /* External Frameworks */,
@@ -188,6 +170,7 @@
 		0A3ECF0DFE888A39C02AAC07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				556692291A1AAF730017F070 /* Images.xcassets */,
 				0A3ECF01FE888A39C02AAC07 /* Draw2App.icns */,
 				0A3ECF0BFE888A39C02AAC07 /* Draw2File.icns */,
 				0A3ECF13FE888A39C02AAC07 /* InfoPlist.strings */,
@@ -245,18 +228,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				38D54A3707D51A2A00514CB8 /* SKTAppDelegate.h in Headers */,
-				386A7A4C0C2F434500217F5A /* SKTCircle.h in Headers */,
 				386A7A490C2F433100217F5A /* SKTDocument.h in Headers */,
 				38FA46D10847B7AC002B08B0 /* SKTError.h in Headers */,
-				386A7A510C2F435100217F5A /* SKTGraphic.h in Headers */,
 				38D54A3907D51A2A00514CB8 /* SKTGraphicView.h in Headers */,
-				381996CC083EBC270087C524 /* SKTGrid.h in Headers */,
-				386A7A5F0C2F436300217F5A /* SKTImage.h in Headers */,
-				386A7A5A0C2F436300217F5A /* SKTLine.h in Headers */,
 				38D54A4707D51A2A00514CB8 /* SKTPrefix.h in Headers */,
-				386A7A610C2F436300217F5A /* SKTRectangle.h in Headers */,
 				386A7AB10C2F47BC00217F5A /* SKTRenderingView.h in Headers */,
-				386A7A600C2F436300217F5A /* SKTText.h in Headers */,
 				38D54A3C07D51A2A00514CB8 /* SKTToolPaletteController.h in Headers */,
 				38D54A3807D51A2A00514CB8 /* SKTWindowController.h in Headers */,
 				38492FE508EF710C002FA9E4 /* SKTZoomingScrollView.h in Headers */,
@@ -314,24 +290,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				38D54A5507D51A2A00514CB8 /* Arrow.tiff in Resources */,
-				38D54A5807D51A2A00514CB8 /* Circle.tiff in Resources */,
-				38D54A5407D51A2A00514CB8 /* Cross.tiff in Resources */,
 				38D54A4D07D51A2A00514CB8 /* Draw2.nib in Resources */,
-				38D54A5207D51A2A00514CB8 /* Draw2App.icns in Resources */,
-				38D54A5A07D51A2A00514CB8 /* Draw2File.icns in Resources */,
 				38D54A4907D51A2A00514CB8 /* DrawWindow.nib in Resources */,
 				38D54A4A07D51A2A00514CB8 /* GridPanel.nib in Resources */,
 				38D54A5F07D51A2A00514CB8 /* InfoPlist.strings in Resources */,
+				5566922A1A1AAF730017F070 /* Images.xcassets in Resources */,
 				38D54A4B07D51A2A00514CB8 /* Inspector.nib in Resources */,
-				38D54A5107D51A2A00514CB8 /* Line.tiff in Resources */,
 				3805D473084D7840003B3AAC /* Preferences.nib in Resources */,
-				38D54A5907D51A2A00514CB8 /* Rectangle.tiff in Resources */,
 				38D54A5E07D51A2A00514CB8 /* Sketch.scriptSuite in Resources */,
 				38D54A5C07D51A2A00514CB8 /* Sketch.scriptTerminology in Resources */,
 				3848302009FE857F00094A3A /* Sketch.sdef in Resources */,
 				38AFB5760C2F908200AEF7A8 /* SKTError.strings in Resources */,
-				38D54A5607D51A2A00514CB8 /* TextGraphic.tiff in Resources */,
 				38D54A4C07D51A2A00514CB8 /* ToolPalette.nib in Resources */,
 				2811962914C8F3B2004103CE /* ReadMe.rtf in Resources */,
 			);
@@ -357,22 +326,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				38D54A6107D51A2A00514CB8 /* SKTAppDelegate.m in Sources */,
-				386A7A4D0C2F434500217F5A /* SKTCircle.m in Sources */,
-				386A7A480C2F433100217F5A /* SKTDocument.m in Sources */,
+				55F930AA19FD912C00C50F57 /* SKTText.swift in Sources */,
+				55F930AF19FDB2AC00C50F57 /* SKTRectangle.swift in Sources */,
 				38FA46D20847B7AC002B08B0 /* SKTError.m in Sources */,
-				386A7A500C2F435100217F5A /* SKTGraphic.m in Sources */,
 				38D54A6307D51A2A00514CB8 /* SKTGraphicView.m in Sources */,
-				381996CD083EBC270087C524 /* SKTGrid.m in Sources */,
-				386A7A5C0C2F436300217F5A /* SKTImage.m in Sources */,
-				386A7A5D0C2F436300217F5A /* SKTLine.m in Sources */,
+				55F930B319FDB57600C50F57 /* SKTImage.swift in Sources */,
+				559BDD2519FD8BDB002C5926 /* SKTGrid.swift in Sources */,
+				550204BD1A1482170041CCC4 /* SKTGraphic.swift in Sources */,
 				38D54A7107D51A2A00514CB8 /* SKTMain.m in Sources */,
-				386A7A5B0C2F436300217F5A /* SKTRectangle.m in Sources */,
 				386A7AB00C2F47BC00217F5A /* SKTRenderingView.m in Sources */,
-				386A7A5E0C2F436300217F5A /* SKTText.m in Sources */,
+				55FA95E21A1AA16E006440A4 /* SKTDocument.swift in Sources */,
 				38D54A6607D51A2A00514CB8 /* SKTToolPaletteController.m in Sources */,
 				38D54A6207D51A2A00514CB8 /* SKTWindowController.m in Sources */,
 				38492FE608EF710C002FA9E4 /* SKTZoomingScrollView.m in Sources */,
+				55F930B119FDB40900C50F57 /* SKTCircle.swift in Sources */,
+				55498F9B19FDC5B700C6DD72 /* SKTLine.swift in Sources */,
 				38C1482B0C3E2D03001085CE /* NSColor_SKTScripting.m in Sources */,
+				55FA95E41A1AA308006440A4 /* Constants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -457,6 +427,8 @@
 		3833E1980889EBD20049736A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = Draw2App;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CURRENT_PROJECT_VERSION = 51;
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
@@ -465,9 +437,12 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = SKTPrefix.h;
 				INFOPLIST_FILE = SKTInfo.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = Sketch;
 				RC_PROJECT_NAME = Draw2;
+				SWIFT_OBJC_BRIDGING_HEADER = "Sketch-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = "-Wmost";
 				WRAPPER_EXTENSION = app;
@@ -477,14 +452,18 @@
 		3833E1990889EBD20049736A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = Draw2App;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CURRENT_PROJECT_VERSION = 51;
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = SKTPrefix.h;
 				INFOPLIST_FILE = SKTInfo.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_NAME = Sketch;
 				RC_PROJECT_NAME = Draw2;
+				SWIFT_OBJC_BRIDGING_HEADER = "Sketch-Bridging-Header.h";
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = "-Wmost";
 				WRAPPER_EXTENSION = app;
@@ -502,6 +481,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -510,7 +490,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
@@ -527,6 +507,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -535,7 +516,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				SDKROOT = macosx;
 			};
 			name = Release;

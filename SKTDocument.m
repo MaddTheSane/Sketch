@@ -47,14 +47,11 @@
 
 #import "SKTDocument.h"
 #import "SKTError.h"
-#import "SKTGraphic.h"
 #import "SKTRenderingView.h"
-#import "SKTCircle.h"
-#import "SKTImage.h"
-#import "SKTLine.h"
-#import "SKTRectangle.h"
-#import "SKTText.h"
 #import "SKTWindowController.h"
+#import "Sketch-Swift.h"
+#import "Constants.h"
+
 
 
 // String constants declared in the header.
@@ -559,16 +556,16 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 
 // Conformance to the NSObject(SKTGraphicScriptingContainer) informal protocol.
 - (NSScriptObjectSpecifier *)objectSpecifierForGraphic:(SKTGraphic *)graphic {
-
-    // Graphics don't have unique IDs or names, so just return an index specifier.
-    NSScriptObjectSpecifier *graphicObjectSpecifier = nil;
-    NSUInteger graphicIndex = [[self graphics] indexOfObjectIdenticalTo:graphic];
-    if (graphicIndex!=NSNotFound) {
-	NSScriptObjectSpecifier *objectSpecifier = [self objectSpecifier];
-	graphicObjectSpecifier = [[NSIndexSpecifier alloc] initWithContainerClassDescription:[objectSpecifier keyClassDescription] containerSpecifier:objectSpecifier key:@"graphics" index:graphicIndex];
-    }
-    return graphicObjectSpecifier;
-
+	
+	// Graphics don't have unique IDs or names, so just return an index specifier.
+	NSScriptObjectSpecifier *graphicObjectSpecifier = nil;
+	NSUInteger graphicIndex = [[self graphics] indexOfObjectIdenticalTo:graphic];
+	if (graphicIndex!=NSNotFound) {
+		NSScriptObjectSpecifier *objectSpecifier = [self objectSpecifier];
+		graphicObjectSpecifier = [[NSIndexSpecifier alloc] initWithContainerClassDescription:[objectSpecifier keyClassDescription] containerSpecifier:objectSpecifier key:@"graphics" index:graphicIndex];
+	}
+	return graphicObjectSpecifier;
+	
 }
 
 

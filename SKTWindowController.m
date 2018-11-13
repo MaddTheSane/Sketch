@@ -46,12 +46,11 @@
  */
 
 #import "SKTWindowController.h"
-#import "SKTDocument.h"
-#import "SKTGraphic.h"
 #import "SKTGraphicView.h"
-#import "SKTGrid.h"
 #import "SKTToolPaletteController.h"
 #import "SKTZoomingScrollView.h"
+#import "Sketch-Swift.h"
+#import "Constants.h"
 
 
 // A value that's used as a context by this class' invocation of a KVO observer registration method. See the comment near the top of SKTGraphicView.m for a discussion of this.
@@ -198,30 +197,30 @@ static NSString *SKTWindowControllerCanvasSizeObservationContext = @"com.apple.S
 
 // Conformance to the NSObject(NSMenuValidation) informal protocol.
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
-
-    // Which menu item?
-    BOOL enabled;
-    SEL action = [menuItem action];
-    if (action==@selector(newDocumentWindow:)) {
-
-	// Give the menu item that creates new sibling windows for this document a reasonably descriptive title. It's important to use the document's "display name" in places like this; it takes things like file name extension hiding into account. We could do a better job with the punctuation!
-	[menuItem setTitle:[NSString stringWithFormat:NSLocalizedStringFromTable(@"New window for '%@'", @"MenuItems", @"Formatter string for the new document window menu item. Argument is a the display name of the document."), [[self document] displayName]]];
-	enabled = YES;
-
-    } else if (action==@selector(toggleGridConstraining:) || action==@selector(toggleGridShowing:)) {
-
-	// The grid can be in an unusable state, in which case the menu items that control it are disabled.
-	enabled = [_grid isUsable];
-
-	// The Snap to Grid and Show Grid menu items are toggles.
-	BOOL menuItemIsOn = action==@selector(toggleGridConstraining:) ? [_grid isConstraining] : [_grid isAlwaysShown];
-	[menuItem setState:(menuItemIsOn ? NSOnState : NSOffState)];
-
-    } else {
-	enabled = [super validateMenuItem:menuItem];
-    }
-    return enabled;
-
+	
+	// Which menu item?
+	BOOL enabled;
+	SEL action = [menuItem action];
+	if (action==@selector(newDocumentWindow:)) {
+		
+		// Give the menu item that creates new sibling windows for this document a reasonably descriptive title. It's important to use the document's "display name" in places like this; it takes things like file name extension hiding into account. We could do a better job with the punctuation!
+		[menuItem setTitle:[NSString stringWithFormat:NSLocalizedStringFromTable(@"New window for '%@'", @"MenuItems", @"Formatter string for the new document window menu item. Argument is a the display name of the document."), [[self document] displayName]]];
+		enabled = YES;
+		
+	} else if (action==@selector(toggleGridConstraining:) || action==@selector(toggleGridShowing:)) {
+		
+		// The grid can be in an unusable state, in which case the menu items that control it are disabled.
+		enabled = _grid.usable;
+		
+		// The Snap to Grid and Show Grid menu items are toggles.
+		BOOL menuItemIsOn = action==@selector(toggleGridConstraining:) ? _grid.constraining : _grid.alwaysShown;
+		[menuItem setState:(menuItemIsOn ? NSOnState : NSOffState)];
+		
+	} else {
+		enabled = [super validateMenuItem:menuItem];
+	}
+	return enabled;
+	
 }
 
 
@@ -238,7 +237,7 @@ static NSString *SKTWindowControllerCanvasSizeObservationContext = @"com.apple.S
 - (IBAction)toggleGridConstraining:(id)sender {
 
     // Simple.
-    [_grid setConstraining:![_grid isConstraining]];
+	_grid.constraining = !_grid.constraining;
 
 }
 
@@ -246,7 +245,7 @@ static NSString *SKTWindowControllerCanvasSizeObservationContext = @"com.apple.S
 - (IBAction)toggleGridShowing:(id)sender{
 
     // Simple.
-    [_grid setAlwaysShown:![_grid isAlwaysShown]];
+	_grid.alwaysShown = !_grid.alwaysShown;
 
 }
 

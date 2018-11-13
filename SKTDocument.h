@@ -46,7 +46,7 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "SKTGraphic.h"
+#import "Sketch-Swift.h"
 // The keys described down below.
 extern NSString *SKTDocumentCanvasSizeKey;
 extern NSString *SKTDocumentGraphicsKey;

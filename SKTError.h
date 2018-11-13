@@ -49,11 +49,11 @@
 
 // Sketch establishes its own error domain, and some errors in that domain.
 extern NSString *SKTErrorDomain;
-enum {
+typedef NS_ENUM(int, SKTErrorCode) {
     SKTUnknownFileReadError = 1,
     SKTUnknownPasteboardReadError = 2,
     SKTWriteCouldntMakeTIFFError = 3
 };
 
 // Given one of the error codes declared above, return an NSError whose user info is set up to match.
-NSError *SKTErrorWithCode(NSInteger code);
+NSError *SKTErrorWithCode(SKTErrorCode code);

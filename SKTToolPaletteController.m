@@ -46,10 +46,7 @@
  */
 
 #import "SKTToolPaletteController.h"
-#import "SKTCircle.h"
-#import "SKTLine.h"
-#import "SKTRectangle.h"
-#import "SKTText.h"
+#import "Sketch-Swift.h"
 
 enum {
     SKTArrowToolRow = 0,

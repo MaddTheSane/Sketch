@@ -46,17 +46,16 @@
  */
 
 #import "SKTGraphicView.h"
-#import "SKTGraphic.h"
-#import "SKTGrid.h"
-#import "SKTImage.h"
 #import "SKTRenderingView.h"
 #import "SKTToolPaletteController.h"
-
+#import "Sketch-Swift.h"
+#import "Constants.h"
 
 // The names of the bindings supported by this class, in addition to the ones whose support is inherited from NSView.
 NSString *SKTGraphicViewGraphicsBindingName = @"graphics";
 NSString *SKTGraphicViewSelectionIndexesBindingName = @"selectionIndexes";
 NSString *SKTGraphicViewGridBindingName = @"grid";
+
 
 // The values that are used as contexts by this class' invocations of KVO observer registration methods. When an object like this one receives an -observeValueForKeyPath:ofObject:change:context: message it has to figure out why it's getting the message. It could distinguish based on the observed object and key path, but that's not perfectly safe, because code in the superclass might be observing the same thing for a different reason, and there's a danger of intercepting observer notifications that are meant for superclass code. The way to make sure that doesn't happen is to use a context, and make sure it's unlikely to be used as a context by superclass or subclass code. Strings like these whose pointers are not available to other compiled modules are pretty unlikely to be used by superclass or subclass code. In practice this is not a common problem, especially in a simple application like Sketch, but you should know how to do things like this the perfect way even if you decide it's not worth the hassle in your application.
 static NSString *SKTGraphicViewGraphicsObservationContext = @"com.apple.SKTGraphicView.graphics";
@@ -70,6 +69,7 @@ static NSString *SKTGraphicViewPasteboardType = @"Apple Sketch 2 pasteboard type
 // The default value by which repetitively pasted sets of graphics are offset from each other, so the user can paste repeatedly and not end up with a pile of graphics that overlay each other so perfectly only the top set can be selected with the mouse.
 static CGFloat SKTGraphicViewDefaultPasteCascadeDelta = 10.0;
 
+NSString *SKTGridAnyKey = @"any";
 
 // Some methods that are invoked by methods above them in this file.
 @interface SKTGraphicView(SKTForwardDeclarations)
