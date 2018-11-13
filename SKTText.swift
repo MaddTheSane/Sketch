@@ -206,7 +206,7 @@ private var layoutManager: NSLayoutManager = {
 		set {}
 	}
 	
-	override func drawContentsInView(view: NSView, isBeingCreateOrEdited isBeingCreatedOrEditing: Bool) {
+	override func drawContents(in view: NSView, isBeingCreateOrEdited isBeingCreatedOrEditing: Bool) {
 		// Draw the fill color if appropriate.
 		let bounds = self.bounds;
 		if (self.drawingFill) {
@@ -291,7 +291,7 @@ private var layoutManager: NSLayoutManager = {
 		return false
 	}
 
-	override func finalizeEditingView(editingView: NSView) {
+	override func finalize(editingView: NSView) {
 		// Tell our text storage that it doesn't have to talk to the editing view's layout manager anymore.
 		if let textEditingView = editingView as? NSTextView {
 			if let layoutManager = textEditingView.layoutManager {

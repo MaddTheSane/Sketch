@@ -34,7 +34,10 @@ private class MapTableOwner {
 
 @objc(SKTDocument) class SKTDocument: NSDocument, SKTGraphicScriptingContainer {
 
-	private var _undoGroupInsertedGraphics: NSMutableSet? = nil
+	private var _undoGroupInsertedGraphics: Set<SKTGraphic>? = nil
+	private var _undoGroupOldPropertiesPerGraphic: MapTableOwner? = nil
+	private var _undoGroupPresentablePropertyName: String? = nil
+	private var _undoGroupHasChangesToMultipleProperties = false
 	
 	/* This class is KVC and KVO compliant for these keys:
 	
@@ -47,7 +50,7 @@ private class MapTableOwner {
 	*/
 	
 	// Return the current value of the property.
-	var canvasSize: NSSize {
+	@objc var canvasSize: NSSize {
 		// A Sketch's canvas size is the size of the piece of paper that the user selects in the Page Setup panel for it, minus the document margins that are set.
 		let printInfo = self.printInfo
 		var tmpCanvasSize = printInfo.paperSize
@@ -62,7 +65,15 @@ private class MapTableOwner {
 		super.init()
 		
 		// Before anything undoable happens, register for a notification we need.
-		NotificationCenter.default.addObserver(self, selector: "observeUndoManagerCheckpoint:", name: NSNotification.Name.NSUndoManagerCheckpoint, object: undoManager)
+		NotificationCenter.default.addObserver(self, selector: #selector(SKTDocument.observeUndoManagerCheckpoint(_:)), name: .NSUndoManagerCheckpoint, object: undoManager)
+	}
+	
+	@objc private func observeUndoManagerCheckpoint(_ notification: Notification) {
+		// Start the coalescing of graphic property changes over.
+		_undoGroupHasChangesToMultipleProperties = false;
+		_undoGroupPresentablePropertyName = nil;
+		_undoGroupOldPropertiesPerGraphic = nil;
+		_undoGroupInsertedGraphics = nil;
 	}
 	
 	deinit {
@@ -94,10 +105,10 @@ private class MapTableOwner {
 		// Record the inserted graphics so we can filter out observer notifications from them. This way we don't waste memory registering undo operations for changes that wouldn't have any effect because the graphics are going to be removed anyway. In Sketch this makes a difference when you create a graphic and then drag the mouse to set its initial size right away. Why don't we do this if undo registration is disabled? Because we don't want to add to this set during document reading. (See what -readFromData:ofType:error: does with the undo manager.) That would ruin the undoability of the first graphic editing you do after reading a document.
 		if let anUndo = undoManager {
 			if anUndo.isUndoRegistrationEnabled {
-				if let undoGroup = _undoGroupInsertedGraphics {
-					undoGroup.addObjects(from: graphics)
+				if _undoGroupInsertedGraphics != nil {
+					_undoGroupInsertedGraphics!.formIntersection(graphics)
 				} else {
-					_undoGroupInsertedGraphics = NSMutableSet(array: graphics)
+					_undoGroupInsertedGraphics = Set(graphics)
 				}
 			}
 		}

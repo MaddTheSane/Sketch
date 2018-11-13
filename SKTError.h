@@ -48,7 +48,7 @@
 #import <Cocoa/Cocoa.h>
 
 // Sketch establishes its own error domain, and some errors in that domain.
-extern NSString *SKTErrorDomain;
+extern NSErrorDomain const SKTErrorDomain;
 typedef NS_ERROR_ENUM(SKTErrorDomain, SKTErrorCode) {
     SKTUnknownFileReadError = 1,
     SKTUnknownPasteboardReadError = 2,

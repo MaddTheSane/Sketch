@@ -49,7 +49,7 @@
 
 
 // A string constant declared in the header.
-NSString *SKTErrorDomain = @"SketchErrorDomain";
+NSString *const SKTErrorDomain = @"SketchErrorDomain";
 
 
 NSError *SKTErrorWithCode(SKTErrorCode code) {

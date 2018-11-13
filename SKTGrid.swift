@@ -16,8 +16,8 @@ class SKTGrid: NSObject {
 	var _spacing: CGFloat = 9.0
 	//BOOL _isAlwaysShown;
 	//BOOL _isConstraining;
-	var alwaysShown = false
-	var constraining = false
+	@objc var alwaysShown = false
+	@objc var constraining = false
 	private var hidingTimer: Timer? = nil
 	
 	
@@ -97,10 +97,11 @@ class SKTGrid: NSObject {
 		return alwaysShown || constraining
 	}
 	
-	var canAlign: Bool {
+	@objc var canAlign: Bool {
 		return isUsable
 	}
 	
+	@objc(constrainedPoint:)
 	func constrainedPoint(_ inPoint: NSPoint) -> NSPoint {
 		var point = inPoint
 		// The grid might not be usable right now, or constraining might be turned off.
@@ -111,6 +112,7 @@ class SKTGrid: NSObject {
 		return point;
 	}
 	
+	@objc
 	func alignedRect(_ arect: NSRect) -> NSRect {
 		var rect = arect
 		// Aligning is done even when constraining is not.
@@ -125,7 +127,7 @@ class SKTGrid: NSObject {
 	}
 	
 	@objc(drawRect:inView:)
-	func drawRect(rect: NSRect, inView view: NSView) {
+	func draw(rect: NSRect, in view: NSView) {
 		// The grid might not be usable right now. It might be shown, but only temporarily.
 		if self.isUsable && (alwaysShown || (hidingTimer != nil)) {
 			

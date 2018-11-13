@@ -58,7 +58,7 @@ set {
 	return false;
 	}
 
-	
+	@objc
 	init(position: NSPoint, contents aContents: NSImage) {
 		contents = aContents
 		
@@ -133,7 +133,7 @@ set {
 		return presentablePropertyName
 	}
 	
-	override func drawContentsInView(view: NSView, isBeingCreateOrEdited isBeingCreatedOrEditing: Bool) {
+	override func drawContents(in view: NSView, isBeingCreateOrEdited isBeingCreatedOrEditing: Bool) {
 		let bounds = self.bounds
 		if self.drawingFill {
 			fillColor?.set()

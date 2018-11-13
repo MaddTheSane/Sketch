@@ -22,18 +22,18 @@ private let presentablePropertyNamesByKey: [String: String] = [SKTLineBeginPoint
 	private var pointsRight = false
 	private var pointsDown = false
 	
-	class var keyPathsForValuesAffectingEndPoint: NSSet {
-		return NSSet(object: SKTGraphicBoundsKey)
+	class var keyPathsForValuesAffectingEndPoint: Set<String> {
+		return Set([SKTGraphicBoundsKey])
 	}
 	
 	private(set) var beginPoint: NSPoint {
 		get {
-		// Convert from our odd storage format to something natural.
-		var beginPoint = NSZeroPoint;
-		let bounds = self.bounds;
-		beginPoint.x = pointsRight ? NSMinX(bounds) : NSMaxX(bounds);
-		beginPoint.y = pointsDown ? NSMinY(bounds) : NSMaxY(bounds);
-		return beginPoint;
+			// Convert from our odd storage format to something natural.
+			var beginPoint = NSPoint.zero
+			let bounds = self.bounds;
+			beginPoint.x = pointsRight ? bounds.minX : bounds.maxX
+			beginPoint.y = pointsDown ? bounds.minY : bounds.maxY
+			return beginPoint;
 		}
 		set {
 			// It's easiest to compute the results of setting these points together.
@@ -41,8 +41,8 @@ private let presentablePropertyNamesByKey: [String: String] = [SKTLineBeginPoint
 		}
 	}
 	
-	class var keyPathsForValuesAffectingEndPont: NSSet {
-		return NSSet(object: SKTGraphicBoundsKey)
+	class var keyPathsForValuesAffectingEndPont: Set<String> {
+		return Set([SKTGraphicBoundsKey])
 	}
 	
 	private(set) var endPoint: NSPoint {
@@ -62,8 +62,8 @@ private let presentablePropertyNamesByKey: [String: String] = [SKTLineBeginPoint
 	
 	override var drawingFill: Bool {
 		get {
-		return false
-	}
+			return false
+		}
 		set {
 			
 		}
@@ -71,8 +71,8 @@ private let presentablePropertyNamesByKey: [String: String] = [SKTLineBeginPoint
 	
 	override var drawingStroke: Bool {
 		get {
-		return true
-	}
+			return true
+		}
 		set {
 			
 		}
@@ -107,8 +107,7 @@ private let presentablePropertyNamesByKey: [String: String] = [SKTLineBeginPoint
 	required init(properties: [String : Any]) {
 		var beginPoint: NSPoint
 		var endPoint: NSPoint
-		var beginPointString: Any? = properties[SKTLineBeginPointKey]
-		if let beginPointAString = beginPointString as? String {
+		if let beginPointAString = properties[SKTLineBeginPointKey] as? String {
 			beginPoint = NSPointFromString(beginPointAString)
 		} else {
 			beginPoint = NSZeroPoint
@@ -176,10 +175,10 @@ private let presentablePropertyNamesByKey: [String: String] = [SKTLineBeginPoint
 		return path
 	}
 	
-	override func drawHandlesInView(view: NSView) {
+	override func drawHandles(in view: NSView) {
 	// A line only has two handles.
-		self.drawHandle(in: view, atPoint: beginPoint)
-		self.drawHandle(in: view, atPoint: endPoint)
+		self.drawHandle(in: view, at: beginPoint)
+		self.drawHandle(in: view, at: endPoint)
 	}
 	
 	override func isContentsUnderPoint(point: NSPoint) -> Bool {
@@ -207,7 +206,7 @@ private let presentablePropertyNamesByKey: [String: String] = [SKTLineBeginPoint
 		return isUnder
 	}
 	
-	override func handleUnderPoint(_ point: NSPoint) -> Int {
+	override func handle(under point: NSPoint) -> Int {
 		// A line just has handles at its ends.
 		var handle = SKTGraphicNoHandle
 		
@@ -220,7 +219,7 @@ private let presentablePropertyNamesByKey: [String: String] = [SKTLineBeginPoint
 		return handle
 	}
 	
-	override func resizeByMovingHandle(_ handle: Int, toPoint point: NSPoint) -> Int {
+	override func resizeByMovingHandle(_ handle: Int, to point: NSPoint) -> Int {
 		// A line just has handles at its ends.
 		if handle == SKTLineBeginHandle {
 			beginPoint = point
