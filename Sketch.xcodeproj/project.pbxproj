@@ -184,12 +184,7 @@
 		0A3ECED8FE888A39C02AAC07 /* Sketch */ = {
 			isa = PBXGroup;
 			children = (
-				55CA2879219A783200D38BDB /* Classes */,
-				2811962814C8F3B2004103CE /* ReadMe.rtf */,
-				38AFB5740C2F908200AEF7A8 /* SKTError.strings */,
-				38D54A7507D51A2A00514CB8 /* SKTInfo.plist */,
-				0A3ECF0DFE888A39C02AAC07 /* Resources */,
-				0A3ECF2DFE888A39C02AAC07 /* Notes */,
+				55CA287A219A7EC500D38BDB /* Sketch */,
 				55CA285B219A721B00D38BDB /* QuickLookSketch */,
 				0A3ECF37FE888A39C02AAC07 /* Frameworks */,
 				20846A42FE943C2411CA2CEA /* Products */,
@@ -300,6 +295,19 @@
 				38C1482A0C3E2D03001085CE /* NSColor_SKTScripting.m */,
 			);
 			name = Classes;
+			sourceTree = "<group>";
+		};
+		55CA287A219A7EC500D38BDB /* Sketch */ = {
+			isa = PBXGroup;
+			children = (
+				55CA2879219A783200D38BDB /* Classes */,
+				2811962814C8F3B2004103CE /* ReadMe.rtf */,
+				38AFB5740C2F908200AEF7A8 /* SKTError.strings */,
+				38D54A7507D51A2A00514CB8 /* SKTInfo.plist */,
+				0A3ECF0DFE888A39C02AAC07 /* Resources */,
+				0A3ECF2DFE888A39C02AAC07 /* Notes */,
+			);
+			name = Sketch;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -573,7 +581,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = Draw2App;
-				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "-";
 				CURRENT_PROJECT_VERSION = 51;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -583,9 +590,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.apple.CocoaExamples.Sketch;
 				PRODUCT_NAME = Sketch;
-				RC_PROJECT_NAME = Draw2;
 				VERSIONING_SYSTEM = "apple-generic";
-				WARNING_CFLAGS = "-Wmost";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -594,7 +599,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = Draw2App;
-				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "-";
 				CURRENT_PROJECT_VERSION = 51;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -602,9 +606,7 @@
 				INFOPLIST_FILE = SKTInfo.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.apple.CocoaExamples.Sketch;
 				PRODUCT_NAME = Sketch;
-				RC_PROJECT_NAME = Draw2;
 				VERSIONING_SYSTEM = "apple-generic";
-				WARNING_CFLAGS = "-Wmost";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -618,6 +620,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -671,6 +674,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -695,6 +699,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -715,9 +720,7 @@
 		55CA2864219A721B00D38BDB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -740,14 +743,11 @@
 		55CA2865219A721B00D38BDB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = "";
-				ENABLE_NS_ASSERTIONS = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				INFOPLIST_FILE = QuickLook/Info.plist;
 				INSTALL_PATH = /Library/QuickLook;
