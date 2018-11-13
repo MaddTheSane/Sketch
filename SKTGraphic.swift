@@ -40,7 +40,7 @@ let SKTGraphicHandleHalfWidth: CGFloat = 6.0 / 2.0;
 
 
 // Move each graphic in the array by the same amount.
-func TranslateGraphics(graphics: [SKTGraphic], byX deltaX: CGFloat, y deltaY: CGFloat) {
+func TranslateGraphics(_ graphics: [SKTGraphic], byX deltaX: CGFloat, y deltaY: CGFloat) {
 	// Pretty simple.
 	for graphic in graphics {
 		graphic.bounds = NSOffsetRect(graphic.bounds, deltaX, deltaY)
@@ -48,9 +48,9 @@ func TranslateGraphics(graphics: [SKTGraphic], byX deltaX: CGFloat, y deltaY: CG
 }
 
 // Return the total "bounds" of all of the graphics in the array.
-func BoundsOfGraphics(graphics: [SKTGraphic]) -> NSRect {
+func BoundsOfGraphics(_ graphics: [SKTGraphic]) -> NSRect {
 	// The bounds of an array of graphics is the union of all of their bounds.
-	var bounds = NSRect.zeroRect
+	var bounds = NSRect.zero
 	let graphicCount = graphics.count
 	if graphicCount > 0 {
 		bounds = graphics[0].bounds
@@ -63,9 +63,9 @@ func BoundsOfGraphics(graphics: [SKTGraphic]) -> NSRect {
 }
 
 // Return the total drawing bounds of all of the graphics in the array.
-func DrawingBoundsOfGraphics(graphics: [SKTGraphic]) -> NSRect {
+func DrawingBoundsOfGraphics(_ graphics: [SKTGraphic]) -> NSRect {
 	// The drawing bounds of an array of graphics is the union of all of their drawing bounds.
-	var drawingBounds = NSRect.zeroRect
+	var drawingBounds = NSRect.zero
 	if graphics.count > 0 {
 		drawingBounds = graphics[0].drawingBounds
 	}
@@ -81,27 +81,25 @@ func DrawingBoundsOfGraphics(graphics: [SKTGraphic]) -> NSRect {
 /* You can override these class methods in your subclass of SKTGraphic, but it would be a waste of time, because no one invokes these on any class other than SKTGraphic itself. Really these could just be functions if we didn't have such a syntactic sweet tooth. */
 
 // Return an array of graphics created from flattened data of the sort returned by +pasteboardDataWithGraphics: or, if that's not possible, return nil and set *outError to an NSError that can be presented to the user to explain what went wrong.
-func GraphicsWithPasteboardData(data: NSData, error outError: NSErrorPointer) -> [SKTGraphic]? {
+func GraphicsWithPasteboardData(_ data: Data) throws -> [SKTGraphic] {
 	// Because this data may have come from outside this process, don't assume that any property list object we get back is the right type.
 	var graphics: [SKTGraphic]?
-	var propertiesArray: AnyObject? = NSPropertyListSerialization.propertyListFromData(data, mutabilityOption: .Immutable, format: nil, errorDescription: nil)
+	var propertiesArray = PropertyListSerialization.propertyListFromData(data, mutabilityOption: [], format: nil, errorDescription: nil)
 	if !(propertiesArray is [AnyObject]) {
 		propertiesArray = nil
 	}
 	
-	if let ourProp = propertiesArray as? [NSDictionary] {
-		// Convert the array of graphic property dictionaries into an array of graphics.
-		graphics = GraphicsWithProperties(ourProp)
-	} else if outError != nil {
+	guard let ourProp = propertiesArray as? [NSDictionary]  else {
 		// If property list parsing fails we have no choice but to admit that we don't know what went wrong. The error description returned by +[NSPropertyListSerialization propertyListFromData:mutabilityOption:format:errorDescription:] would be pretty technical, and not the sort of thing that we should show to a user.
-		outError.memory = SKTErrorWithCode(.UnknownPasteboardReadError)
+		throw SKTErrorWithCode(.unknownPasteboardReadError)
 	}
 	
-	return graphics
+	// Convert the array of graphic property dictionaries into an array of graphics.
+	return GraphicsWithProperties(ourProp)
 }
 
 // Given an array of property list dictionaries whose validity has not been determined, return an array of graphics.
-func GraphicsWithProperties(propertiesArray: [NSDictionary]) -> [SKTGraphic]? {
+func GraphicsWithProperties(_ propertiesArray: [NSDictionary]) -> [SKTGraphic] {
 		// Convert the array of graphic property dictionaries into an array of graphics. Again, don't assume that property list objects are the right type.
 	let graphicCount = propertiesArray.count
 	var graphics = [SKTGraphic]()
@@ -120,23 +118,23 @@ func GraphicsWithProperties(propertiesArray: [NSDictionary]) -> [SKTGraphic]? {
 }
 
 // Return the array of graphics as flattened data that is appropriate for passing to +graphicsWithPasteboardData:error:.
-func PasteboardDataWithGraphics(graphics: [SKTGraphic]) -> NSData? {
+func PasteboardData(with graphics: [SKTGraphic]) -> Data? {
 	// Convert the contents of the document to a property list and then flatten the property list.
 	if let aProp = PropertiesWithGraphics(graphics) {
-		return NSPropertyListSerialization.dataFromPropertyList(aProp, format: .BinaryFormat_v1_0, errorDescription: nil)
+		return PropertyListSerialization.dataFromPropertyList(aProp, format: .binary, errorDescription: nil)
 	}
 	//
 	return nil
 }
 
 // Given an array of graphics, return an array of property list dictionaries.
-func PropertiesWithGraphics(graphics: [SKTGraphic]) -> [NSDictionary]? {
+func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [NSDictionary]? {
 	// Convert the array of graphics dictionaries into an array of graphic property dictionaries.
 	var propertiesArray = [NSDictionary]()
 	for graphic in graphics {
 		// Get the properties of the graphic, add the class name that can be used by +graphicsWithProperties: to it, and add the properties to the array we're building.
 		var properties = graphic.properties
-		properties[SKTGraphicClassNameKey] = NSStringFromClass(graphic.dynamicType)
+		properties[SKTGraphicClassNameKey] = NSStringFromClass(type(of: graphic))
 		propertiesArray.append(properties)
 	}
 	
@@ -147,13 +145,13 @@ func PropertiesWithGraphics(graphics: [SKTGraphic]) -> [NSDictionary]? {
 @objc(SKTGraphic) class SKTGraphic: NSObject, NSCopying {
 	var bounds = NSZeroRect
 	var drawingFill = false
-	var fillColor: NSColor? = NSColor.whiteColor()
+	var fillColor: NSColor? = NSColor.white
 	var drawingStroke = true
-	var strokeColor: NSColor? = NSColor.blackColor()
+	var strokeColor: NSColor? = NSColor.black
 	var strokeWidth: CGFloat = 1.0
 	
-	dynamic func copyWithZone(zone: NSZone) -> AnyObject {
-		var copy = self.dynamicType()
+	dynamic func copy(with zone: NSZone?) -> Any {
+		let copy = type(of: self).init()
 		copy.bounds = self.bounds
 		copy.drawingFill = self.drawingFill
 		copy.fillColor = fillColor?.copy() as? NSColor
@@ -221,7 +219,7 @@ func PropertiesWithGraphics(graphics: [SKTGraphic]) -> [NSDictionary]? {
 	
 	/* You can override these class methods in your subclass of SKTGraphic, but it would be a waste of time, because no one invokes these on any class other than SKTGraphic itself. Really these could just be functions if we didn't have such a syntactic sweet tooth. */
 	
-	class func drawingBoundsOfGraphics(graphics: [SKTGraphic]) -> NSRect {
+	class func drawingBoundsOfGraphics(of graphics: [SKTGraphic]) -> NSRect {
 		return DrawingBoundsOfGraphics(graphics)
 	}
 	
@@ -237,8 +235,8 @@ func PropertiesWithGraphics(graphics: [SKTGraphic]) -> [NSDictionary]? {
 		return BoundsOfGraphics(graphics)
 	}
 	
-	class func pasteboardDataWithGraphics(graphics: [SKTGraphic]) -> NSData? {
-		return PasteboardDataWithGraphics(graphics)
+	class func pasteboardDataWithGraphics(graphics: [SKTGraphic]) -> Data? {
+		return PasteboardData(with: graphics)
 	}
 	
 	// Given an array of graphics, return an array of property list dictionaries.
@@ -246,14 +244,14 @@ func PropertiesWithGraphics(graphics: [SKTGraphic]) -> [NSDictionary]? {
 		return PropertiesWithGraphics(graphics)
 	}
 
-	class func graphicsWithPasteboardData(data: NSData, error: NSErrorPointer) -> [SKTGraphic]? {
-		return GraphicsWithPasteboardData(data, error: error)
+	class func graphicsWithPasteboardData(data: Data) throws -> [SKTGraphic] {
+		return try GraphicsWithPasteboardData(data)
 	}
 	
 	/* Subclasses of SKTGraphic might have reason to override any of the rest of this class' methods, starting here. */
 	
 	// Given a dictionary having the sort of entries that would be in a dictionary returned by -properties, but whose validity has not been determined, initialize, setting the values of as many properties as possible from it. Ignore unrecognized dictionary entries. Use default values for missing dictionary entries. This is not the designated initializer for this class (-init is).
-	dynamic required init(properties: [NSObject : AnyObject]) {
+	dynamic required init(properties: [String : Any]) {
 		super.init()
 		
 		// The dictionary entries are all instances of the classes that can be written in property lists. Don't trust the type of something you get out of a property list unless you know your process created it or it was read from your application or framework's resources. We don't have to worry about KVO-compliance in initializers like this by the way; no one should be observing an unitialized object.
@@ -288,11 +286,11 @@ func PropertiesWithGraphics(graphics: [SKTGraphic]) -> [NSDictionary]? {
 		aProp[SKTGraphicBoundsKey] = NSStringFromRect(bounds)
 		aProp[SKTGraphicIsDrawingFillKey] = drawingFill
 		if let fillColor = self.fillColor {
-			aProp[SKTGraphicFillColorKey] = NSArchiver.archivedDataWithRootObject(fillColor)
+			aProp[SKTGraphicFillColorKey] = NSArchiver.archivedData(withRootObject: fillColor)
 		}
 		aProp[SKTGraphicIsDrawingStrokeKey] = drawingStroke
 		if let strokeColor = self.strokeColor {
-			aProp[SKTGraphicStrokeColorKey] = NSArchiver.archivedDataWithRootObject(strokeColor)
+			aProp[SKTGraphicStrokeColorKey] = NSArchiver.archivedData(withRootObject: strokeColor)
 		}
 		aProp [SKTGraphicStrokeWidthKey] = strokeWidth
 		
@@ -362,29 +360,29 @@ func PropertiesWithGraphics(graphics: [SKTGraphic]) -> [NSDictionary]? {
 	dynamic func drawHandlesInView(view: NSView) {
     // Draw handles at the corners and on the sides.
 		let bounds = self.bounds
-		drawHandleInView(view, atPoint: NSMakePoint(NSMinX(bounds), NSMinY(bounds)))
-		drawHandleInView(view, atPoint: NSMakePoint(NSMidX(bounds), NSMinY(bounds)))
-		drawHandleInView(view, atPoint: NSMakePoint(NSMaxX(bounds), NSMinY(bounds)))
-		drawHandleInView(view, atPoint: NSMakePoint(NSMinX(bounds), NSMidY(bounds)))
-		drawHandleInView(view, atPoint: NSMakePoint(NSMaxX(bounds), NSMidY(bounds)))
-		drawHandleInView(view, atPoint: NSMakePoint(NSMinX(bounds), NSMaxY(bounds)))
-		drawHandleInView(view, atPoint: NSMakePoint(NSMidX(bounds), NSMaxY(bounds)))
-		drawHandleInView(view, atPoint: NSMakePoint(NSMaxX(bounds), NSMaxY(bounds)))
+		drawHandle(in: view, atPoint: NSMakePoint(NSMinX(bounds), NSMinY(bounds)))
+		drawHandle(in: view, atPoint: NSMakePoint(NSMidX(bounds), NSMinY(bounds)))
+		drawHandle(in: view, atPoint: NSMakePoint(NSMaxX(bounds), NSMinY(bounds)))
+		drawHandle(in: view, atPoint: NSMakePoint(NSMinX(bounds), NSMidY(bounds)))
+		drawHandle(in: view, atPoint: NSMakePoint(NSMaxX(bounds), NSMidY(bounds)))
+		drawHandle(in: view, atPoint: NSMakePoint(NSMinX(bounds), NSMaxY(bounds)))
+		drawHandle(in: view, atPoint: NSMakePoint(NSMidX(bounds), NSMaxY(bounds)))
+		drawHandle(in: view, atPoint: NSMakePoint(NSMaxX(bounds), NSMaxY(bounds)))
 	}
 	
 	// Draw handle at a specific point in a specific view. Subclasses that override -drawHandlesInView: can invoke this to easily draw handles whereever they like.
-	func drawHandleInView(view: NSView, atPoint point: NSPoint) {
+	func drawHandle(in view: NSView, atPoint point: NSPoint) {
 		// Figure out a rectangle that's centered on the point but lined up with device pixels.
 		var handleBounds = NSRect(x: point.x - SKTGraphicHandleHalfWidth, y:point.y - SKTGraphicHandleHalfWidth, width: SKTGraphicHandleWidth, height: SKTGraphicHandleWidth)
 		handleBounds = view.centerScanRect(handleBounds)
 		
 		// Draw the shadow of the handle.
 		var handleShadowBounds = NSOffsetRect(handleBounds, 1.0, 1.0)
-		NSColor.controlDarkShadowColor().set()
+		NSColor.controlDarkShadowColor.set()
 		NSRectFill(handleShadowBounds);
 		
 		// Draw the handle itself.
-		NSColor.knobColor().set()
+		NSColor.knobColor.set()
 		NSRectFill(handleBounds);
 	}
 	
@@ -432,26 +430,26 @@ func PropertiesWithGraphics(graphics: [SKTGraphic]) -> [NSDictionary]? {
 	}
 	
 	// If the point is in one of the handles of the receiver return its number, SKTGraphicNoHandle otherwise. The default implementation of this method invokes -isHandleAtPoint:underPoint: for the corners and on the sides of the rectangle returned by -bounds. Subclasses that override this probably have to override several other methods too.
-	func handleUnderPoint(point: NSPoint) -> Int {
+	func handleUnderPoint(_ point: NSPoint) -> Int {
 		// Check handles at the corners and on the sides.
 
 		var handle = SKTGraphicNoHandle
 		let bounds = self.bounds
-		if (isHandleAtPoint(NSMakePoint(NSMinX(bounds), NSMinY(bounds)), underPoint:point)) {
+		if (isHandle(at: NSMakePoint(NSMinX(bounds), NSMinY(bounds)), under:point)) {
 			handle = SKTGraphicUpperLeftHandle;
-		} else if (isHandleAtPoint(NSMakePoint(NSMidX(bounds), NSMinY(bounds)), underPoint:point)) {
+		} else if (isHandle(at: NSMakePoint(NSMidX(bounds), NSMinY(bounds)), under:point)) {
 			handle = SKTGraphicUpperMiddleHandle;
-		} else if (isHandleAtPoint(NSMakePoint(NSMaxX(bounds), NSMinY(bounds)), underPoint:point)) {
+		} else if (isHandle(at: NSMakePoint(NSMaxX(bounds), NSMinY(bounds)), under:point)) {
 			handle = SKTGraphicUpperRightHandle;
-		} else if (isHandleAtPoint(NSMakePoint(NSMinX(bounds), NSMidY(bounds)), underPoint:point)) {
+		} else if (isHandle(at: NSMakePoint(NSMinX(bounds), NSMidY(bounds)), under:point)) {
 			handle = SKTGraphicMiddleLeftHandle;
-		} else if (isHandleAtPoint(NSMakePoint(NSMaxX(bounds), NSMidY(bounds)), underPoint:point)) {
+		} else if (isHandle(at: NSMakePoint(NSMaxX(bounds), NSMidY(bounds)), under:point)) {
 			handle = SKTGraphicMiddleRightHandle;
-		} else if (isHandleAtPoint(NSMakePoint(NSMinX(bounds), NSMaxY(bounds)), underPoint:point)) {
+		} else if (isHandle(at: NSMakePoint(NSMinX(bounds), NSMaxY(bounds)), under:point)) {
 			handle = SKTGraphicLowerLeftHandle;
-		} else if (isHandleAtPoint(NSMakePoint(NSMidX(bounds), NSMaxY(bounds)), underPoint:point)) {
+		} else if (isHandle(at: NSMakePoint(NSMidX(bounds), NSMaxY(bounds)), under:point)) {
 			handle = SKTGraphicLowerMiddleHandle;
-		} else if isHandleAtPoint(NSMakePoint(NSMaxX(bounds), NSMaxY(bounds)), underPoint:point) {
+		} else if isHandle(at: NSMakePoint(NSMaxX(bounds), NSMaxY(bounds)), under:point) {
 			handle = SKTGraphicLowerRightHandle;
 		}
 		
@@ -459,7 +457,7 @@ func PropertiesWithGraphics(graphics: [SKTGraphic]) -> [NSDictionary]? {
 	}
 	
 	// Return YES if the handle at a point is under another point. Subclasses that override -handleUnderPoint: can invoke this to hit-test the sort of handles that would be drawn by -drawHandleInView:atPoint:.
-	func isHandleAtPoint(handlePoint: NSPoint, underPoint point: NSPoint) -> Bool {
+	func isHandle(at handlePoint: NSPoint, under point: NSPoint) -> Bool {
 		// Check a handle-sized rectangle that's centered on the handle point.
 		var handleBounds = NSZeroRect
 		handleBounds.origin.x = handlePoint.x - SKTGraphicHandleHalfWidth;

@@ -12,12 +12,12 @@ import Cocoa
 
 	override var bezierPathForDrawing: NSBezierPath {
 		// Simple.
-		var path = NSBezierPath(ovalInRect: self.bounds)
+		let path = NSBezierPath(ovalIn: self.bounds)
 		path.lineWidth = self.strokeWidth
 		return path;
 	}
 
 	override func isContentsUnderPoint(point: NSPoint) -> Bool {
-		return bezierPathForDrawing.containsPoint(point)
+		return bezierPathForDrawing.contains(point)
 	}
 }

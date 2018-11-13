@@ -443,6 +443,7 @@
 				RC_PROJECT_NAME = Draw2;
 				SWIFT_OBJC_BRIDGING_HEADER = "Sketch-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = "-Wmost";
 				WRAPPER_EXTENSION = app;
@@ -464,6 +465,7 @@
 				PRODUCT_NAME = Sketch;
 				RC_PROJECT_NAME = Draw2;
 				SWIFT_OBJC_BRIDGING_HEADER = "Sketch-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = "-Wmost";
 				WRAPPER_EXTENSION = app;

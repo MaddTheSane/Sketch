@@ -18,7 +18,7 @@ let SKTLineEndHandle = 2
 private var presentablePropertyNamesByKey = [String: String]()
 private var presentablePropertyNamesByKeyInstance: dispatch_once_t = 0
 
-@objc(SKTLine) final class SKTLine: SKTGraphic, NSCopying {
+@objc(SKTLine) final class SKTLine: SKTGraphic {
 	private var pointsRight = false
 	private var pointsDown = false
 	
@@ -90,7 +90,7 @@ private var presentablePropertyNamesByKeyInstance: dispatch_once_t = 0
 		return false
 	}
 	
-	class func boundsWithBeginPoint(beginPoint: NSPoint, endPoint: NSPoint, inout pointsRight outPointsRight: Bool, inout down outPointsDown: Bool) -> NSRect {
+	class func boundsWith(beginPoint: NSPoint, endPoint: NSPoint, pointsRight outPointsRight: inout Bool, down outPointsDown: inout Bool) -> NSRect {
 		// Convert the begin and end points of the line to its bounds and flags specifying the direction in which it points.
 		let pointsRight = beginPoint.x < endPoint.x
 		let pointsDown = beginPoint.y < endPoint.y
@@ -104,10 +104,10 @@ private var presentablePropertyNamesByKeyInstance: dispatch_once_t = 0
 		return NSRect(x: xPosition, y: yPosition, width: width, height: height)
 	}
 		
-	required init(properties: [NSObject : AnyObject]) {
+	required init(properties: [String : Any]) {
 		var beginPoint: NSPoint
 		var endPoint: NSPoint
-		var beginPointString: AnyObject? = properties[SKTLineBeginPointKey]
+		var beginPointString: Any? = properties[SKTLineBeginPointKey]
 		if let beginPointAString = beginPointString as? String {
 			beginPoint = NSPointFromString(beginPointAString)
 		} else {
