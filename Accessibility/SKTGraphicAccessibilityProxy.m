@@ -59,22 +59,15 @@
 - (id)initWithGraphic:(SKTGraphic *)graphicValue parent:(id)parentValue {
 	self = [super init];
 	if (self) {
-		graphic = [graphicValue retain];
-		parent = [parentValue retain];
+		graphic = graphicValue;
+		parent = parentValue;
 	}
 	return self;
 }
 
 
 + (SKTGraphicAccessibilityProxy *)graphicProxyWithGraphic:(SKTGraphic *)graphicValue parent:(id)parentValue {
-	return [[[[self class] alloc] initWithGraphic:graphicValue parent:parentValue] autorelease];
-}
-
-
-- (void)dealloc {
-	[graphic release];
-	[parent release];
-	[super dealloc];
+	return [[[self class] alloc] initWithGraphic:graphicValue parent:parentValue];
 }
 
 
@@ -101,7 +94,6 @@
 		
 		id handleUIElement = [[SKTHandleUIElement alloc] initWithHandleCode:currentIndex parent:self];
 		[handleElements addObject:handleUIElement];
-		[handleUIElement release];
 		
     }];
 	

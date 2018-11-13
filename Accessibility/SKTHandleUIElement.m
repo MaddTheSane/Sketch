@@ -62,18 +62,16 @@
 }
 
 + (SKTHandleUIElement *)graphicHandleWithCode:(NSInteger)code parent:(id)aParent {
-    return [[[SKTHandleUIElement alloc] initWithHandleCode:code parent:aParent] autorelease];
+    return [[SKTHandleUIElement alloc] initWithHandleCode:code parent:aParent];
 }
 
-- (NSInteger)handleCode {
-    return handleCode;
-}
+@synthesize handleCode;
 
 #pragma mark -
 #pragma mark Attributes
 
 - (NSArray *)accessibilityAttributeNames {
-    NSMutableArray *names = [[[super accessibilityAttributeNames] mutableCopy] autorelease];
+    NSMutableArray *names = [[super accessibilityAttributeNames] mutableCopy];
     [names addObject:NSAccessibilityEnabledAttribute];
     [names addObject:NSAccessibilityDescriptionAttribute];
     return names;

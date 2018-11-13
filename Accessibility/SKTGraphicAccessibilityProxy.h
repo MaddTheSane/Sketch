@@ -57,7 +57,7 @@
 	SKTGraphic *graphic;	
 }
 
-+ (SKTGraphicAccessibilityProxy *)graphicProxyWithGraphic:(SKTGraphic *)graphicValue parent:(id)parentValue;
++ (instancetype)graphicProxyWithGraphic:(SKTGraphic *)graphicValue parent:(id)parentValue;
 
 @property (retain, readonly) id parent;
 @property (retain, readonly) SKTGraphic *graphic;

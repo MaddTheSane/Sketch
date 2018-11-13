@@ -55,8 +55,8 @@
 	id parent;
 }
 
-- (id)initWithRole:(NSString *)aRole parent:(id)aParent;
-+ (FauxUIElement *)elementWithRole:(NSString *)aRole parent:(id)aParent;
+- (instancetype)initWithRole:(NSString *)aRole parent:(id)aParent;
++ (instancetype)elementWithRole:(NSString *)aRole parent:(id)aParent;
 
 @end
 

@@ -81,7 +81,6 @@
 		[temp addObject:NSAccessibilityVerticalUnitDescriptionAttribute];
 		[temp addObject:NSAccessibilityHorizontalUnitDescriptionAttribute];
 		attributes = [temp copy];
-		[temp release];
     }
 	
     return attributes;
@@ -160,7 +159,6 @@
 		[temp addObject:NSAccessibilityScreenPointForLayoutPointParameterizedAttribute];
 		[temp addObject:NSAccessibilityScreenSizeForLayoutSizeParameterizedAttribute];
 		attributes = [temp copy];
-		[temp release];
     }
     return attributes;
 }

@@ -56,10 +56,10 @@
     NSInteger handleCode;
 }
 
-- (id)initWithHandleCode:(NSInteger)code parent:(id)aParent;
+- (instancetype)initWithHandleCode:(NSInteger)code parent:(id)aParent;
 + (SKTHandleUIElement *)graphicHandleWithCode:(NSInteger)code parent:(id)aParent;
 
-- (NSInteger)handleCode;
+@property (readonly) NSInteger handleCode;
 
 @end
 

@@ -55,6 +55,6 @@
 - (NSString *)descriptionForHandleCode:(NSInteger)handleCode;
 - (NSRect)rectangleForHandleCode:(NSInteger)handleCode;
 
-- (NSString *)shapeDescription;
+@property (readonly, copy) NSString *shapeDescription;
 
 @end

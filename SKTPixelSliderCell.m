@@ -56,7 +56,7 @@
 {
     static NSArray *names = nil;
     if ( names == nil ) {
-        names = [[[super accessibilityAttributeNames] arrayByAddingObject:NSAccessibilityValueDescriptionAttribute] retain];
+        names = [[super accessibilityAttributeNames] arrayByAddingObject:NSAccessibilityValueDescriptionAttribute];
     }
     
     return names;
@@ -73,7 +73,6 @@
         
         // create the string for the value description
         NSString *returnValue = [formatter stringForObjectValue:[self objectValue]];
-        [formatter release];
         
         return returnValue;
     } else 

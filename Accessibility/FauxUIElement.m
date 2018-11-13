@@ -55,14 +55,14 @@
 
 - (id)initWithRole:(NSString *)aRole parent:(id)aParent {
     if (self = [super init]) {
-        role = [aRole retain];
-        parent = [aParent retain];
+        role = aRole;
+        parent = aParent;
     }
     return self;
 }
 
 + (FauxUIElement *)elementWithRole:(NSString *)aRole parent:(id)aParent {
-    return [[[self alloc] initWithRole:aRole parent:aParent] autorelease];
+    return [[self alloc] initWithRole:aRole parent:aParent];
 }
 
 - (BOOL)isEqual:(id)object {
