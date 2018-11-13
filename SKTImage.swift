@@ -133,7 +133,7 @@ set {
 		return presentablePropertyName
 	}
 	
-	override func drawContents(in view: NSView, isBeingCreateOrEdited isBeingCreatedOrEditing: Bool) {
+	override func drawContents(in view: NSView?, isBeingCreateOrEdited isBeingCreatedOrEditing: Bool) {
 		let bounds = self.bounds
 		if self.drawingFill {
 			fillColor?.set()
@@ -155,7 +155,7 @@ set {
 		transform.scale(x: bounds.size.width / contentsSize.width, y: bounds.size.height / contentsSize.height)
 		
 		// Flipping to accomodate -[NSImage drawAtPoint:fromRect:operation:fraction:]'s odd behavior.
-		if view.isFlipped {
+		if view?.isFlipped ?? false {
 			transform.translate(x: 0, y: contentsSize.height)
 			transform.scale(x: 1, y: -1)
 		}
@@ -163,7 +163,7 @@ set {
 		// Do the actual drawing, saving and restoring the graphics state so as not to interfere with the drawing of selection handles or anything else in the same view.
 		NSGraphicsContext.current()?.saveGraphicsState()
 		(transform as NSAffineTransform).concat()
-		contents.draw(at: NSZeroPoint, from: NSRect(origin: .zero, size: contentsSize), operation: .sourceOver, fraction: 1)
+		contents.draw(at: .zero, from: NSRect(origin: .zero, size: contentsSize), operation: .sourceOver, fraction: 1)
 		NSGraphicsContext.current()?.restoreGraphicsState()
 		
 	}

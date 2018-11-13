@@ -206,7 +206,7 @@ private var layoutManager: NSLayoutManager = {
 		set {}
 	}
 	
-	override func drawContents(in view: NSView, isBeingCreateOrEdited isBeingCreatedOrEditing: Bool) {
+	override func drawContents(in view: NSView?, isBeingCreateOrEdited isBeingCreatedOrEditing: Bool) {
 		// Draw the fill color if appropriate.
 		let bounds = self.bounds;
 		if (self.drawingFill) {

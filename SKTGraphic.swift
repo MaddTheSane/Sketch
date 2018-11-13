@@ -27,14 +27,14 @@ private var crosshairsCursor: NSCursor = {
 }()
 
 @objc protocol SKTGraphicScriptingContainer: NSObjectProtocol {
-	// An informal protocol to which scriptable containers of SKTGraphics must conform. We declare this instead of just making it an SKTDocument method because that would needlessly reduce SKTGraphic's reusability (they would only be containable by SKTDocuments).
+	/// An informal protocol to which scriptable containers of SKTGraphics must conform. We declare this instead of just making it an SKTDocument method because that would needlessly reduce SKTGraphic's reusability (they would only be containable by SKTDocuments).
 	@objc(objectSpecifierForGraphic:) func objectSpecifier(for graphic: SKTGraphic) -> NSScriptObjectSpecifier?
 }
 
 // Another constant that's declared in the header.
 //let SKTGraphicNoHandle = 0;
 
-// A key that's used in Sketch's property-list-based file and pasteboard formats.
+/// A key that's used in Sketch's property-list-based file and pasteboard formats.
 private let SKTGraphicClassNameKey = "className";
 
 // The handles that graphics draw on themselves are 6 point by 6 point rectangles.
@@ -46,7 +46,7 @@ let SKTGraphicHandleHalfWidth: CGFloat = 6.0 / 2.0;
 func TranslateGraphics(_ graphics: [SKTGraphic], byX deltaX: CGFloat, y deltaY: CGFloat) {
 	// Pretty simple.
 	for graphic in graphics {
-		graphic.bounds = NSOffsetRect(graphic.bounds, deltaX, deltaY)
+		graphic.bounds = graphic.bounds.offsetBy(dx: deltaX, dy: deltaY)
 	}
 }
 
@@ -58,7 +58,7 @@ func BoundsOfGraphics(_ graphics: [SKTGraphic]) -> NSRect {
 	if graphicCount > 0 {
 		bounds = graphics[0].bounds
 		for index in 1..<graphicCount {
-			bounds = NSUnionRect(bounds, graphics[index].bounds);
+			bounds.union(graphics[index].bounds)
 		}
 	}
 	
@@ -73,7 +73,7 @@ func DrawingBoundsOfGraphics(_ graphics: [SKTGraphic]) -> NSRect {
 		drawingBounds = graphics[0].drawingBounds
 	}
 	for graphic in graphics {
-		drawingBounds = NSUnionRect(drawingBounds, graphic.drawingBounds)
+		drawingBounds.union(graphic.drawingBounds)
 	}
 	
 	return drawingBounds
@@ -86,7 +86,7 @@ func DrawingBoundsOfGraphics(_ graphics: [SKTGraphic]) -> NSRect {
 // Return an array of graphics created from flattened data of the sort returned by +pasteboardDataWithGraphics: or, if that's not possible, return nil and set *outError to an NSError that can be presented to the user to explain what went wrong.
 func GraphicsWithPasteboardData(_ data: Data) throws -> [SKTGraphic] {
 	// Because this data may have come from outside this process, don't assume that any property list object we get back is the right type.
-	let propertiesArray = PropertyListSerialization.propertyListFromData(data, mutabilityOption: [], format: nil, errorDescription: nil)
+	let propertiesArray = try PropertyListSerialization.propertyList(from: data, options: [], format: nil)
 	
 	guard let ourProp = propertiesArray as? [[String: Any]] else {
 		// If property list parsing fails we have no choice but to admit that we don't know what went wrong. The error description returned by +[NSPropertyListSerialization propertyListFromData:mutabilityOption:format:errorDescription:] would be pretty technical, and not the sort of thing that we should show to a user.
@@ -100,7 +100,6 @@ func GraphicsWithPasteboardData(_ data: Data) throws -> [SKTGraphic] {
 // Given an array of property list dictionaries whose validity has not been determined, return an array of graphics.
 func GraphicsWithProperties(_ propertiesArray: [[String: Any]]) -> [SKTGraphic] {
 		// Convert the array of graphic property dictionaries into an array of graphics. Again, don't assume that property list objects are the right type.
-	let graphicCount = propertiesArray.count
 	var graphics = [SKTGraphic]()
 	for properties in propertiesArray {
 		// Figure out the class of graphic to instantiate. The value of the SKTGraphicClassNameKey entry must be an Objective-C class name. Don't trust the type of something you get out of a property list unless you know your process created it or it was read from your application or framework's resources.
@@ -120,7 +119,7 @@ func GraphicsWithProperties(_ propertiesArray: [[String: Any]]) -> [SKTGraphic] 
 func PasteboardData(with graphics: [SKTGraphic]) -> Data? {
 	// Convert the contents of the document to a property list and then flatten the property list.
 	if let aProp = PropertiesWithGraphics(graphics) {
-		return PropertyListSerialization.dataFromPropertyList(aProp, format: .binary, errorDescription: nil)
+		return try? PropertyListSerialization.data(fromPropertyList: aProp, format: .binary, options: 0)
 	}
 	//
 	return nil
@@ -149,7 +148,7 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 	@objc var strokeColor: NSColor? = NSColor.black
 	@objc var strokeWidth: CGFloat = 1.0
 	
-	dynamic func copy(with zone: NSZone?) -> Any {
+	func copy(with zone: NSZone?) -> Any {
 		let copy = type(of: self).init()
 		copy.bounds = self.bounds
 		copy.drawingFill = self.drawingFill
@@ -311,14 +310,14 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 	
 	// Return the keys of all of the properties whose values affect the appearance of an instance of the receiving subclass of SKTGraphic (even properties declared in a superclass). The first method should return the keys for such properties that affect the drawing bounds of graphics. The second method should return the keys for such properties that do not. Most subclasses of SKTGraphic should override one or both of these, and be KVO-compliant for the properties identified by keys in the returned set. Implementations of these methods don't have to be fast, at least not in the context of Sketch, because their results are cached. In Mac OS 10.5 and later these methods are invoked automatically by KVO because their names match the result of applying to "drawingBounds" and "drawingContents" the naming pattern used by the default implementation of +[NSObject(NSKeyValueObservingCustomization) keyPathsForValuesAffectingValueForKey:].
 	
-	@objc dynamic class var keyPathsForValuesAffectingDrawingBounds: NSSet {
+	@objc dynamic class var keyPathsForValuesAffectingDrawingBounds: Set<String> {
     // The only properties managed by SKTGraphic that affect the drawing bounds are the bounds and the the stroke width.
-		return NSSet(array: [SKTGraphicBoundsKey, SKTGraphicStrokeWidthKey])
+		return Set([SKTGraphicBoundsKey, SKTGraphicStrokeWidthKey])
 	}
 	
-	@objc dynamic class var keyPathsforValuesAffectingDrawingContents: NSSet {
+	@objc dynamic class var keyPathsforValuesAffectingDrawingContents: Set<String> {
 		// The only properties managed by SKTGraphic that affect drawing but not the drawing bounds are the fill and stroke parameters.
-		return NSSet(array: [SKTGraphicIsDrawingFillKey, SKTGraphicFillColorKey, SKTGraphicIsDrawingStrokeKey, SKTGraphicStrokeColorKey])
+		return Set([SKTGraphicIsDrawingFillKey, SKTGraphicFillColorKey, SKTGraphicIsDrawingStrokeKey, SKTGraphicStrokeColorKey])
 	}
 	
 	// Return the bounding box of everything the receiver might draw when sent a -draw...InView: message. The default implementation of this method returns a bounds that assumes the default implementations of -drawContentsInView: and -drawHandlesInView:. Subclasses that override this probably have to override +keyPathsForValuesAffectingDrawingBounds too.*/
@@ -342,7 +341,7 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 	
 	// Draw the contents the receiver in a specific view. Use isBeingCreatedOrEditing if the graphic draws differently during its creation or while it's being edited. The default implementation of this method just draws the result of invoking -bezierPathForDrawing using the current fill and stroke parameters. Subclasses have to override either this method or -bezierPathForDrawing. Subclasses that override this may have to override +keyPathsForValuesAffectingDrawingBounds, +keyPathsForValuesAffectingDrawingContents, and -drawingBounds too.
 	@objc(drawContentsInView:isBeingCreateOrEdited:)
-	dynamic func drawContents(in view: NSView, isBeingCreateOrEdited: Bool) {
+	dynamic func drawContents(in view: NSView?, isBeingCreateOrEdited: Bool) {
 		// If the graphic is so so simple that it can be boiled down to a bezier path then just draw a bezier path. It's -bezierPathForDrawing's responsibility to return a path with the current stroke width.
 		if let path = bezierPathForDrawing {
 			if self.drawingFill {
@@ -430,7 +429,7 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 	
 	// Return YES if the point is in the contents of the receiver, NO otherwise. The default implementation of this method returns YES if the point is inside [self bounds].
 	@objc(isContentsUnderPoint:)
-	func isContentsUnderPoint(point: NSPoint) -> Bool {
+	func isContents(under point: NSPoint) -> Bool {
 		// Just check against the graphic's bounds.
 		return NSPointInRect(point, bounds);
 	}

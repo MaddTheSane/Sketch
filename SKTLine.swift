@@ -181,7 +181,7 @@ private let presentablePropertyNamesByKey: [String: String] = [SKTLineBeginPoint
 		self.drawHandle(in: view, at: endPoint)
 	}
 	
-	override func isContentsUnderPoint(point: NSPoint) -> Bool {
+	override func isContents(under point: NSPoint) -> Bool {
 		// Do a gross check against the bounds.
 		var isUnder = false
 		if NSPointInRect(point, bounds) {

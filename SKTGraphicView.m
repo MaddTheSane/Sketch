@@ -97,7 +97,7 @@ NSString *SKTGridAnyKey = @"any";
     if (self) {
 
 	// Specify what kind of pasteboard types this view can handle being dropped on it.
-        [self registerForDraggedTypes:[@[NSColorPboardType, NSFilenamesPboardType] arrayByAddingObjectsFromArray:[NSImage imagePasteboardTypes]]];
+        [self registerForDraggedTypes:[@[NSPasteboardTypeColor, NSFilenamesPboardType] arrayByAddingObjectsFromArray:[NSImage imageTypes]]];
 
 	// Initalize the cascading of pasted graphics.
         _pasteboardChangeCount = -1;
@@ -1153,10 +1153,10 @@ A person who assumes that a -set... method always succeeds, and always sets the 
 - (IBAction)copy:(id)sender {
     NSArray *selectedGraphics = [self selectedGraphics];
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
-    [pasteboard declareTypes:@[SKTGraphicViewPasteboardType, NSPDFPboardType, NSTIFFPboardType] owner:nil];
+    [pasteboard declareTypes:@[SKTGraphicViewPasteboardType, NSPDFPboardType, NSPasteboardTypeTIFF] owner:nil];
     [pasteboard setData:[[SKTGraphic class] pasteboardDataWithGraphics:selectedGraphics] forType:SKTGraphicViewPasteboardType];
     [pasteboard setData:[[SKTRenderingView class] pdfDataWithGraphics:selectedGraphics] forType:NSPDFPboardType];
-    [pasteboard setData:[[SKTRenderingView class] tiffDataWithGraphics:selectedGraphics error:NULL] forType:NSTIFFPboardType];
+    [pasteboard setData:[[SKTRenderingView class] tiffDataWithGraphics:selectedGraphics error:NULL] forType:NSPasteboardTypeTIFF];
     _pasteboardChangeCount = [pasteboard changeCount];
     _pasteCascadeNumber = 1;
     _pasteCascadeDelta = NSMakePoint(SKTGraphicViewDefaultPasteCascadeDelta, SKTGraphicViewDefaultPasteCascadeDelta);
@@ -1238,10 +1238,10 @@ A person who assumes that a -set... method always succeeds, and always sets the 
 
 - (NSDragOperation)dragOperationForDraggingInfo:(id <NSDraggingInfo>)sender {
     NSPasteboard *pboard = [sender draggingPasteboard];
-    NSString *type = [pboard availableTypeFromArray:@[NSColorPboardType, NSFilenamesPboardType]];
+    NSString *type = [pboard availableTypeFromArray:@[NSPasteboardTypeColor, NSFilenamesPboardType]];
     
     if (type) {
-        if ([type isEqualToString:NSColorPboardType]) {
+        if ([type isEqualToString:NSPasteboardTypeColor]) {
             NSPoint point = [self convertPoint:[sender draggingLocation] fromView:nil];
             if ([self graphicUnderPoint:point index:NULL isSelected:NULL handle:NULL]) {
                 return NSDragOperationGeneric;
@@ -1279,12 +1279,12 @@ A person who assumes that a -set... method always succeeds, and always sets the 
 }
 - (void)concludeDragOperation:(id <NSDraggingInfo>)sender {
     NSPasteboard *pboard = [sender draggingPasteboard];
-    NSString *type = [pboard availableTypeFromArray:@[NSColorPboardType, NSFilenamesPboardType]];
+    NSString *type = [pboard availableTypeFromArray:@[NSPasteboardTypeColor, NSFilenamesPboardType]];
     NSPoint point = [self convertPoint:[sender draggingLocation] fromView:nil];
     NSPoint draggedImageLocation = [self convertPoint:[sender draggedImageLocation] fromView:nil];
     
     if (type) {
-        if ([type isEqualToString:NSColorPboardType]) {
+        if ([type isEqualToString:NSPasteboardTypeColor]) {
             SKTGraphic *hitGraphic = [self graphicUnderPoint:point index:NULL isSelected:NULL handle:NULL];
             
             if (hitGraphic) {

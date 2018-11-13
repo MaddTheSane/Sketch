@@ -17,7 +17,7 @@ import Cocoa
 		return path;
 	}
 
-	override func isContentsUnderPoint(point: NSPoint) -> Bool {
+	override func isContents(under point: NSPoint) -> Bool {
 		return bezierPathForDrawing.contains(point)
 	}
 }
