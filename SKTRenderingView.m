@@ -88,7 +88,7 @@
 	// Draw the graphics back to front.
 	NSUInteger graphicIndex = [graphics count];
 	while (graphicIndex-->0) {
-	    SKTGraphic *graphic = [graphics objectAtIndex:graphicIndex];
+	    SKTGraphic *graphic = graphics[graphicIndex];
 	    [currentContext saveGraphicsState];
 	    [NSBezierPath clipRect:[graphic drawingBounds]];
 	    [graphic drawContentsInView:nil isBeingCreateOrEdited:NO];
@@ -145,7 +145,7 @@
     NSGraphicsContext *currentContext = [NSGraphicsContext currentContext];
     NSInteger graphicCount = [_graphics count];
     for (NSInteger index = graphicCount - 1; index>=0; index--) {
-        SKTGraphic *graphic = [_graphics objectAtIndex:index];
+        SKTGraphic *graphic = _graphics[index];
         NSRect graphicDrawingBounds = [graphic drawingBounds];
         if (NSIntersectsRect(rect, graphicDrawingBounds)) {
 

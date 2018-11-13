@@ -82,7 +82,7 @@ NSString *SKTSelectedToolDidChangeNotification = @"SKTSelectedToolDidChange";
     [super windowDidLoad];
 
     for (i=0; i<c; i++) {
-        [[cells objectAtIndex:i] setRefusesFirstResponder:YES];
+        [cells[i] setRefusesFirstResponder:YES];
     }
     [(NSPanel *)[self window] setBecomesKeyOnlyIfNeeded:YES];
     

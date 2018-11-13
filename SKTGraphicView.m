@@ -103,7 +103,7 @@ static CGFloat SKTGraphicViewDefaultPasteCascadeDelta = 10.0;
     if (self) {
 
 	// Specify what kind of pasteboard types this view can handle being dropped on it.
-        [self registerForDraggedTypes:[[NSArray arrayWithObjects:NSColorPboardType, NSFilenamesPboardType, nil] arrayByAddingObjectsFromArray:[NSImage imagePasteboardTypes]]];
+        [self registerForDraggedTypes:[@[NSColorPboardType, NSFilenamesPboardType] arrayByAddingObjectsFromArray:[NSImage imagePasteboardTypes]]];
 
 	// Initalize the cascading of pasted graphics.
         _pasteboardChangeCount = -1;
@@ -145,7 +145,7 @@ static CGFloat SKTGraphicViewDefaultPasteCascadeDelta = 10.0;
     // A graphic view doesn't hold onto an array of the graphics it's presenting. That would be a cache that hasn't been justified by performance measurement (not yet anyway). Get the array of graphics from the bound-to object (an array controller, in Sketch's case). It's poor practice for a method that returns a collection to return nil, so never return nil.
     NSArray *graphics = [_graphicsContainer valueForKeyPath:_graphicsKeyPath];
     if (!graphics) {
-	graphics = [NSArray array];
+	graphics = @[];
     }
     return graphics;
     
@@ -207,7 +207,7 @@ A person who assumes that a -set... method always succeeds, and always sets the 
 	_grid = [grid retain];
 
 	// Start observing changes in the new grid so we know when to redraw it.
-	[_grid addObserver:self forKeyPath:SKTGridAnyKey options:0 context:SKTGraphicViewAnyGridPropertyObservationContext];
+	[_grid addObserver:self forKeyPath:SKTGridAnyKey options:0 context:(__bridge void *)(SKTGraphicViewAnyGridPropertyObservationContext)];
 	
     }
 
@@ -218,10 +218,10 @@ A person who assumes that a -set... method always succeeds, and always sets the 
 
     // Start observing "drawingBounds" in each of the graphics. Use KVO's options for getting the old and new values in change notifications so we can invalidate just the old and new drawing bounds of changed graphics when they move or change size, instead of the whole view. (The new drawing bounds is easy to otherwise get using regular KVC, but the old one would otherwise have been forgotten by the time we get the notification.) Instances of SKTGraphic must therefore be KVC- and KVO-compliant for drawingBounds. SKTGraphics's use of KVO's dependency mechanism means that being KVO-compliant for drawingBounds when subclassing is as easy as overriding -drawingBounds (to compute an accurate value) and +keyPathsForValuesAffectingDrawingBounds (to trigger KVO's dependency mechanism) though.
     NSIndexSet *allGraphicIndexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [graphics count])];
-    [graphics addObserver:self toObjectsAtIndexes:allGraphicIndexes forKeyPath:SKTGraphicDrawingBoundsKey options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:SKTGraphicViewIndividualGraphicObservationContext];
+    [graphics addObserver:self toObjectsAtIndexes:allGraphicIndexes forKeyPath:SKTGraphicDrawingBoundsKey options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:(__bridge void *)(SKTGraphicViewIndividualGraphicObservationContext)];
 
     // Start observing "drawingContents" in each of the graphics. Don't bother using KVO's options for getting the old and new values because there is no value for drawingContents. It's just something that depends on all of the properties that affect drawing of a graphic but don't affect the drawing bounds of the graphic. Similar to what we do for drawingBounds, SKTGraphics' use of KVO's dependency mechanism means that being KVO-compliant for drawingContents when subclassing is as easy as overriding +keyPathsForValuesAffectingDrawingContents (there is no -drawingContents method to override).
-    [graphics addObserver:self toObjectsAtIndexes:allGraphicIndexes forKeyPath:SKTGraphicDrawingContentsKey options:0 context:SKTGraphicViewIndividualGraphicObservationContext];
+    [graphics addObserver:self toObjectsAtIndexes:allGraphicIndexes forKeyPath:SKTGraphicDrawingContentsKey options:0 context:(__bridge void *)(SKTGraphicViewIndividualGraphicObservationContext)];
 
 }
 
@@ -255,7 +255,7 @@ A person who assumes that a -set... method always succeeds, and always sets the 
 	_graphicsKeyPath = [observableKeyPath copy];
 
 	// Start observing changes to the array of graphics to which we're bound, and also start observing properties of the graphics themselves that might require redrawing.
-	[_graphicsContainer addObserver:self forKeyPath:_graphicsKeyPath options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:SKTGraphicViewGraphicsObservationContext];
+	[_graphicsContainer addObserver:self forKeyPath:_graphicsKeyPath options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:(__bridge void *)(SKTGraphicViewGraphicsObservationContext)];
 	[self startObservingGraphics:[_graphicsContainer valueForKeyPath:_graphicsKeyPath]];
 
 	// Redraw the whole view to make the binding take immediate visual effect. We could be much cleverer about this and just redraw the part of the view that needs it, but in typical usage the view isn't even visible yet, so that would probably be a waste of time (the programmer's and the computer's). If this view ever gets reused in some wildly dynamic situation where the bindings come and go we can reconsider optimization decisions like this then.
@@ -276,7 +276,7 @@ A person who assumes that a -set... method always succeeds, and always sets the 
 	_selectionIndexesKeyPath = [observableKeyPath copy];
 
 	// Start observing changes to the selection indexes to which we're bound.
-	[_selectionIndexesContainer addObserver:self forKeyPath:_selectionIndexesKeyPath options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:SKTGraphicViewSelectionIndexesObservationContext];
+	[_selectionIndexesContainer addObserver:self forKeyPath:_selectionIndexesKeyPath options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:(__bridge void *)(SKTGraphicViewSelectionIndexesObservationContext)];
 
 	// Same comment as above.
 	[self setNeedsDisplay:YES];
@@ -324,12 +324,12 @@ A person who assumes that a -set... method always succeeds, and always sets the 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(NSObject *)observedObject change:(NSDictionary *)change context:(void *)context {
     
     // An SKTGraphicView observes several different kinds of objects, for several different reasons. Use the observation context value to distinguish between them. We can do a simple pointer comparison because KVO doesn't do anything at all with the context value, not even retain or copy it.
-    if (context==SKTGraphicViewGraphicsObservationContext) {
+    if (context==(__bridge void *)(SKTGraphicViewGraphicsObservationContext)) {
 
 	// The "old value" or "new value" in a change dictionary will be NSNull, instead of just not existing, if the corresponding option was specified at KVO registration time and the value for some key in the key path is nil. In Sketch's case there are times in an SKTGraphicView's life cycle when it's bound to the graphics of a window controller's document, and the window controller's document is nil. Don't redraw the graphic view when we get notifications about that.
 
 	// Have graphics been removed from the bound-to container?
-	NSArray *oldGraphics = [change objectForKey:NSKeyValueChangeOldKey];
+	NSArray *oldGraphics = change[NSKeyValueChangeOldKey];
 	if (![oldGraphics isEqual:[NSNull null]]) {
 
 	    // Yes. Stop observing them because we don't want to leave dangling observations.
@@ -338,7 +338,7 @@ A person who assumes that a -set... method always succeeds, and always sets the 
 	    // Redraw just the parts of the view that they used to occupy.
 	    NSUInteger graphicCount = [oldGraphics count];
 	    for (NSUInteger index = 0; index<graphicCount; index++) {
-		[self setNeedsDisplayInRect:[[oldGraphics objectAtIndex:index] drawingBounds]];
+		[self setNeedsDisplayInRect:[oldGraphics[index] drawingBounds]];
 	    }
 
 	    // If a graphic is being edited right now, and the graphic is being removed, stop the editing. This way we don't strand an editing view whose graphic has been pulled out from under it. This situation can arise from undoing and scripting.
@@ -349,7 +349,7 @@ A person who assumes that a -set... method always succeeds, and always sets the 
 	}
 
 	// Have graphics been added to the bound-to container?
-	NSArray *newGraphics = [change objectForKey:NSKeyValueChangeNewKey];
+	NSArray *newGraphics = change[NSKeyValueChangeNewKey];
 	if (![newGraphics isEqual:[NSNull null]]) {
 
 	    // Yes. Start observing them so we know when we need to redraw the parts of the view where they sit.
@@ -358,16 +358,16 @@ A person who assumes that a -set... method always succeeds, and always sets the 
 	    // Redraw just the parts of the view that they now occupy.
 	    NSUInteger graphicCount = [newGraphics count];
 	    for (NSUInteger index = 0; index<graphicCount; index++) {
-		[self setNeedsDisplayInRect:[[newGraphics objectAtIndex:index] drawingBounds]];
+		[self setNeedsDisplayInRect:[newGraphics[index] drawingBounds]];
 	    }
 
 	    // If undoing or redoing is being done we have to select the graphics that are being added. For NSKeyValueChangeSetting the change dictionary has no NSKeyValueChangeIndexesKey entry, so we have to figure out the indexes ourselves, which is easy. For NSKeyValueChangeRemoval the indexes are not the indexes of anything being added. You might notice that this is only place in this entire method that we check the value of the NSKeyValueChangeKindKey entry. In general, doing so should be pretty uncommon in overrides of -observeValueForKeyPath:ofObject:change:context:, because the values of the other entries are usually all you need, and handling all of the possible NSKeyValueChange values requires care. In Sketch we'll never see NSKeyValueChangeSetting or NSKeyValueChangeReplacement but we want to demonstrate a reusable class so we handle them anyway.
 	    NSIndexSet *additionalUndoSelectionIndexes = nil;
-	    NSKeyValueChange changeKind = [[change objectForKey:NSKeyValueChangeKindKey] integerValue];
+	    NSKeyValueChange changeKind = [change[NSKeyValueChangeKindKey] integerValue];
 	    if (changeKind==NSKeyValueChangeSetting) {
 		additionalUndoSelectionIndexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [newGraphics count])];
 	    } else if (changeKind!=NSKeyValueChangeRemoval) {
-		additionalUndoSelectionIndexes = [change objectForKey:NSKeyValueChangeIndexesKey];
+		additionalUndoSelectionIndexes = change[NSKeyValueChangeIndexesKey];
 	    }
 	    if (additionalUndoSelectionIndexes) {
 
@@ -378,15 +378,15 @@ A person who assumes that a -set... method always succeeds, and always sets the 
 
 	}
 
-    } else if (context==SKTGraphicViewIndividualGraphicObservationContext) {
+    } else if (context==(__bridge void *)(SKTGraphicViewIndividualGraphicObservationContext)) {
 	
 	// Has a graphic's drawing bounds changed, or some other value that affects how it appears?
 	if ([keyPath isEqualToString:SKTGraphicDrawingBoundsKey]) {
 
 	    // Redraw the part of the view that the graphic used to occupy, and the part that it now occupies.
-	    NSRect oldGraphicDrawingBounds = [[change objectForKey:NSKeyValueChangeOldKey] rectValue];
+	    NSRect oldGraphicDrawingBounds = [change[NSKeyValueChangeOldKey] rectValue];
 	    [self setNeedsDisplayInRect:oldGraphicDrawingBounds];
-	    NSRect newGraphicDrawingBounds = [[change objectForKey:NSKeyValueChangeNewKey] rectValue];
+	    NSRect newGraphicDrawingBounds = [change[NSKeyValueChangeNewKey] rectValue];
 	    [self setNeedsDisplayInRect:newGraphicDrawingBounds];
 
 	} else if ([keyPath isEqualToString:SKTGraphicDrawingContentsKey]) {
@@ -405,21 +405,21 @@ A person who assumes that a -set... method always succeeds, and always sets the 
 	    } // else something truly bizarre has happened.
 	}
 	
-    } else if (context==SKTGraphicViewSelectionIndexesObservationContext) {
+    } else if (context==(__bridge void *)(SKTGraphicViewSelectionIndexesObservationContext)) {
 
 	// Some selection indexes might have been removed, some might have been added. Redraw the selection handles for any graphic whose selectedness has changed, unless the binding is changing completely (signalled by null old or new value), in which case just redraw the whole view.
-	NSIndexSet *oldSelectionIndexes = [change objectForKey:NSKeyValueChangeOldKey];
-	NSIndexSet *newSelectionIndexes = [change objectForKey:NSKeyValueChangeNewKey];
+	NSIndexSet *oldSelectionIndexes = change[NSKeyValueChangeOldKey];
+	NSIndexSet *newSelectionIndexes = change[NSKeyValueChangeNewKey];
 	if (![oldSelectionIndexes isEqual:[NSNull null]] && ![newSelectionIndexes isEqual:[NSNull null]]) {
 	    for (NSUInteger oldSelectionIndex = [oldSelectionIndexes firstIndex]; oldSelectionIndex!=NSNotFound; oldSelectionIndex = [oldSelectionIndexes indexGreaterThanIndex:oldSelectionIndex]) {
 		if (![newSelectionIndexes containsIndex:oldSelectionIndex]) {
-		    SKTGraphic *deselectedGraphic = [[self graphics] objectAtIndex:oldSelectionIndex];
+		    SKTGraphic *deselectedGraphic = [self graphics][oldSelectionIndex];
 		    [self setNeedsDisplayInRect:[deselectedGraphic drawingBounds]];
 		}
 	    }
 	    for (NSUInteger newSelectionIndex = [newSelectionIndexes firstIndex]; newSelectionIndex!=NSNotFound; newSelectionIndex = [newSelectionIndexes indexGreaterThanIndex:newSelectionIndex]) {
 		if (![oldSelectionIndexes containsIndex:newSelectionIndex]) {
-		    SKTGraphic *selectedGraphic = [[self graphics] objectAtIndex:newSelectionIndex];
+		    SKTGraphic *selectedGraphic = [self graphics][newSelectionIndex];
 		    [self setNeedsDisplayInRect:[selectedGraphic drawingBounds]];
 		}
 	    }
@@ -427,7 +427,7 @@ A person who assumes that a -set... method always succeeds, and always sets the 
 	    [self setNeedsDisplay:YES];
 	}
 	    
-    } else if (context==SKTGraphicViewAnyGridPropertyObservationContext) {
+    } else if (context==(__bridge void *)(SKTGraphicViewAnyGridPropertyObservationContext)) {
 
 	// Either a new grid is to be used (this only happens once in Sketch) or one of the properties of the grid has changed. Regardless, redraw everything.
 	[self setNeedsDisplay:YES];
@@ -470,7 +470,7 @@ A person who assumes that a -set... method always succeeds, and always sets the 
     NSIndexSet *selectionIndexes = [self selectionIndexes];
     NSInteger graphicCount = [graphics count];
     for (NSInteger index = graphicCount - 1; index>=0; index--) {
-        SKTGraphic *graphic = [graphics objectAtIndex:index];
+        SKTGraphic *graphic = graphics[index];
         NSRect graphicDrawingBounds = [graphic drawingBounds];
         if (NSIntersectsRect(rect, graphicDrawingBounds)) {
 
@@ -653,7 +653,7 @@ A person who assumes that a -set... method always succeeds, and always sets the 
     NSIndexSet *selectionIndexes = [self selectionIndexes];
     NSUInteger graphicCount = [graphics count];
     for (NSUInteger index = 0; index<graphicCount; index++) {
-	SKTGraphic *graphic = [graphics objectAtIndex:index];
+	SKTGraphic *graphic = graphics[index];
 
 	// Do a quick check to weed out graphics that aren't even in the neighborhood.
 	if (NSPointInRect(point, [graphic drawingBounds])) {
@@ -803,7 +803,7 @@ A person who assumes that a -set... method always succeeds, and always sets the 
     NSArray *graphics = [self graphics];
     NSUInteger graphicCount = [graphics count];
     for (NSUInteger index = 0; index<graphicCount; index++) {
-	SKTGraphic *graphic = [graphics objectAtIndex:index];
+	SKTGraphic *graphic = graphics[index];
         if (NSIntersectsRect(rect, [graphic drawingBounds])) {
             [indexSetToReturn addIndex:index];
         }
@@ -1080,7 +1080,7 @@ A person who assumes that a -set... method always succeeds, and always sets the 
 - (void)keyDown:(NSEvent *)event {
     
     // Ask the key binding manager to interpret the event for us.
-    [self interpretKeyEvents:[NSArray arrayWithObject:event]];
+    [self interpretKeyEvents:@[event]];
 
 }
 
@@ -1106,7 +1106,7 @@ A person who assumes that a -set... method always succeeds, and always sets the 
 - (void)invalidateHandlesOfGraphics:(NSArray *)graphics {
     NSUInteger i, c = [graphics count];
     for (i=0; i<c; i++) {
-	[self setNeedsDisplayInRect:[[graphics objectAtIndex:i] drawingBounds]];
+	[self setNeedsDisplayInRect:[graphics[i] drawingBounds]];
     }
 }
 
@@ -1202,7 +1202,7 @@ A person who assumes that a -set... method always succeeds, and always sets the 
 - (IBAction)copy:(id)sender {
     NSArray *selectedGraphics = [self selectedGraphics];
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
-    [pasteboard declareTypes:[NSArray arrayWithObjects:SKTGraphicViewPasteboardType, NSPDFPboardType, NSTIFFPboardType, nil] owner:nil];
+    [pasteboard declareTypes:@[SKTGraphicViewPasteboardType, NSPDFPboardType, NSTIFFPboardType] owner:nil];
     [pasteboard setData:[[SKTGraphic class] pasteboardDataWithGraphics:selectedGraphics] forType:SKTGraphicViewPasteboardType];
     [pasteboard setData:[[SKTRenderingView class] pdfDataWithGraphics:selectedGraphics] forType:NSPDFPboardType];
     [pasteboard setData:[[SKTRenderingView class] tiffDataWithGraphics:selectedGraphics error:NULL] forType:NSTIFFPboardType];
@@ -1223,7 +1223,7 @@ A person who assumes that a -set... method always succeeds, and always sets the 
 
     // We let the user paste graphics, image files, and image data.
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
-    NSString *typeName = [pasteboard availableTypeFromArray:[NSArray arrayWithObjects:SKTGraphicViewPasteboardType, NSFilenamesPboardType, nil]];
+    NSString *typeName = [pasteboard availableTypeFromArray:@[SKTGraphicViewPasteboardType, NSFilenamesPboardType]];
     if ([typeName isEqualToString:SKTGraphicViewPasteboardType]) {
 
 	// You can't trust anything that might have been put on the pasteboard by another application, so be ready for +[SKTGraphic graphicsWithPasteboardData:error:] to fail and return nil.
@@ -1270,7 +1270,7 @@ A person who assumes that a -set... method always succeeds, and always sets the 
     } else if ([typeName isEqualToString:NSFilenamesPboardType]) {
 	NSArray *filenames = [pasteboard propertyListForType:NSFilenamesPboardType];
 	if ([filenames count] == 1) {
-	    NSString *filename = [filenames objectAtIndex:0];
+	    NSString *filename = filenames[0];
 	    if ([self makeNewImageFromContentsOfFile:filename atPoint:NSMakePoint(50, 50)]) {
 		[[self undoManager] setActionName:NSLocalizedStringFromTable(@"Paste", @"UndoStrings", @"Action name for paste.")];
 	    }
@@ -1287,7 +1287,7 @@ A person who assumes that a -set... method always succeeds, and always sets the 
 
 - (NSUInteger)dragOperationForDraggingInfo:(id <NSDraggingInfo>)sender {
     NSPasteboard *pboard = [sender draggingPasteboard];
-    NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSColorPboardType, NSFilenamesPboardType, nil]];
+    NSString *type = [pboard availableTypeFromArray:@[NSColorPboardType, NSFilenamesPboardType]];
     
     if (type) {
         if ([type isEqualToString:NSColorPboardType]) {
@@ -1328,7 +1328,7 @@ A person who assumes that a -set... method always succeeds, and always sets the 
 }
 - (void)concludeDragOperation:(id <NSDraggingInfo>)sender {
     NSPasteboard *pboard = [sender draggingPasteboard];
-    NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSColorPboardType, NSFilenamesPboardType, nil]];
+    NSString *type = [pboard availableTypeFromArray:@[NSColorPboardType, NSFilenamesPboardType]];
     NSPoint point = [self convertPoint:[sender draggingLocation] fromView:nil];
     NSPoint draggedImageLocation = [self convertPoint:[sender draggedImageLocation] fromView:nil];
     
@@ -1344,7 +1344,7 @@ A person who assumes that a -set... method always succeeds, and always sets the 
             NSArray *filenames = [pboard propertyListForType:NSFilenamesPboardType];
             // Handle multiple files (cascade them?)
             if ([filenames count] == 1) {
-                NSString *filename = [filenames objectAtIndex:0];
+                NSString *filename = filenames[0];
                 [self makeNewImageFromContentsOfFile:filename atPoint:point];
             }
         }
@@ -1395,7 +1395,7 @@ A person who assumes that a -set... method always succeeds, and always sets the 
         NSUInteger i, c = [selectedGraphics count];
         if (c > 0) {
             for (i=0; i<c; i++) {
-                if ([[selectedGraphics objectAtIndex:i] canMakeNaturalSize]) {
+                if ([selectedGraphics[i] canMakeNaturalSize]) {
                     return YES;
                 }
             }
@@ -1475,11 +1475,11 @@ A person who assumes that a -set... method always succeeds, and always sets the 
     NSArray *selection = [self selectedGraphics];
     NSUInteger i, c = [selection count];
     if (c > 1) {
-        NSRect firstBounds = [[selection objectAtIndex:0] bounds];
+        NSRect firstBounds = [selection[0] bounds];
         SKTGraphic *curGraphic;
         NSRect curBounds;
         for (i=1; i<c; i++) {
-            curGraphic = [selection objectAtIndex:i];
+            curGraphic = selection[i];
             curBounds = [curGraphic bounds];
             if (curBounds.origin.x != firstBounds.origin.x) {
                 curBounds.origin.x = firstBounds.origin.x;
@@ -1494,11 +1494,11 @@ A person who assumes that a -set... method always succeeds, and always sets the 
     NSArray *selection = [self selectedGraphics];
     NSUInteger i, c = [selection count];
     if (c > 1) {
-        NSRect firstBounds = [[selection objectAtIndex:0] bounds];
+        NSRect firstBounds = [selection[0] bounds];
         SKTGraphic *curGraphic;
         NSRect curBounds;
         for (i=1; i<c; i++) {
-            curGraphic = [selection objectAtIndex:i];
+            curGraphic = selection[i];
             curBounds = [curGraphic bounds];
             if (NSMaxX(curBounds) != NSMaxX(firstBounds)) {
                 curBounds.origin.x = NSMaxX(firstBounds) - curBounds.size.width;
@@ -1513,11 +1513,11 @@ A person who assumes that a -set... method always succeeds, and always sets the 
     NSArray *selection = [self selectedGraphics];
     NSUInteger i, c = [selection count];
     if (c > 1) {
-        NSRect firstBounds = [[selection objectAtIndex:0] bounds];
+        NSRect firstBounds = [selection[0] bounds];
         SKTGraphic *curGraphic;
         NSRect curBounds;
         for (i=1; i<c; i++) {
-            curGraphic = [selection objectAtIndex:i];
+            curGraphic = selection[i];
             curBounds = [curGraphic bounds];
             if (curBounds.origin.y != firstBounds.origin.y) {
                 curBounds.origin.y = firstBounds.origin.y;
@@ -1532,11 +1532,11 @@ A person who assumes that a -set... method always succeeds, and always sets the 
     NSArray *selection = [self selectedGraphics];
     NSUInteger i, c = [selection count];
     if (c > 1) {
-        NSRect firstBounds = [[selection objectAtIndex:0] bounds];
+        NSRect firstBounds = [selection[0] bounds];
         SKTGraphic *curGraphic;
         NSRect curBounds;
         for (i=1; i<c; i++) {
-            curGraphic = [selection objectAtIndex:i];
+            curGraphic = selection[i];
             curBounds = [curGraphic bounds];
             if (NSMaxY(curBounds) != NSMaxY(firstBounds)) {
                 curBounds.origin.y = NSMaxY(firstBounds) - curBounds.size.height;
@@ -1551,11 +1551,11 @@ A person who assumes that a -set... method always succeeds, and always sets the 
     NSArray *selection = [self selectedGraphics];
     NSUInteger i, c = [selection count];
     if (c > 1) {
-        NSRect firstBounds = [[selection objectAtIndex:0] bounds];
+        NSRect firstBounds = [selection[0] bounds];
         SKTGraphic *curGraphic;
         NSRect curBounds;
         for (i=1; i<c; i++) {
-            curGraphic = [selection objectAtIndex:i];
+            curGraphic = selection[i];
             curBounds = [curGraphic bounds];
             if (NSMidX(curBounds) != NSMidX(firstBounds)) {
                 curBounds.origin.x = NSMidX(firstBounds) - (curBounds.size.width / 2.0);
@@ -1570,11 +1570,11 @@ A person who assumes that a -set... method always succeeds, and always sets the 
     NSArray *selection = [self selectedGraphics];
     NSUInteger i, c = [selection count];
     if (c > 1) {
-        NSRect firstBounds = [[selection objectAtIndex:0] bounds];
+        NSRect firstBounds = [selection[0] bounds];
         SKTGraphic *curGraphic;
         NSRect curBounds;
         for (i=1; i<c; i++) {
-            curGraphic = [selection objectAtIndex:i];
+            curGraphic = selection[i];
             curBounds = [curGraphic bounds];
             if (NSMidY(curBounds) != NSMidY(firstBounds)) {
                 curBounds.origin.y = NSMidY(firstBounds) - (curBounds.size.height / 2.0);
@@ -1593,7 +1593,7 @@ A person who assumes that a -set... method always succeeds, and always sets the 
         SKTGraphic *curGraphic;
         
         for (i=0; i<c; i++) {
-            curGraphic = [selection objectAtIndex:i];
+            curGraphic = selection[i];
 	    [curGraphic setBounds:[_grid alignedRect:[curGraphic bounds]]];
         }
         [[self undoManager] setActionName:NSLocalizedStringFromTable(@"Grid Selected Graphics", @"UndoStrings", @"Action name for grid selected graphics.")];
@@ -1643,11 +1643,11 @@ A person who assumes that a -set... method always succeeds, and always sets the 
     NSArray *selection = [self selectedGraphics];
     NSUInteger i, c = [selection count];
     if (c > 1) {
-        NSRect firstBounds = [[selection objectAtIndex:0] bounds];
+        NSRect firstBounds = [selection[0] bounds];
         SKTGraphic *curGraphic;
         NSRect curBounds;
         for (i=1; i<c; i++) {
-            curGraphic = [selection objectAtIndex:i];
+            curGraphic = selection[i];
             curBounds = [curGraphic bounds];
             if (curBounds.size.width != firstBounds.size.width) {
                 curBounds.size.width = firstBounds.size.width;
@@ -1662,11 +1662,11 @@ A person who assumes that a -set... method always succeeds, and always sets the 
     NSArray *selection = [self selectedGraphics];
     NSUInteger i, c = [selection count];
     if (c > 1) {
-        NSRect firstBounds = [[selection objectAtIndex:0] bounds];
+        NSRect firstBounds = [selection[0] bounds];
         SKTGraphic *curGraphic;
         NSRect curBounds;
         for (i=1; i<c; i++) {
-            curGraphic = [selection objectAtIndex:i];
+            curGraphic = selection[i];
             curBounds = [curGraphic bounds];
             if (curBounds.size.height != firstBounds.size.height) {
                 curBounds.size.height = firstBounds.size.height;

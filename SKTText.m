@@ -132,7 +132,7 @@ NSString *SKTTextContentsKey = @"contents";
     // Figure out how big this graphic would have to be to show all of its contents. -glyphRangeForTextContainer: forces layout.
     NSRect bounds = [self bounds];
     NSLayoutManager *layoutManager = [[self class] sharedLayoutManager];
-    NSTextContainer *textContainer = [[layoutManager textContainers] objectAtIndex:0];
+    NSTextContainer *textContainer = [layoutManager textContainers][0];
     [textContainer setContainerSize:NSMakeSize(bounds.size.width, 1.0e7f)];
     NSTextStorage *contents = [self contents]; 
     [contents addLayoutManager:layoutManager];
@@ -268,7 +268,7 @@ NSString *SKTTextContentsKey = @"contents";
     if (self) {
 
 	// The dictionary entries are all instances of the classes that can be written in property lists. Don't trust the type of something you get out of a property list unless you know your process created it or it was read from your application or framework's resources. We don't have to worry about KVO-compliance in initializers like this by the way; no one should be observing an unitialized object.
-	NSData *contentsData = [properties objectForKey:SKTTextContentsKey];
+	NSData *contentsData = properties[SKTTextContentsKey];
 	if ([contentsData isKindOfClass:[NSData class]]) {
 	    NSTextStorage *contents = [NSUnarchiver unarchiveObjectWithData:contentsData];
 	    if ([contents isKindOfClass:[NSTextStorage class]]) {
@@ -290,7 +290,7 @@ NSString *SKTTextContentsKey = @"contents";
 
     // Let SKTGraphic do its job and then handle the one additional property defined by this subclass. The dictionary must contain nothing but values that can be written in old-style property lists.
     NSMutableDictionary *properties = [super properties];
-    [properties setObject:[NSArchiver archivedDataWithRootObject:[self contents]] forKey:SKTTextContentsKey];
+    properties[SKTTextContentsKey] = [NSArchiver archivedDataWithRootObject:[self contents]];
     return properties;
 
 }
@@ -336,7 +336,7 @@ NSString *SKTTextContentsKey = @"contents";
 
 	    // Get a layout manager, size its text container, and use it to draw text. -glyphRangeForTextContainer: forces layout and tells us how much of text fits in the container.
 	    NSLayoutManager *layoutManager = [[self class] sharedLayoutManager];
-	    NSTextContainer *textContainer = [[layoutManager textContainers] objectAtIndex:0];
+	    NSTextContainer *textContainer = [layoutManager textContainers][0];
 	    [textContainer setContainerSize:bounds.size];
 	    [contents addLayoutManager:layoutManager];
 	    NSRange glyphRange = [layoutManager glyphRangeForTextContainer:textContainer];
@@ -379,7 +379,7 @@ NSString *SKTTextContentsKey = @"contents";
 	NSArray *layoutManagers = [[self contents] layoutManagers];
 	NSUInteger layoutManagerCount = [layoutManagers count];
 	for (NSUInteger index = 0; index<layoutManagerCount; index++) {
-	    NSLayoutManager *layoutManager = [layoutManagers objectAtIndex:index];
+	    NSLayoutManager *layoutManager = layoutManagers[index];
 
 	    // We didn't set up any multiple-text-view layout managers in -newEditingViewWithSuperviewBounds:, so we're not expecting to have to deal with any here.
 	    [[layoutManager firstTextView] setFrame:bounds];
@@ -468,7 +468,7 @@ NSString *SKTTextContentsKey = @"contents";
 	    NSLocalizedStringFromTable(@"Text", @"UndoStrings", @"Action name part for SKTTextUndoContentsKey."), SKTTextUndoContentsKey,
 	    nil];
     }
-    NSString *presentablePropertyName = [presentablePropertyNamesByKey objectForKey:key];
+    NSString *presentablePropertyName = presentablePropertyNamesByKey[key];
     if (!presentablePropertyName) {
 	presentablePropertyName = [super presentablePropertyNameForKey:key];
     }

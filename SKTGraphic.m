@@ -249,9 +249,9 @@ CGFloat SKTGraphicHandleHalfWidth = 6.0f / 2.0f;
     NSRect bounds = NSZeroRect;
     NSUInteger graphicCount = [graphics count];
     if (graphicCount>0) {
-	bounds = [[graphics objectAtIndex:0] bounds];
+	bounds = [graphics[0] bounds];
 	for (NSUInteger index = 1; index<graphicCount; index++) {
-            bounds = NSUnionRect(bounds, [[graphics objectAtIndex:index] bounds]);
+            bounds = NSUnionRect(bounds, [graphics[index] bounds]);
 	}
     }
     return bounds;
@@ -265,9 +265,9 @@ CGFloat SKTGraphicHandleHalfWidth = 6.0f / 2.0f;
     NSRect drawingBounds = NSZeroRect;
     NSUInteger graphicCount = [graphics count];
     if (graphicCount>0) {
-	drawingBounds = [[graphics objectAtIndex:0] drawingBounds];
+	drawingBounds = [graphics[0] drawingBounds];
 	for (NSUInteger index = 1; index<graphicCount; index++) {
-            drawingBounds = NSUnionRect(drawingBounds, [[graphics objectAtIndex:index] drawingBounds]);
+            drawingBounds = NSUnionRect(drawingBounds, [graphics[index] drawingBounds]);
 	}
     }
     return drawingBounds;
@@ -280,7 +280,7 @@ CGFloat SKTGraphicHandleHalfWidth = 6.0f / 2.0f;
     // Pretty simple.
     NSUInteger graphicCount = [graphics count];
     for (NSUInteger index = 0; index<graphicCount; index++) {
-	SKTGraphic *graphic = [graphics objectAtIndex:index];
+	SKTGraphic *graphic = graphics[index];
 	[graphic setBounds:NSOffsetRect([graphic bounds], deltaX, deltaY)];
     }
 
@@ -320,11 +320,11 @@ CGFloat SKTGraphicHandleHalfWidth = 6.0f / 2.0f;
     NSUInteger graphicCount = [propertiesArray count];
     NSMutableArray *graphics = [[NSMutableArray alloc] initWithCapacity:graphicCount];
     for (NSUInteger index = 0; index<graphicCount; index++) {
-	NSDictionary *properties = [propertiesArray objectAtIndex:index];
+	NSDictionary *properties = propertiesArray[index];
 	if ([properties isKindOfClass:[NSDictionary class]]) {
 
 	    // Figure out the class of graphic to instantiate. The value of the SKTGraphicClassNameKey entry must be an Objective-C class name. Don't trust the type of something you get out of a property list unless you know your process created it or it was read from your application or framework's resources.
-	    NSString *className = [properties objectForKey:SKTGraphicClassNameKey];
+	    NSString *className = properties[SKTGraphicClassNameKey];
 	    if ([className isKindOfClass:[NSString class]]) {
 		Class class = NSClassFromString(className);
 		if (class) {
@@ -361,11 +361,11 @@ CGFloat SKTGraphicHandleHalfWidth = 6.0f / 2.0f;
     NSUInteger graphicCount = [graphics count];
     NSMutableArray *propertiesArray = [[NSMutableArray alloc] initWithCapacity:graphicCount];
     for (NSUInteger index = 0; index<graphicCount; index++) {
-	SKTGraphic *graphic = [graphics objectAtIndex:index];
+	SKTGraphic *graphic = graphics[index];
 
 	// Get the properties of the graphic, add the class name that can be used by +graphicsWithProperties: to it, and add the properties to the array we're building.
 	NSMutableDictionary *properties = [graphic properties];
-	[properties setObject:NSStringFromClass([graphic class]) forKey:SKTGraphicClassNameKey];
+	properties[SKTGraphicClassNameKey] = NSStringFromClass([graphic class]);
 	[propertiesArray addObject:properties];
 
     }
@@ -384,29 +384,29 @@ CGFloat SKTGraphicHandleHalfWidth = 6.0f / 2.0f;
 	Class dataClass = [NSData class];
 	Class numberClass = [NSNumber class];
 	Class stringClass = [NSString class];
-	NSString *boundsString = [properties objectForKey:SKTGraphicBoundsKey];
+	NSString *boundsString = properties[SKTGraphicBoundsKey];
 	if ([boundsString isKindOfClass:stringClass]) {
 	    _bounds = NSRectFromString(boundsString);
 	}
-	NSNumber *isDrawingFillNumber = [properties objectForKey:SKTGraphicIsDrawingFillKey];
+	NSNumber *isDrawingFillNumber = properties[SKTGraphicIsDrawingFillKey];
 	if ([isDrawingFillNumber isKindOfClass:numberClass]) {
 	    _isDrawingFill = [isDrawingFillNumber boolValue];
 	}
-	NSData *fillColorData = [properties objectForKey:SKTGraphicFillColorKey];
+	NSData *fillColorData = properties[SKTGraphicFillColorKey];
 	if ([fillColorData isKindOfClass:dataClass]) {
 	    [_fillColor release];
 	    _fillColor = [[NSUnarchiver unarchiveObjectWithData:fillColorData] retain];
 	}
-	NSNumber *isDrawingStrokeNumber = [properties objectForKey:SKTGraphicIsDrawingStrokeKey];
+	NSNumber *isDrawingStrokeNumber = properties[SKTGraphicIsDrawingStrokeKey];
 	if ([isDrawingStrokeNumber isKindOfClass:numberClass]) {
 	    _isDrawingStroke = [isDrawingStrokeNumber boolValue];
 	}
-	NSData *strokeColorData = [properties objectForKey:SKTGraphicStrokeColorKey];
+	NSData *strokeColorData = properties[SKTGraphicStrokeColorKey];
 	if ([strokeColorData isKindOfClass:dataClass]) {
 	    [_strokeColor release];
 	    _strokeColor = [[NSUnarchiver unarchiveObjectWithData:strokeColorData] retain];
 	}
-	NSNumber *strokeWidthNumber = [properties objectForKey:SKTGraphicStrokeWidthKey];
+	NSNumber *strokeWidthNumber = properties[SKTGraphicStrokeWidthKey];
 	if ([strokeWidthNumber isKindOfClass:numberClass]) {
 	    _strokeWidth = [strokeWidthNumber doubleValue];
 	}
@@ -421,18 +421,18 @@ CGFloat SKTGraphicHandleHalfWidth = 6.0f / 2.0f;
 
     // Return a dictionary that contains nothing but values that can be written in property lists.
     NSMutableDictionary *properties = [NSMutableDictionary dictionary];
-    [properties setObject:NSStringFromRect([self bounds]) forKey:SKTGraphicBoundsKey];
-    [properties setObject:[NSNumber numberWithBool:[self isDrawingFill]] forKey:SKTGraphicIsDrawingFillKey];
+    properties[SKTGraphicBoundsKey] = NSStringFromRect([self bounds]);
+    properties[SKTGraphicIsDrawingFillKey] = @([self isDrawingFill]);
     NSColor *fillColor = [self fillColor];
     if (fillColor) {
-        [properties setObject:[NSArchiver archivedDataWithRootObject:fillColor] forKey:SKTGraphicFillColorKey];
+        properties[SKTGraphicFillColorKey] = [NSArchiver archivedDataWithRootObject:fillColor];
     }
-    [properties setObject:[NSNumber numberWithBool:[self isDrawingStroke]] forKey:SKTGraphicIsDrawingStrokeKey];
+    properties[SKTGraphicIsDrawingStrokeKey] = @([self isDrawingStroke]);
     NSColor *strokeColor = [self strokeColor];
     if (strokeColor) {
-        [properties setObject:[NSArchiver archivedDataWithRootObject:strokeColor] forKey:SKTGraphicStrokeColorKey];
+        properties[SKTGraphicStrokeColorKey] = [NSArchiver archivedDataWithRootObject:strokeColor];
     }
-    [properties setObject:[NSNumber numberWithDouble:[self strokeWidth]] forKey:SKTGraphicStrokeWidthKey];
+    properties[SKTGraphicStrokeWidthKey] = @([self strokeWidth]);
     return properties;
 
 }
@@ -806,7 +806,7 @@ CGFloat SKTGraphicHandleHalfWidth = 6.0f / 2.0f;
 
 	// Are we filling it? If not, start, using the new color.
 	if (![self isDrawingFill]) {
-	    [self setValue:[NSNumber numberWithBool:YES] forKey:SKTGraphicIsDrawingFillKey];
+	    [self setValue:@YES forKey:SKTGraphicIsDrawingFillKey];
 	}
 	[self setValue:color forKey:SKTGraphicFillColorKey];
 
@@ -855,7 +855,7 @@ CGFloat SKTGraphicHandleHalfWidth = 6.0f / 2.0f;
 	    NSLocalizedStringFromTable(@"Bounds", @"UndoStrings", @"Action name part for SKTGraphicBoundsKey."), SKTGraphicBoundsKey,
 	    nil];
     }
-    return [presentablePropertyNamesByKey objectForKey:key];
+    return presentablePropertyNamesByKey[key];
 
 }
 
@@ -903,7 +903,7 @@ CGFloat SKTGraphicHandleHalfWidth = 6.0f / 2.0f;
 - (NSNumber *)scriptingStrokeWidth {
 
     // Return nil if the graphic is not stroked. The scripter will see that as "missing value."
-    return [self isDrawingStroke] ? [NSNumber numberWithDouble:[self strokeWidth]] : nil;
+    return [self isDrawingStroke] ? @([self strokeWidth]) : nil;
 
 }
 
@@ -917,7 +917,7 @@ CGFloat SKTGraphicHandleHalfWidth = 6.0f / 2.0f;
 	BOOL canSetFillColor = YES;
 	if (![self isDrawingFill]) {
 	    if ([self canSetDrawingFill]) {
-		[self setValue:[NSNumber numberWithBool:YES] forKey:SKTGraphicIsDrawingFillKey];
+		[self setValue:@YES forKey:SKTGraphicIsDrawingFillKey];
 	    } else {
 
 		// Not allowed. Tell the scripter what happened.
@@ -934,7 +934,7 @@ CGFloat SKTGraphicHandleHalfWidth = 6.0f / 2.0f;
     } else {
 	if ([self isDrawingFill]) {
 	    if ([self canSetDrawingFill]) {
-		[self setValue:[NSNumber numberWithBool:NO] forKey:SKTGraphicIsDrawingFillKey];
+		[self setValue:@NO forKey:SKTGraphicIsDrawingFillKey];
 	    } else {
 
 		// Not allowed. Tell the scripter what happened.
@@ -955,7 +955,7 @@ CGFloat SKTGraphicHandleHalfWidth = 6.0f / 2.0f;
 	BOOL canSetStrokeColor = YES;
 	if (![self isDrawingStroke]) {
 	    if ([self canSetDrawingStroke]) {
-		[self setValue:[NSNumber numberWithBool:YES] forKey:SKTGraphicIsDrawingStrokeKey];
+		[self setValue:@YES forKey:SKTGraphicIsDrawingStrokeKey];
 	    } else {
 		NSScriptCommand *currentScriptCommand = [NSScriptCommand currentCommand];
 		[currentScriptCommand setScriptErrorNumber:errAEEventFailed];
@@ -969,7 +969,7 @@ CGFloat SKTGraphicHandleHalfWidth = 6.0f / 2.0f;
     } else {
 	if ([self isDrawingStroke]) {
 	    if ([self canSetDrawingStroke]) {
-		[self setValue:[NSNumber numberWithBool:NO] forKey:SKTGraphicIsDrawingStrokeKey];
+		[self setValue:@NO forKey:SKTGraphicIsDrawingStrokeKey];
 	    } else {
 		NSScriptCommand *currentScriptCommand = [NSScriptCommand currentCommand];
 		[currentScriptCommand setScriptErrorNumber:errAEEventFailed];
@@ -989,7 +989,7 @@ CGFloat SKTGraphicHandleHalfWidth = 6.0f / 2.0f;
 	BOOL canSetStrokeWidth = YES;
 	if (![self isDrawingStroke]) {
 	    if ([self canSetDrawingStroke]) {
-		[self setValue:[NSNumber numberWithBool:YES] forKey:SKTGraphicIsDrawingStrokeKey];
+		[self setValue:@YES forKey:SKTGraphicIsDrawingStrokeKey];
 	    } else {
 
 		// Not allowed. Tell the scripter what happened.
@@ -1006,7 +1006,7 @@ CGFloat SKTGraphicHandleHalfWidth = 6.0f / 2.0f;
     } else {
 	if ([self isDrawingStroke]) {
 	    if ([self canSetDrawingStroke]) {
-		[self setValue:[NSNumber numberWithBool:NO] forKey:SKTGraphicIsDrawingStrokeKey];
+		[self setValue:@NO forKey:SKTGraphicIsDrawingStrokeKey];
 	    } else {
 
 		// Not allowed. Tell the scripter what happened.

@@ -210,18 +210,18 @@
     
     
     else if ([attribute isEqualToString:NSAccessibilityEnabledAttribute]) {
-		return [NSNumber numberWithBool:YES];
+		return @YES;
     }
     
     else if ([attribute isEqualToString:NSAccessibilityFocusedAttribute]) {
-		return [NSNumber numberWithBool:NO];
+		return @NO;
     }
     
     else if ([attribute isEqualToString:NSAccessibilityHandlesAttribute]) {
 		if ([self isSelected]) {
 			return [self handleUIElementsWithHandleCodes:[graphic handleCodes]];
 		} else {
-			return [NSArray array];
+			return @[];
 		}
     }
 	
@@ -375,7 +375,7 @@
 #pragma mark Actions
 
 - (NSArray *)accessibilityActionNames {
-    return [NSArray array];
+    return @[];
 }
 
 

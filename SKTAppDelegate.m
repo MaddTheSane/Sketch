@@ -113,7 +113,7 @@ static NSString *SKTAppAutosavingDelayPreferenceKey = @"autosavingDelay";
 
     // Set up the default values of our autosaving preferences very early, before there's any chance of a binding using them. The default is for autosaving to be off, but 60 seconds if the user turns it on.
     NSUserDefaultsController *userDefaultsController = [NSUserDefaultsController sharedUserDefaultsController];
-    [userDefaultsController setInitialValues:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:NO], SKTAppAutosavesPreferenceKey, [NSNumber numberWithDouble:60.0], SKTAppAutosavingDelayPreferenceKey, nil]];
+    [userDefaultsController setInitialValues:@{SKTAppAutosavesPreferenceKey: @NO, SKTAppAutosavingDelayPreferenceKey: @60.0}];
 
     // Bind this object's "autosaves" and "autosavingDelay" properties to the user defaults of the same name. We don't bother with ivars for these values. This is just the quick way to get our -setAutosaves: and -setAutosavingDelay: methods invoked.
     [self bind:SKTAppAutosavesPreferenceKey toObject:userDefaultsController withKeyPath:[@"values." stringByAppendingString:SKTAppAutosavesPreferenceKey] options:nil];

@@ -62,7 +62,7 @@ NSError *SKTErrorWithCode(NSInteger code) {
     NSBundle *mainBundle = [NSBundle mainBundle];
     NSString *localizedDescription = [mainBundle localizedStringForKey:[NSString stringWithFormat:@"description%ld", (long)code] value:@"Sketch could not complete the operation because an unknown error occurred." table:@"SKTError"];
     NSString *localizedFailureReason = [mainBundle localizedStringForKey:[NSString stringWithFormat:@"failureReason%ld", (long)code] value:@"An unknown error occurred." table:@"SKTError"];
-    NSDictionary *errorUserInfo = [NSDictionary dictionaryWithObjectsAndKeys:localizedDescription, NSLocalizedDescriptionKey, localizedFailureReason, NSLocalizedFailureReasonErrorKey, nil];
+    NSDictionary *errorUserInfo = @{NSLocalizedDescriptionKey: localizedDescription, NSLocalizedFailureReasonErrorKey: localizedFailureReason};
     
     // In Sketch we know that no one's going to be paying attention to the domain and code that we use here, but still we don't specify junk values. Certainly we don't just use NSCocoaErrorDomain and some random error code.
     return [NSError errorWithDomain:SKTErrorDomain code:code userInfo:errorUserInfo];

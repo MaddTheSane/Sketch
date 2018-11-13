@@ -152,7 +152,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 - (NSArray *)graphics {
     
     // Never return nil when the invoker's expecting an empty collection.
-    return _graphics ? _graphics : [NSArray array];
+    return _graphics ? _graphics : @[];
     
 }
 
@@ -256,11 +256,11 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 	if (properties) {
 
 	    // Get the graphics. Strictly speaking the property list of an empty document should have an empty graphics array, not no graphics array, but we cope easily with either. Don't trust the type of something you get out of a property list unless you know your process created it or it was read from your application or framework's resources.
-	    NSArray *graphicPropertiesArray = [properties objectForKey:SKTDocumentGraphicsKey];
-	    graphics = [graphicPropertiesArray isKindOfClass:[NSArray class]] ? [SKTGraphic graphicsWithProperties:graphicPropertiesArray] : [NSArray array];
+	    NSArray *graphicPropertiesArray = properties[SKTDocumentGraphicsKey];
+	    graphics = [graphicPropertiesArray isKindOfClass:[NSArray class]] ? [SKTGraphic graphicsWithProperties:graphicPropertiesArray] : @[];
 
 	    // Get the page setup. There's no point in considering the opening of the document to have failed if we can't get print info. A more finished app might present a panel warning the user that something's fishy though.
-	    NSData *printInfoData = [properties objectForKey:SKTDocumentPrintInfoKey];
+	    NSData *printInfoData = properties[SKTDocumentPrintInfoKey];
 	    printInfo = [printInfoData isKindOfClass:[NSData class]] ? [NSUnarchiver unarchiveObjectWithData:printInfoData] : [[[NSPrintInfo alloc] init] autorelease];
 
 	} else if (outError) {
@@ -275,7 +275,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 	NSParameterAssert((useTypeConformance && [workspace type:typeName conformsToType:SKTDocumentNewVersion1TypeName]) || [typeName isEqualToString:SKTDocumentOldVersion1TypeName]);
 
 	// The file uses Sketch's old format. Sketch is still a work in progress.
-	graphics = [NSArray array];
+	graphics = @[];
 	printInfo = [[[NSPrintInfo alloc] init] autorelease];
 	readSuccessfully = YES;
 
@@ -319,9 +319,9 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 
 	// Convert the contents of the document to a property list and then flatten the property list.
 	NSMutableDictionary *properties = [NSMutableDictionary dictionary];
-	[properties setObject:[NSNumber numberWithInteger:SKTDocumentCurrentVersion] forKey:SKTDocumentVersionKey];
-	[properties setObject:[SKTGraphic propertiesWithGraphics:graphics] forKey:SKTDocumentGraphicsKey];
-	[properties setObject:[NSArchiver archivedDataWithRootObject:printInfo] forKey:SKTDocumentPrintInfoKey];
+	properties[SKTDocumentVersionKey] = @(SKTDocumentCurrentVersion);
+	properties[SKTDocumentGraphicsKey] = [SKTGraphic propertiesWithGraphics:graphics];
+	properties[SKTDocumentPrintInfoKey] = [NSArchiver archivedDataWithRootObject:printInfo];
 	data = [NSPropertyListSerialization dataFromPropertyList:properties format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL];
 
     } else if ((useTypeConformance && [workspace type:(NSString *)kUTTypePDF conformsToType:typeName]) || [typeName isEqualToString:NSPDFPboardType]) {
@@ -396,7 +396,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
     SKTGraphic *graphic;
     NSDictionary *graphicProperties;
     NSMapEnumerator propertiesPerGraphicEnumerator = NSEnumerateMapTable([propertiesPerGraphic mapTable]);
-    while (NSNextMapEnumeratorPair(&propertiesPerGraphicEnumerator, (void **)&graphic, (void **)&graphicProperties)) {
+    while (NSNextMapEnumeratorPair(&propertiesPerGraphicEnumerator, (void**)&graphic, (void**)&graphicProperties)) {
 
 	// Use a relatively unpopular method. Here we're effectively "casting" a key path to a key (see how these dictionaries get built in -observeValueForKeyPath:ofObject:change:context:). It had better really be a key or things will get confused. For example, this is one of the things that would need updating if -[SKTGraphic keysForValuesToObserveForUndo] someday becomes -[SKTGraphic keyPathsForValuesToObserveForUndo].
 	[graphic setValuesForKeysWithDictionary:graphicProperties];
@@ -426,19 +426,19 @@ static NSInteger SKTDocumentCurrentVersion = 2;
     // Each graphic can have a different set of properties that need to be observed.
     NSUInteger graphicCount = [graphics count];
     for (NSUInteger index = 0; index<graphicCount; index++) {
-	SKTGraphic *graphic = [graphics objectAtIndex:index];
+	SKTGraphic *graphic = graphics[index];
 	NSSet *keys = [graphic keysForValuesToObserveForUndo];
 	NSEnumerator *keyEnumerator = [keys objectEnumerator];
 	NSString *key;
 	while (key = [keyEnumerator nextObject]) {
 
 	    // We use NSKeyValueObservingOptionOld because when something changes we want to record the old value, which is what has to be set in the undo operation. We use NSKeyValueObservingOptionNew because we compare the new value against the old value in an attempt to ignore changes that aren't really changes.
-	    [graphic addObserver:self forKeyPath:key options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:SKTDocumentUndoObservationContext];
+	    [graphic addObserver:self forKeyPath:key options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:(__bridge void *)(SKTDocumentUndoObservationContext)];
 
 	}
 
 	// The set of properties to be observed can itself change.
-	[graphic addObserver:self forKeyPath:SKTGraphicKeysForValuesToObserveForUndoKey options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:SKTDocumentUndoKeysObservationContext];
+	[graphic addObserver:self forKeyPath:SKTGraphicKeysForValuesToObserveForUndoKey options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:(__bridge void *)(SKTDocumentUndoKeysObservationContext)];
 
     }
 
@@ -450,7 +450,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
     // Do the opposite of what's done in -startObservingGraphics:.
     NSUInteger graphicCount = [graphics count];
     for (NSUInteger index = 0; index<graphicCount; index++) {
-	SKTGraphic *graphic = [graphics objectAtIndex:index];
+	SKTGraphic *graphic = graphics[index];
 	[graphic removeObserver:self forKeyPath:SKTGraphicKeysForValuesToObserveForUndoKey];
 	NSSet *keys = [graphic keysForValuesToObserveForUndo];
 	NSEnumerator *keyEnumerator = [keys objectEnumerator];
@@ -467,11 +467,11 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(NSObject *)observedObject change:(NSDictionary *)change context:(void *)context {
 
     // Make sure we don't intercept an observer notification that's meant for NSDocument. In Mac OS 10.5 and earlier NSDocuments don't observe anything, but that could change in the future. We can do a simple pointer comparison because KVO doesn't do anything at all with the context value, not even retain or copy it.
-    if (context==SKTDocumentUndoKeysObservationContext) {
+    if (context==(__bridge void *)(SKTDocumentUndoKeysObservationContext)) {
 
 	// The set of properties that we should be observing has changed for some graphic. Stop or start observing.
-	NSSet *oldKeys = [change objectForKey:NSKeyValueChangeOldKey];
-	NSSet *newKeys = [change objectForKey:NSKeyValueChangeNewKey];
+	NSSet *oldKeys = change[NSKeyValueChangeOldKey];
+	NSSet *newKeys = change[NSKeyValueChangeNewKey];
 	NSString *key;
 	NSEnumerator *oldKeyEnumerator = [oldKeys objectEnumerator];
 	while (key = [oldKeyEnumerator nextObject]) {
@@ -482,11 +482,11 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 	NSEnumerator *newKeyEnumerator = [newKeys objectEnumerator];
 	while (key = [newKeyEnumerator nextObject]) {
 	    if (![oldKeys containsObject:key]) {
-		[observedObject addObserver:self forKeyPath:key options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:SKTDocumentUndoObservationContext];
+		[observedObject addObserver:self forKeyPath:key options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:(__bridge void *)(SKTDocumentUndoObservationContext)];
 	    }
 	}
 
-    } else if (context==SKTDocumentUndoObservationContext) {
+    } else if (context==(__bridge void *)(SKTDocumentUndoObservationContext)) {
 
 	// The value of some graphic's property has changed. Don't waste memory by recording undo operations affecting graphics that would be removed during undo anyway. In Sketch this check matters when you use a creation tool to create a new graphic and then drag the mouse to resize it; there's no reason to record a change of "bounds" in that situation.
 	SKTGraphic *graphic = (SKTGraphic *)observedObject;
@@ -495,8 +495,8 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 	    // Ignore changes that aren't really changes. Now that Sketch's inspector panel allows you to change a property of all selected graphics at once (it didn't always, as recently as the version that appears in Mac OS 10.4's /Developer/Examples/AppKit), it's easy for the user to cause a big batch of SKTGraphics to be sent -setValue:forKeyPath: messages that don't do anything useful. Try this simple example: create 10 circles, and set all but one to be filled. Select them all. In the inspector panel the Fill checkbox will show the mixed state indicator (a dash). Click on it. Cocoa's bindings machinery sends [theCircle setValue:[NSNumber numberWithBOOL:YES] forKeyPath:SKTGraphicIsDrawingFillKey] to each selected circle. KVO faithfully notifies this SKTDocument, which is observing all of its graphics, for each circle object, even though the old value of the SKTGraphicIsDrawingFillKey property for 9 out of the 10 circles was already YES. If we didn't actively filter out useless notifications like these we would be wasting memory by recording undo operations that don't actually do anything.
 	    // How much processor time does this memory optimization cost? We don't know, because we haven't measured it. The use of NSKeyValueObservingOptionNew in -startObservingGraphics:, which makes NSKeyValueChangeNewKey entries appear in change dictionaries, definitely costs something when KVO notifications are sent (it costs virtually nothing at observer registration time). Regardless, it's probably a good idea to do simple memory optimizations like this as they're discovered and debug just enough to confirm that they're saving the expected memory (and not introducing bugs). Later on it will be easier to test for good responsiveness and sample to hunt down processor time problems than it will be to figure out where all the darn memory went when your app turns out to be notably RAM-hungry (and therefore slowing down _other_ apps on your user's computers too, if the problem is bad enough to cause paging).
 	    // Is this a premature optimization? No. Leaving out this very simple check, because we're worried about the processor time cost of using NSKeyValueChangeNewKey, would be a premature optimization.
-	    id newValue = [change objectForKey:NSKeyValueChangeNewKey];
-	    id oldValue = [change objectForKey:NSKeyValueChangeOldKey];
+	    id newValue = change[NSKeyValueChangeNewKey];
+	    id oldValue = change[NSKeyValueChangeOldKey];
 	    if (![newValue isEqualTo:oldValue]) {
 
 		// Is this the first observed graphic change in the current undo group?
@@ -512,19 +512,19 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 		}
 
 		// Find the dictionary in which we're recording the old values of properties for the changed graphic.
-		NSMutableDictionary *oldGraphicProperties = NSMapGet([_undoGroupOldPropertiesPerGraphic mapTable], graphic);
+		NSMutableDictionary *oldGraphicProperties = (__bridge NSMutableDictionary *)(NSMapGet([_undoGroupOldPropertiesPerGraphic mapTable], (__bridge const void *)(graphic)));
 		if (!oldGraphicProperties) {
 
 		    // We have to create a dictionary to hold old values for the changed graphic. -[NSMutableDictionary setObject:forKey:] always makes a copy of the key object, but we don't want to make copies of SKTGraphics here, so we can't use NSMutableDictionary. That's why _undoGroupOldPropertiesPerGraphic uses NSMapTable despite the hassle of having to wrap it in SKTMapTableOwner.
 		    oldGraphicProperties = [[NSMutableDictionary alloc] init];
-		    NSMapInsert([_undoGroupOldPropertiesPerGraphic mapTable], graphic, oldGraphicProperties);
+		    NSMapInsert([_undoGroupOldPropertiesPerGraphic mapTable], (__bridge const void *)(graphic), (__bridge const void *)(oldGraphicProperties));
 		    [oldGraphicProperties release];
 
 		}
 
 		// Record the old value for the changed property, unless an older value has already been recorded for the current undo group. Here we're "casting" a KVC key path to a dictionary key, but that should be OK. -[NSMutableDictionary setObject:forKey:] doesn't know the difference.
-		if (![oldGraphicProperties objectForKey:keyPath]) {
-		    [oldGraphicProperties setObject:oldValue forKey:keyPath];
+		if (!oldGraphicProperties[keyPath]) {
+		    oldGraphicProperties[keyPath] = oldValue;
 		}
 
 		// Don't set the undo action name during undoing and redoing. In Sketch, SKTGraphicView sometimes overwrites whatever action name we set up here with something more specific (as in, "Move" or "Resize" instead of "Change of Bounds"), but only during the building of the original undo action. During undoing and redoing SKTGraphicView doesn't get a chance to do that desirable overwriting again. Just leave the action name alone during undoing and redoing and the action name from the original undo group will continue to be used.
@@ -656,7 +656,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
     id curGraphic;
 
     for (i=0; i<c; i++) {
-        curGraphic = [graphics objectAtIndex:i];
+        curGraphic = graphics[i];
         if ([curGraphic isKindOfClass:theClass]) {
             [result addObject:curGraphic];
         }
@@ -691,7 +691,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
         [self addInGraphics:graphic];
     } else {
         NSArray *graphics = [self graphics];
-        NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[rects objectAtIndex:index]];
+        NSInteger newIndex = [graphics indexOfObjectIdenticalTo:rects[index]];
         if (newIndex != NSNotFound) {
             [self insertGraphic:graphic atIndex:newIndex];
         } else {
@@ -704,7 +704,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 - (void)removeObjectFromRectanglesAtIndex:(NSUInteger)index {
     NSArray *rects = [self rectangles];
     NSArray *graphics = [self graphics];
-    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[rects objectAtIndex:index]];
+    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:rects[index]];
     if (newIndex != NSNotFound) {
         [self removeGraphicAtIndex:newIndex];
     } else {
@@ -720,7 +720,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
         [self addInGraphics:graphic];
     } else {
         NSArray *graphics = [self graphics];
-        NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[circles objectAtIndex:index]];
+        NSInteger newIndex = [graphics indexOfObjectIdenticalTo:circles[index]];
         if (newIndex != NSNotFound) {
             [self insertGraphic:graphic atIndex:newIndex];
         } else {
@@ -733,7 +733,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 - (void)removeObjectFromCirclesAtIndex:(NSUInteger)index {
     NSArray *circles = [self circles];
     NSArray *graphics = [self graphics];
-    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[circles objectAtIndex:index]];
+    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:circles[index]];
     if (newIndex != NSNotFound) {
         [self removeGraphicAtIndex:newIndex];
     } else {
@@ -749,7 +749,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
         [self addInGraphics:graphic];
     } else {
         NSArray *graphics = [self graphics];
-        NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[lines objectAtIndex:index]];
+        NSInteger newIndex = [graphics indexOfObjectIdenticalTo:lines[index]];
         if (newIndex != NSNotFound) {
             [self insertGraphic:graphic atIndex:newIndex];
         } else {
@@ -762,7 +762,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 - (void)removeObjectFromLinesAtIndex:(NSUInteger)index {
     NSArray *lines = [self lines];
     NSArray *graphics = [self graphics];
-    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[lines objectAtIndex:index]];
+    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:lines[index]];
     if (newIndex != NSNotFound) {
         [self removeGraphicAtIndex:newIndex];
     } else {
@@ -778,7 +778,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
         [self addInGraphics:graphic];
     } else {
         NSArray *graphics = [self graphics];
-        NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[textAreas objectAtIndex:index]];
+        NSInteger newIndex = [graphics indexOfObjectIdenticalTo:textAreas[index]];
         if (newIndex != NSNotFound) {
             [self insertGraphic:graphic atIndex:newIndex];
         } else {
@@ -791,7 +791,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 - (void)removeObjectFromTextAreasAtIndex:(NSUInteger)index {
     NSArray *textAreas = [self textAreas];
     NSArray *graphics = [self graphics];
-    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[textAreas objectAtIndex:index]];
+    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:textAreas[index]];
     if (newIndex != NSNotFound) {
         [self removeGraphicAtIndex:newIndex];
     } else {
@@ -807,7 +807,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
         [self addInGraphics:graphic];
     } else {
         NSArray *graphics = [self graphics];
-        NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[images objectAtIndex:index]];
+        NSInteger newIndex = [graphics indexOfObjectIdenticalTo:images[index]];
         if (newIndex != NSNotFound) {
             [self insertGraphic:graphic atIndex:newIndex];
         } else {
@@ -820,7 +820,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 - (void)removeObjectFromImagesAtIndex:(NSUInteger)index {
     NSArray *images = [self images];
     NSArray *graphics = [self graphics];
-    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[images objectAtIndex:index]];
+    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:images[index]];
     if (newIndex != NSNotFound) {
         [self removeGraphicAtIndex:newIndex];
     } else {
@@ -848,7 +848,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
         }
         if ([graphics count] == 0) {
             // If there are no graphics, there can be no match.  Just return now.
-            return [NSArray array];
+            return @[];
         }
 
         if ((!startSpec || [startKey isEqual:@"graphics"] || [startKey isEqual:@"rectangles"] || [startKey isEqual:@"circles"] || [startKey isEqual:@"lines"] || [startKey isEqual:@"textAreas"] || [startKey isEqual:@"images"]) && (!endSpec || [endKey isEqual:@"graphics"] || [endKey isEqual:@"rectangles"] || [endKey isEqual:@"circles"] || [endKey isEqual:@"lines"] || [endKey isEqual:@"textAreas"] || [endKey isEqual:@"images"])) {
@@ -866,7 +866,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
                     if ([startObject count] == 0) {
                         startObject = nil;
                     } else {
-                        startObject = [startObject objectAtIndex:0];
+                        startObject = startObject[0];
                     }
                 }
                 if (!startObject) {
@@ -890,7 +890,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
                     if (endObjectsCount == 0) {
                         endObject = nil;
                     } else {
-                        endObject = [endObject objectAtIndex:(endObjectsCount-1)];
+                        endObject = endObject[(endObjectsCount-1)];
                     }
                 }
                 if (!endObject) {
@@ -927,7 +927,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
                     if (keyIsGraphics) {
                         [result addObject:[NSNumber numberWithInteger:i]];
                     } else {
-                        curObj = [graphics objectAtIndex:i];
+                        curObj = graphics[i];
                         curKeyIndex = [rangeKeyObjects indexOfObjectIdenticalTo:curObj];
                         if (curKeyIndex != NSNotFound) {
                             [result addObject:[NSNumber numberWithInteger:curKeyIndex]];
@@ -957,7 +957,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
         }
         if ([graphics count] == 0) {
             // If there are no graphics, there can be no match.  Just return now.
-            return [NSArray array];
+            return @[];
         }
 
         if ([baseKey isEqual:@"graphics"] || [baseKey isEqual:@"rectangles"] || [baseKey isEqual:@"circles"] || [baseKey isEqual:@"lines"] || [baseKey isEqual:@"textAreas"] || [baseKey isEqual:@"images"]) {
@@ -976,9 +976,9 @@ static NSInteger SKTDocumentCurrentVersion = 2;
                     baseObject = nil;
                 } else {
                     if (relPos == NSRelativeBefore) {
-                        baseObject = [baseObject objectAtIndex:0];
+                        baseObject = baseObject[0];
                     } else {
-                        baseObject = [baseObject objectAtIndex:(baseCount-1)];
+                        baseObject = baseObject[(baseCount-1)];
                     }
                 }
             }
@@ -1010,10 +1010,10 @@ static NSInteger SKTDocumentCurrentVersion = 2;
                 }
                 while ((baseIndex >= 0) && (baseIndex < graphicCount)) {
                     if (keyIsGraphics) {
-                        [result addObject:[NSNumber numberWithInteger:baseIndex]];
+                        [result addObject:@(baseIndex)];
                         break;
                     } else {
-                        curObj = [graphics objectAtIndex:baseIndex];
+                        curObj = graphics[baseIndex];
                         curKeyIndex = [relKeyObjects indexOfObjectIdenticalTo:curObj];
                         if (curKeyIndex != NSNotFound) {
                             [result addObject:[NSNumber numberWithInteger:curKeyIndex]];

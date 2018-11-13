@@ -86,7 +86,7 @@
 		
     } else if ([attribute isEqualToString:NSAccessibilityEnabledAttribute]) {
 	// A handle is always enabled in Sketch
-	return [NSNumber numberWithBool:YES];
+	return @YES;
 	
     } else {
 	return [super accessibilityAttributeValue:attribute];

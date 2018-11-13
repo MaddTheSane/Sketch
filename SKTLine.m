@@ -159,9 +159,9 @@ NSString *SKTLineEndPointKey = @"endPoint";
 
 	// This object still doesn't have a bounds (because of what we do in our override of -properties), so set one and record the other information we need to place the begin and end points. The dictionary entries are all instances of the classes that can be written in property lists. Don't trust the type of something you get out of a property list unless you know your process created it or it was read from your application or framework's resources. We don't have to worry about KVO-compliance in initializers like this by the way; no one should be observing an unitialized object.
 	Class stringClass = [NSString class];
-	NSString *beginPointString = [properties objectForKey:SKTLineBeginPointKey];
+	NSString *beginPointString = properties[SKTLineBeginPointKey];
 	NSPoint beginPoint = [beginPointString isKindOfClass:stringClass] ? NSPointFromString(beginPointString) : NSZeroPoint;
-	NSString *endPointString = [properties objectForKey:SKTLineEndPointKey];
+	NSString *endPointString = properties[SKTLineEndPointKey];
 	NSPoint endPoint = [endPointString isKindOfClass:stringClass] ? NSPointFromString(endPointString) : NSZeroPoint;
 	[self setBounds:[[self class] boundsWithBeginPoint:beginPoint endPoint:endPoint pointsRight:&_pointsRight down:&_pointsDown]];
 
@@ -176,8 +176,8 @@ NSString *SKTLineEndPointKey = @"endPoint";
     // Let SKTGraphic do its job but throw out the bounds entry in the dictionary it returned and add begin and end point entries insteads. We do this instead of simply recording the currnet value of _pointsRight and _pointsDown because bounds+pointsRight+pointsDown is just too unnatural to immortalize in a file format. The dictionary must contain nothing but values that can be written in old-style property lists.
     NSMutableDictionary *properties = [super properties];
     [properties removeObjectForKey:SKTGraphicBoundsKey];
-    [properties setObject:NSStringFromPoint([self beginPoint]) forKey:SKTLineBeginPointKey];
-    [properties setObject:NSStringFromPoint([self endPoint]) forKey:SKTLineEndPointKey];
+    properties[SKTLineBeginPointKey] = NSStringFromPoint([self beginPoint]);
+    properties[SKTLineEndPointKey] = NSStringFromPoint([self endPoint]);
     return properties;
 
 }
@@ -350,7 +350,7 @@ NSString *SKTLineEndPointKey = @"endPoint";
 	    NSLocalizedStringFromTable(@"Endpoint", @"UndoStrings",@"Action name part for SKTLineEndPointKey."), SKTLineEndPointKey,
 	    nil];
     }
-    NSString *presentablePropertyName = [presentablePropertyNamesByKey objectForKey:key];
+    NSString *presentablePropertyName = presentablePropertyNamesByKey[key];
     if (!presentablePropertyName) {
 	presentablePropertyName = [super presentablePropertyNameForKey:key];
     }

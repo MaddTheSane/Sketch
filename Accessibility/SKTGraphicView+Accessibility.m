@@ -116,7 +116,7 @@
 		return children;
 		
     } else if ([attribute isEqualToString:NSAccessibilityEnabledAttribute]) {
-		return [NSNumber numberWithBool:YES];
+		return @YES;
 		
     } else if ([attribute isEqualToString:NSAccessibilityVerticalUnitsAttribute] || [attribute isEqualToString:NSAccessibilityHorizontalUnitsAttribute]) {
 		return NSAccessibilityPointsUnitValue;

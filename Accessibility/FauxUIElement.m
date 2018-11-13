@@ -65,12 +65,6 @@
     return [[[self alloc] initWithRole:aRole parent:aParent] autorelease];
 }
 
-- (void)dealloc {
-    [role autorelease];
-    [parent autorelease];
-    [super dealloc];
-}
-
 - (BOOL)isEqual:(id)object {
     if ([object isKindOfClass:[FauxUIElement self]]) {
         FauxUIElement *other = object;
@@ -116,7 +110,7 @@
     } else if ([attribute isEqualToString:NSAccessibilityFocusedAttribute]) {
 	// Just check if the app thinks we're focused.
 	id focusedElement = [NSApp accessibilityAttributeValue:NSAccessibilityFocusedUIElementAttribute];
-	return [NSNumber numberWithBool:[focusedElement isEqual:self]];
+	return @([focusedElement isEqual:self]);
     } else if ([attribute isEqualToString:NSAccessibilityParentAttribute]) {
 	return NSAccessibilityUnignoredAncestor(parent);
     } else if ([attribute isEqualToString:NSAccessibilityWindowAttribute]) {
@@ -152,7 +146,7 @@
 // actions
 
 - (NSArray *)accessibilityActionNames {
-    return [NSArray array];
+    return @[];
 }
 
 - (NSString *)accessibilityActionDescription:(NSString *)action {

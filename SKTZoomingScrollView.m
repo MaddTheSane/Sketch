@@ -91,7 +91,7 @@ NSLocalizedStringFromTable(@"1600%", @"SKTZoomingScrollView", @"A level of zoomi
         // Populate it and size it to fit the just-added menu item cells.
         for (NSInteger index = 0; index<SKTZoomingScrollViewPopUpButtonItemCount; index++) {
             [_factorPopUpButton addItemWithTitle:NSLocalizedStringFromTable(SKTZoomingScrollViewLabels[index], @"SKTZoomingScrollView", nil)];
-            [[_factorPopUpButton itemAtIndex:index] setRepresentedObject:[NSNumber numberWithDouble:SKTZoomingScrollViewFactors[index]]];
+            [[_factorPopUpButton itemAtIndex:index] setRepresentedObject:@(SKTZoomingScrollViewFactors[index])];
         }
         [_factorPopUpButton sizeToFit];
 
