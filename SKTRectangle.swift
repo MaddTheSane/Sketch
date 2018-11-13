@@ -12,7 +12,7 @@ import Cocoa
 
 	override var bezierPathForDrawing: NSBezierPath {
 		// Simple.
-		var path = NSBezierPath(rect: self.bounds)
+		let path = NSBezierPath(rect: self.bounds)
 		path.lineWidth = self.strokeWidth
 		return path;
 	}

@@ -9,16 +9,16 @@
 import Cocoa
 
 let SKTGridAnyKey = "any";
-private let SKTGridTemporaryShowingTime: NSTimeInterval = 1.0;
+private let SKTGridTemporaryShowingTime: TimeInterval = 1.0;
 
 class SKTGrid: NSObject {
-	var color = NSColor.lightGrayColor()
+	var color = NSColor.lightGray
 	var _spacing: CGFloat = 9.0
 	//BOOL _isAlwaysShown;
 	//BOOL _isConstraining;
 	var alwaysShown = false
 	var constraining = false
-	private var hidingTimer: NSTimer? = nil
+	private var hidingTimer: Timer? = nil
 	
 	
 	override init() {
@@ -26,33 +26,34 @@ class SKTGrid: NSObject {
 		super.init()
 	}
 	
-	class var keyPathsForValuesAffectingCanSetSpacing: NSSet {
-		return NSSet(array:["alwaysShown", "constraining"])
+	class var keyPathsForValuesAffectingCanSetSpacing: Set<String> {
+		return Set(["alwaysShown", "constraining"])
 	}
 	
-	class var keyPathsForValuesAffectingCanSetColor: NSSet {
-		return NSSet(array:["alwaysShown", "usable"])
+	class var keyPathsForValuesAffectingCanSetColor: Set<String> {
+		return Set(["alwaysShown", "usable"])
 	}
 	
-	class var keyPathsForValuesAffectingUsable: NSSet {
-		return NSSet(object:"spacing")
+	class var keyPathsForValuesAffectingUsable: Set<String> {
+		return Set(["spacing"])
 	}
 	
-	class var keyPathsForValuesAffectingAny: NSSet {
+	class var keyPathsForValuesAffectingAny: Set<String> {
 		
 		// Specify that a KVO-compliant change for any of this class' non-derived properties should result in a KVO change notification for the "any" virtual property. Views that want to use this grid can observe "any" for notification of the need to redraw the grid.
-		return NSSet(array:["color", "spacing", "alwaysShown", "constraining"])
+		return Set(["color", "spacing", "alwaysShown", "constraining"])
 		
 	}
 	
-	func shopShowingGridForTimer(timer: NSTimer) {
+	@objc(stopShowingGridForTimer:)
+	func stopShowingGrid(for timer: Timer) {
 		hidingTimer = nil
 		
-		self.willChangeValueForKey(SKTGridAnyKey)
-		self.didChangeValueForKey(SKTGridAnyKey)
+		self.willChangeValue(forKey: SKTGridAnyKey)
+		self.didChangeValue(forKey: SKTGridAnyKey)
 	}
 	
-	var usable: Bool {
+	@objc(usable) var isUsable: Bool {
 		@objc(isUsable) get {
 			return _spacing > 0
 		}
@@ -74,11 +75,11 @@ class SKTGrid: NSObject {
 					if let _hidingTimer = hidingTimer {
 						
 						// Yes, and now the user's changed the grid spacing again, so put off the hiding of the grid.
-						_hidingTimer.fireDate = NSDate(timeIntervalSinceNow: SKTGridTemporaryShowingTime)
+						_hidingTimer.fireDate = Date(timeIntervalSinceNow: SKTGridTemporaryShowingTime)
 					} else {
 						
 						// No, so show it the next time -drawRect:inView: is invoked, and then hide it again in one second.
-						hidingTimer = NSTimer.scheduledTimerWithTimeInterval(SKTGridTemporaryShowingTime, target: self, selector: "stopShowingGridForTimer:", userInfo: nil, repeats: false)
+						hidingTimer = Timer.scheduledTimer(timeInterval: SKTGridTemporaryShowingTime, target: self, selector: #selector(SKTGrid.stopShowingGrid(for:)), userInfo: nil, repeats: false)
 						
 						// Don't bother with a separate _showsGridTemporarily instance variable. -drawRect: can just check to see if _hidingTimer is non-nil.
 						
@@ -97,23 +98,23 @@ class SKTGrid: NSObject {
 	}
 	
 	var canAlign: Bool {
-		return usable
+		return isUsable
 	}
 	
-	func constrainedPoint(inPoint: NSPoint) -> NSPoint {
+	func constrainedPoint(_ inPoint: NSPoint) -> NSPoint {
 		var point = inPoint
 		// The grid might not be usable right now, or constraining might be turned off.
-		if (self.usable && constraining) {
+		if (self.isUsable && constraining) {
 			point.x = floor((point.x / _spacing) + 0.5) * _spacing;
 			point.y = floor((point.y / _spacing) + 0.5) * _spacing;
 		}
 		return point;
 	}
 	
-	func alignedRect(arect: NSRect) -> NSRect {
+	func alignedRect(_ arect: NSRect) -> NSRect {
 		var rect = arect
 		// Aligning is done even when constraining is not.
-		var upperRight = NSMakePoint(NSMaxX(rect), NSMaxY(rect));
+		var upperRight = NSPoint(x: NSMaxX(rect), y: NSMaxY(rect));
 		rect.origin.x = floor((rect.origin.x / _spacing) + 0.5) * _spacing;
 		rect.origin.y = floor((rect.origin.y / _spacing) + 0.5) * _spacing;
 		upperRight.x = floor((upperRight.x / _spacing) + 0.5) * _spacing;
@@ -123,21 +124,22 @@ class SKTGrid: NSObject {
 		return rect;
 	}
 	
+	@objc(drawRect:inView:)
 	func drawRect(rect: NSRect, inView view: NSView) {
 		// The grid might not be usable right now. It might be shown, but only temporarily.
-		if self.usable && (alwaysShown || (hidingTimer != nil)) {
+		if self.isUsable && (alwaysShown || (hidingTimer != nil)) {
 			
 			// Figure out a big bezier path that corresponds to the entire grid. It will consist of the vertical lines and then the horizontal lines.
-			var gridPath = NSBezierPath()
-			var lastVerticalLineNumber = Int(floor(NSMaxX(rect) / _spacing))
-			for (var lineNumber = Int(ceil(NSMinX(rect) / _spacing)); lineNumber <= lastVerticalLineNumber; lineNumber++) {
-				gridPath.moveToPoint(NSPoint(x: CGFloat(lineNumber) * _spacing, y: NSMinY(rect)))
-				gridPath.lineToPoint(NSPoint(x: CGFloat(lineNumber) * _spacing, y: NSMaxY(rect)))
+			let gridPath = NSBezierPath()
+			let lastVerticalLineNumber = Int(floor(rect.maxX / _spacing))
+			for lineNumber in Int(ceil(rect.minX / _spacing)) ... lastVerticalLineNumber  {
+				gridPath.move(to: NSPoint(x: CGFloat(lineNumber) * _spacing, y: NSMinY(rect)))
+				gridPath.line(to: NSPoint(x: CGFloat(lineNumber) * _spacing, y: NSMaxY(rect)))
 			}
-			var lastHorizontalLineNumber = Int(floor(NSMaxY(rect) / _spacing))
-			for (var lineNumber = Int(ceil(NSMinY(rect) / _spacing)); lineNumber <= lastHorizontalLineNumber; lineNumber++) {
-				gridPath.moveToPoint(NSPoint(x: NSMinX(rect), y: (CGFloat(lineNumber) * _spacing)))
-				gridPath.moveToPoint(NSPoint(x: NSMaxX(rect), y: (CGFloat(lineNumber) * _spacing)))
+			let lastHorizontalLineNumber = Int(floor(rect.maxY / _spacing))
+			for lineNumber in Int(ceil(NSMinY(rect) / _spacing)) ... lastHorizontalLineNumber {
+				gridPath.move(to: NSPoint(x: NSMinX(rect), y: (CGFloat(lineNumber) * _spacing)))
+				gridPath.move(to: NSPoint(x: NSMaxX(rect), y: (CGFloat(lineNumber) * _spacing)))
 			}
 			
 			// Draw the grid as one-pixel-wide lines of a specific color.

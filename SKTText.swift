@@ -16,10 +16,17 @@ let SKTTextUndoContentsKey = "undoContents";
 let SKTTextContentsKey = "contents";
 
 
-private var layoutManager: NSLayoutManager? = nil
-private var layoutOnce: dispatch_once_t = 0
+private var layoutManager: NSLayoutManager = {
+	var textContainer = NSTextContainer(containerSize: NSSize(width: 1.0e7, height: 1.0e7))
+	let layoutManager = NSLayoutManager()
+	textContainer.widthTracksTextView = false
+	textContainer.heightTracksTextView = false
+	layoutManager.addTextContainer(textContainer)
 
-@objc(SKTText) final class SKTText: SKTGraphic, NSTextStorageDelegate, NSCopying {
+	return layoutManager
+}()
+
+@objc(SKTText) final class SKTText: SKTGraphic, NSTextStorageDelegate {
 	private var _contents: NSTextStorage? = nil
 	private var boundsBeingChangedToMatchContents = false
 	private var contentsBeingChangedByScripting = false
@@ -37,35 +44,27 @@ private var layoutOnce: dispatch_once_t = 0
 		_contents?.delegate = nil
 	}
 	
-	override func copyWithZone(zone: NSZone) -> AnyObject {
-			// Sending -copy or -mutableCopy to an NSTextStorage results in an NSAttributedString or NSMutableAttributedString, so we have to do something a little different. We go through [copy contents] to make sure delegation gets set up properly, and [self contents] to easily ensure we're not passing nil to -setAttributedString:.
-			var copy = super.copyWithZone(zone) as SKTText
+	override func copy(with zone: NSZone? = nil) -> Any {
+		// Sending -copy or -mutableCopy to an NSTextStorage results in an NSAttributedString or NSMutableAttributedString, so we have to do something a little different. We go through [copy contents] to make sure delegation gets set up properly, and [self contents] to easily ensure we're not passing nil to -setAttributedString:.
+		let copy = super.copy(with: zone) as! SKTText
 		copy.contents.setAttributedString(self.contents)
-			return copy;
-			
+		return copy;
 	}
 	
 	class var sharedLayoutManager: NSLayoutManager {
-		dispatch_once(&layoutOnce, { () -> Void in
-			var textContainer = NSTextContainer(containerSize: NSSize(width: 1.0e7, height: 1.0e7))
-			layoutManager = NSLayoutManager()
-			textContainer.widthTracksTextView = false
-		textContainer.heightTracksTextView = false
-			layoutManager?.addTextContainer(textContainer)
-		})
-		return layoutManager!
+		return layoutManager
 	}
 	
 	var naturalSize: NSSize {
 		// Figure out how big this graphic would have to be to show all of its contents. -glyphRangeForTextContainer: forces layout.
-		var bounds = self.bounds
-		var layoutManager = self.dynamicType.sharedLayoutManager
-		var textContainer = layoutManager.textContainers[0] as NSTextContainer
+		let bounds = self.bounds
+		let layoutManager = type(of: self).sharedLayoutManager
+		let textContainer = layoutManager.textContainers[0] as NSTextContainer
 		textContainer.containerSize = NSSize(width: bounds.size.width, height: 1.0e7)
-		var contents = self.contents
+		let contents = self.contents
 		contents.addLayoutManager(layoutManager)
-		layoutManager.glyphRangeForTextContainer(textContainer)
-		var naturalSize = layoutManager.usedRectForTextContainer(textContainer).size
+		layoutManager.glyphRange(for: textContainer)
+		let naturalSize = layoutManager.usedRect(for: textContainer).size
 		contents.removeLayoutManager(layoutManager)
 		return naturalSize
 	}
@@ -84,19 +83,19 @@ private var layoutOnce: dispatch_once_t = 0
 	func setHeightToMatchContents() {
 		// Update the bounds of this graphic to match the height of the text. Make sure that doesn't result in the registration of a spurious undo action.
 		// There might be a noticeable performance win to be had during editing by making this object a delegate of the text views it creates, implementing -[NSObject(NSTextDelegate) textDidChange:], and using information that's already calculated by the editing text view instead of invoking -makeNaturalSize like this.
-		self.willChangeValueForKey(SKTGraphicKeysForValuesToObserveForUndoKey)
+		self.willChangeValue(forKey: SKTGraphicKeysForValuesToObserveForUndoKey)
 		boundsBeingChangedToMatchContents = true
-		self.didChangeValueForKey(SKTGraphicKeysForValuesToObserveForUndoKey)
-		var bounds = self.bounds
-		var naturalSize = self.naturalSize
+		self.didChangeValue(forKey: SKTGraphicKeysForValuesToObserveForUndoKey)
+		let bounds = self.bounds
+		let naturalSize = self.naturalSize
 		self.bounds = NSRect(origin: bounds.origin, size: NSSize(width: bounds.size.width, height: naturalSize.height))
-		self.willChangeValueForKey(SKTGraphicKeysForValuesToObserveForUndoKey)
+		self.willChangeValue(forKey: SKTGraphicKeysForValuesToObserveForUndoKey)
 		boundsBeingChangedToMatchContents = false;
-		self.didChangeValueForKey(SKTGraphicKeysForValuesToObserveForUndoKey)
+		self.didChangeValue(forKey: SKTGraphicKeysForValuesToObserveForUndoKey)
 	}
 	
 	func textStorageDidProcessEditing(notification: NSNotification) {
-		dispatch_after(DISPATCH_TIME_NOW, dispatch_get_main_queue()) { () -> Void in
+		DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()) {
 			self.setHeightToMatchContents()
 		}
 	}
@@ -105,23 +104,23 @@ private var layoutOnce: dispatch_once_t = 0
 	
 	func willChangeScriptingContents() {
 		// Tell any object that would observe this one to record undo operations to start observing. In Sketch, each SKTDocument is observing all of its graphics' "keysForValuesToObserveForUndo" values.
-		self.willChangeValueForKey(SKTGraphicKeysForValuesToObserveForUndoKey)
+		self.willChangeValue(forKey: SKTGraphicKeysForValuesToObserveForUndoKey)
 		contentsBeingChangedByScripting = true
-		self.didChangeValueForKey(SKTGraphicKeysForValuesToObserveForUndoKey)
+		self.didChangeValue(forKey: SKTGraphicKeysForValuesToObserveForUndoKey)
 		
 		// Do the first part of notifying observers. It's OK if no changes are actually done by scripting before the matching invocation of -didChangeValueForKey:. Key-value observers aren't allowed to assume that every observer notification is about a real change (that's why the KVO notification method's name starts with -observeValueForKeyPath:, not -observeChangeOfValueForKeyPath:).
-		self.willChangeValueForKey(SKTTextUndoContentsKey)
+		self.willChangeValue(forKey: SKTTextUndoContentsKey)
 	}
 	
 	func didChangeScriptingContents() {
 		// Any changes that might have been done by the scripting command are done.
-		self.didChangeValueForKey(SKTTextUndoContentsKey)
+		self.didChangeValue(forKey: SKTTextUndoContentsKey)
 		
 		// Tell observers to stop observing to record undo operations.
 		// This isn't strictly necessary in Sketch: we could just let the SKTDocument keep observing, because we know that no other objects are observing "undoContents." Partial KVO-compliance like this that only works some of the time is a dangerous game though, and it's a good idea to be very explicit about it. This class is very explictily only KVO-compliant for "undoContents" while -keysForValuesToObserveForUndo is returning a set that contains "undoContents."
-		self.willChangeValueForKey(SKTGraphicKeysForValuesToObserveForUndoKey)
+		self.willChangeValue(forKey: SKTGraphicKeysForValuesToObserveForUndoKey)
 		contentsBeingChangedByScripting = false
-		self.didChangeValueForKey(SKTGraphicKeysForValuesToObserveForUndoKey)
+		self.didChangeValue(forKey: SKTGraphicKeysForValuesToObserveForUndoKey)
 	}
 	
 	var scriptingContents: AnyObject {
@@ -129,32 +128,33 @@ private var layoutOnce: dispatch_once_t = 0
 		// Before returning an NSTextStorage that Cocoa's scripting support can work with, do the first part of notifying observers, and then schedule the second part of notifying observers for after all potential scripted changes caused by the current scripting command have been done.
 		// An alternative to the way we notify key-value observers here would be to return an NSTextStorage that's a proxy to the one held by this object, and make it send this object the -willChangeValueForKey:/-didChangeValueForKey: messages around forwarding of mutation messages (sort of like what the collection proxy objects returned by KVC for sets and arrays do), but that wouldn't gain us anything as far as we know right now, and might even lead to performance problems (because one scripting command could result in potentially many KVO notifications).
 		willChangeScriptingContents()
-		dispatch_after(DISPATCH_TIME_NOW, dispatch_get_main_queue()) { () -> Void in
-			self.didChangeScriptingContents()
-		}
+			DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()) {
+				self.didChangeScriptingContents()
+			}
 		return self.contents
 		}
 		set {
 			// If an attributed string is passed then then do a simple replacement. If a string is passed in then reuse the character style that's already there. Either way, we must notify observers of "undoContents" that its value is changing here.
 			// By the way, if this method actually changed the value of _contents we would have to move any layout managers attached to the old value of _contents to the new value, so as not to break editing if it's being done at this moment.
 			willChangeScriptingContents()
-			var contents = self.contents
-			var allContentsRange = NSMakeRange(0, contents.length);
+			let contents = self.contents
+			let allContentsRange = NSMakeRange(0, contents.length);
 			if let stringNewValue = newValue as? NSAttributedString {
-				contents.replaceCharactersInRange(allContentsRange, withAttributedString: stringNewValue)
+				contents.replaceCharacters(in: allContentsRange, with: stringNewValue)
 			} else {
-				contents.replaceCharactersInRange(allContentsRange, withString: newValue.description)
+				contents.replaceCharacters(in: allContentsRange, with: newValue.description)
 			}
 			didChangeScriptingContents()
 		}
 	}
 
-	func coerceValueForScriptingContents(contents: AnyObject) -> AnyObject? {
-		var coercedContents: AnyObject?
-		if let strContents = contents as? NSString {
+	@objc(coerceValueForScriptingContents:)
+	func coerceValue(forScriptingContents contents: Any) -> Any? {
+		var coercedContents: Any?
+		if let strContents = contents as? String {
 			coercedContents = strContents
 		} else {
-			coercedContents = NSScriptCoercionHandler.sharedCoercionHandler().coerceValue(contents, toClass: NSTextStorage.self)
+			coercedContents = NSScriptCoercionHandler.shared().coerceValue(contents, to: NSTextStorage.self)
 		}
 		return coercedContents
 	}
@@ -162,7 +162,7 @@ private var layoutOnce: dispatch_once_t = 0
 	var undoContents: NSAttributedString {
 		get {
 		// Never return an object whose value will change after it's been returned. This is generally good behavior for any getter method that returns the value of an attribute or a to-many relationship. (For to-one relationships just returning the related object is the right thing to do, as in this class' -contents method.) However, this particular implementation of this good behavior might not be fast enough for all situations. If the copying here causes a performance problem, an alternative might be to return [[contents retain] autorelease], set a bit that indicates that the contents should be lazily replaced with a copy before any mutation, and then heed that bit in other methods of this class.
-		return self.contents.copy() as NSAttributedString
+		return self.contents.copy() as! NSAttributedString
 		}
 		set {
 			// When undoing a change that could have only been done by scripting, behave exactly if scripting is doing another change, for the benefit of redo.
@@ -171,11 +171,11 @@ private var layoutOnce: dispatch_once_t = 0
 	}
 	
 	// MARK: Overrides of SKTGraphic Methods
-	required init(properties: [NSObject : AnyObject]) {
+	required init(properties: [String : Any]) {
 		super.init(properties: properties)
-		if let data = properties[SKTTextContentsKey] as? NSData {
-			if let textContents = NSUnarchiver.unarchiveObjectWithData(data) as? NSTextStorage {
-				_contents = contents
+		if let data = properties[SKTTextContentsKey] as? Data {
+			if let textContents = NSUnarchiver.unarchiveObject(with: data) as? NSTextStorage {
+				_contents = textContents
 				
 				_contents!.delegate = self
 			}
@@ -186,10 +186,10 @@ private var layoutOnce: dispatch_once_t = 0
 		super.init()
 	}
 
-	override var properties: NSMutableDictionary {
+	override var properties: [String: Any] {
 		// Let SKTGraphic do its job and then handle the one additional property defined by this subclass. The dictionary must contain nothing but values that can be written in old-style property lists.
 		var properties = super.properties
-		properties[SKTTextContentsKey] = NSArchiver.archivedDataWithRootObject(contents)
+		properties[SKTTextContentsKey] = NSArchiver.archivedData(withRootObject: contents)
 		return properties;
 	}
 	
@@ -208,7 +208,7 @@ private var layoutOnce: dispatch_once_t = 0
 	
 	override func drawContentsInView(view: NSView, isBeingCreateOrEdited isBeingCreatedOrEditing: Bool) {
 		// Draw the fill color if appropriate.
-		var bounds = self.bounds;
+		let bounds = self.bounds;
 		if (self.drawingFill) {
 			self.fillColor?.set()
 			NSRectFill(bounds);
@@ -218,7 +218,7 @@ private var layoutOnce: dispatch_once_t = 0
 		if (isBeingCreatedOrEditing) {
 			
 			// Just draw a focus ring.
-			NSColor.knobColor().set()
+			NSColor.knobColor.set()
 			NSFrameRect(NSInsetRect(bounds, -1.0, -1.0));
 			
 		} else {
@@ -228,14 +228,14 @@ private var layoutOnce: dispatch_once_t = 0
 			if contents.length > 0 {
 				
 				// Get a layout manager, size its text container, and use it to draw text. -glyphRangeForTextContainer: forces layout and tells us how much of text fits in the container.
-				var layoutManager = self.dynamicType.sharedLayoutManager;
-				var textContainer = layoutManager.textContainers[0] as NSTextContainer
+				let layoutManager = type(of: self).sharedLayoutManager;
+				let textContainer = layoutManager.textContainers[0] as NSTextContainer
 				textContainer.containerSize = bounds.size
 				contents.addLayoutManager(layoutManager)
-				var glyphRange = layoutManager.glyphRangeForTextContainer(textContainer) ;
+				let glyphRange = layoutManager.glyphRange(for: textContainer) ;
 				if glyphRange.length > 0 {
-					layoutManager.drawBackgroundForGlyphRange(glyphRange, atPoint: bounds.origin)
-					layoutManager.drawGlyphsForGlyphRange(glyphRange, atPoint: bounds.origin)
+					layoutManager.drawBackground(forGlyphRange: glyphRange, at: bounds.origin)
+					layoutManager.drawGlyphs(forGlyphRange: glyphRange, at: bounds.origin)
 				}
 				contents.removeLayoutManager(layoutManager)
 			}
@@ -250,16 +250,16 @@ private var layoutOnce: dispatch_once_t = 0
 		self.bounds = NSRect(origin: bounds.origin, size: naturalSize)
 	}
 	
-	override func newEditingViewWithSuperviewBounds(superviewBounds: NSRect) -> NSView? {
+	override func newEditingViewWithSuperviewBounds(_ superviewBounds: NSRect) -> NSView? {
 		// Create a text view that has the same frame as this graphic. We use -[NSTextView initWithFrame:textContainer:] instead of -[NSTextView initWithFrame:] because the latter method creates the entire collection of objects associated with an NSTextView - its NSTextContainer, NSLayoutManager, and NSTextStorage - and we already have an NSTextStorage. The text container should be the width of this graphic but very high to accomodate whatever text is typed into it.
-		var bounds = self.bounds;
-		var textContainer = NSTextContainer(containerSize: NSSize(width: bounds.size.width, height: 1.0e7))
-		var textView = NSTextView(frame: bounds, textContainer: textContainer)
+		let bounds = self.bounds;
+		let textContainer = NSTextContainer(containerSize: NSSize(width: bounds.size.width, height: 1.0e7))
+		let textView = NSTextView(frame: bounds, textContainer: textContainer)
 		
 		// Create a layout manager that will manage the communication between our text storage and the text container, and hook it up.
-		var layoutManager = NSLayoutManager()
+		let layoutManager = NSLayoutManager()
 		layoutManager.addTextContainer(textContainer)
-		var contents = self.contents
+		let contents = self.contents
 		contents.addLayoutManager(layoutManager)
 		
 		// Of course text editing should be as undoable as anything else.
@@ -280,7 +280,7 @@ private var layoutOnce: dispatch_once_t = 0
 		// Specify that the text view should grow and shrink to fit the text as text is added and removed, but only in the vertical direction. With these settings the NSTextView will always be large enough to show an extra line fragment but never so large that the user won't be able to see just-typed text on the screen. Sending -setVerticallyResizable:YES to the text view without also sending -setMinSize: or -setMaxSize: would be useless by the way; the default minimum and maximum sizes of a text view are the size of the frame that is specified at initialization time.
 		textView.minSize = NSSize(width: bounds.size.width, height: 0)
 		textView.maxSize = NSSize(width: bounds.size.width, height: superviewBounds.size.height - bounds.origin.y)
-		textView.verticallyResizable = true
+		textView.isVerticallyResizable = true
 		
 		// The invoker doesn't have to release this object.
 		return textView;
@@ -300,28 +300,26 @@ private var layoutOnce: dispatch_once_t = 0
 		}
 	}
 	
-	override var keysForValuesToObserveForUndo: NSSet {
+	override var keysForValuesToObserveForUndo: Set<String> {
 		// Observation of "undoContents," and the observer's resulting registration of changes with the undo manager, is only valid when changes are made to text contents via scripting. When changes are made directly by the user in a text view the text view will register better, more specific, undo actions. Also, we don't want some changes of bounds to result in undo actions.
-		var keysToReturn = super.keysForValuesToObserveForUndo
+		var keys = super.keysForValuesToObserveForUndo
 		if (contentsBeingChangedByScripting || boundsBeingChangedToMatchContents) {
-			let keys = NSMutableSet(set: keysToReturn)
 			if (contentsBeingChangedByScripting) {
-				keys.addObject(SKTTextUndoContentsKey)
+				keys.insert(SKTTextUndoContentsKey)
 			}
 			if (boundsBeingChangedToMatchContents) {
-				keys.removeObject(SKTGraphicBoundsKey)
+				keys.insert(SKTGraphicBoundsKey)
 			}
-			keysToReturn = keys;
 		}
-		return keysToReturn
+		return keys
 	}
 	
-	override class func presentablePropertyNameForKey(key: String?) -> String? {
+	override class func presentablePropertyName(for key: String?) -> String? {
 		if let aKey = key {
 			let presentablePropertyNamesByKey = [SKTTextUndoContentsKey : NSLocalizedString("Text", tableName: "UndoStrings",  comment: "Action name part for SKTTextUndoContentsKey.")]
 			var presentablePropertyString = presentablePropertyNamesByKey[aKey]
 			if presentablePropertyString == nil {
-				presentablePropertyString = super.presentablePropertyNameForKey(aKey)
+				presentablePropertyString = super.presentablePropertyName(for: aKey)
 			}
 			
 			return presentablePropertyString

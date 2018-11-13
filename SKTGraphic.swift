@@ -20,12 +20,15 @@ private let SKTGraphicLowerLeftHandle = 6
 private let SKTGraphicLowerMiddleHandle = 7
 private let SKTGraphicLowerRightHandle = 8
 
-private var crosshairsCursor: NSCursor? = nil
-private var crosshairsCursorOnce: dispatch_once_t = 0
+private var crosshairsCursor: NSCursor = {
+	let crosshairsImage = NSImage(named: "Cross")!
+	let crosshairsImageSize = crosshairsImage.size
+	return NSCursor(image: crosshairsImage, hotSpot: NSMakePoint((crosshairsImageSize.width / 2.0), (crosshairsImageSize.height / 2.0)))
+}()
 
 @objc protocol SKTGraphicScriptingContainer: NSObjectProtocol {
 	// An informal protocol to which scriptable containers of SKTGraphics must conform. We declare this instead of just making it an SKTDocument method because that would needlessly reduce SKTGraphic's reusability (they would only be containable by SKTDocuments).
-	func objectSpecifierForGraphic(graphic: SKTGraphic) -> NSScriptObjectSpecifier?
+	@objc(objectSpecifierForGraphic:) func objectSpecifier(for graphic: SKTGraphic) -> NSScriptObjectSpecifier?
 }
 
 // Another constant that's declared in the header.
@@ -83,13 +86,9 @@ func DrawingBoundsOfGraphics(_ graphics: [SKTGraphic]) -> NSRect {
 // Return an array of graphics created from flattened data of the sort returned by +pasteboardDataWithGraphics: or, if that's not possible, return nil and set *outError to an NSError that can be presented to the user to explain what went wrong.
 func GraphicsWithPasteboardData(_ data: Data) throws -> [SKTGraphic] {
 	// Because this data may have come from outside this process, don't assume that any property list object we get back is the right type.
-	var graphics: [SKTGraphic]?
-	var propertiesArray = PropertyListSerialization.propertyListFromData(data, mutabilityOption: [], format: nil, errorDescription: nil)
-	if !(propertiesArray is [AnyObject]) {
-		propertiesArray = nil
-	}
+	let propertiesArray = PropertyListSerialization.propertyListFromData(data, mutabilityOption: [], format: nil, errorDescription: nil)
 	
-	guard let ourProp = propertiesArray as? [NSDictionary]  else {
+	guard let ourProp = propertiesArray as? [[String: Any]] else {
 		// If property list parsing fails we have no choice but to admit that we don't know what went wrong. The error description returned by +[NSPropertyListSerialization propertyListFromData:mutabilityOption:format:errorDescription:] would be pretty technical, and not the sort of thing that we should show to a user.
 		throw SKTErrorWithCode(.unknownPasteboardReadError)
 	}
@@ -99,7 +98,7 @@ func GraphicsWithPasteboardData(_ data: Data) throws -> [SKTGraphic] {
 }
 
 // Given an array of property list dictionaries whose validity has not been determined, return an array of graphics.
-func GraphicsWithProperties(_ propertiesArray: [NSDictionary]) -> [SKTGraphic] {
+func GraphicsWithProperties(_ propertiesArray: [[String: Any]]) -> [SKTGraphic] {
 		// Convert the array of graphic property dictionaries into an array of graphics. Again, don't assume that property list objects are the right type.
 	let graphicCount = propertiesArray.count
 	var graphics = [SKTGraphic]()
@@ -108,7 +107,7 @@ func GraphicsWithProperties(_ propertiesArray: [NSDictionary]) -> [SKTGraphic] {
 		if let className = properties[SKTGraphicClassNameKey] as? String {
 			if let aclass: SKTGraphic.Type = NSClassFromString(className) as? SKTGraphic.Type {
 				// Create a new graphic. If it doesn't work then just do nothing. We could return an NSError, but doing things this way 1) means that a user might be able to rescue graphics from a partially corrupted document, and 2) is easier.
-				let graphic = aclass(properties: properties)
+				let graphic = aclass.init(properties: properties)
 				graphics.append(graphic)
 			}
 		}
@@ -128,9 +127,9 @@ func PasteboardData(with graphics: [SKTGraphic]) -> Data? {
 }
 
 // Given an array of graphics, return an array of property list dictionaries.
-func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [NSDictionary]? {
+func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 	// Convert the array of graphics dictionaries into an array of graphic property dictionaries.
-	var propertiesArray = [NSDictionary]()
+	var propertiesArray = [[String: Any]]()
 	for graphic in graphics {
 		// Get the properties of the graphic, add the class name that can be used by +graphicsWithProperties: to it, and add the properties to the array we're building.
 		var properties = graphic.properties
@@ -219,31 +218,38 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [NSDictionary]? {
 	
 	/* You can override these class methods in your subclass of SKTGraphic, but it would be a waste of time, because no one invokes these on any class other than SKTGraphic itself. Really these could just be functions if we didn't have such a syntactic sweet tooth. */
 	
+	@objc(drawingBoundsOfGraphics:)
 	class func drawingBoundsOfGraphics(of graphics: [SKTGraphic]) -> NSRect {
 		return DrawingBoundsOfGraphics(graphics)
 	}
 	
-	class func graphicsWithProperties(propertiesArray: [NSDictionary]) -> [SKTGraphic]? {
+	@objc(graphicsWithProperties:)
+	class func graphicsWithProperties(propertiesArray: [[String: Any]]) -> [SKTGraphic]? {
 		return GraphicsWithProperties(propertiesArray)
 	}
 
+	@objc(translateGraphics:byX:y:)
 	class func translateGraphics(graphics: [SKTGraphic], byX deltaX: CGFloat, y deltaY: CGFloat) {
 		return TranslateGraphics(graphics, byX: deltaX, y: deltaY)
 	}
 	
+	@objc(boundsOfGraphics:)
 	class func boundsOfGraphics(graphics: [SKTGraphic]) -> NSRect {
 		return BoundsOfGraphics(graphics)
 	}
 	
+	@objc(pasteboardDataWithGraphics:)
 	class func pasteboardDataWithGraphics(graphics: [SKTGraphic]) -> Data? {
 		return PasteboardData(with: graphics)
 	}
 	
-	// Given an array of graphics, return an array of property list dictionaries.
-	class func propertiesWithGraphics(graphics: [SKTGraphic]) -> [NSDictionary]? {
+	/// Given an array of graphics, return an array of property list dictionaries.
+	@objc(propertiesWithGraphics:)
+	class func propertiesWithGraphics(graphics: [SKTGraphic]) -> [[String: Any]]? {
 		return PropertiesWithGraphics(graphics)
 	}
 
+	@objc(graphicsWithPasteboardData:error:)
 	class func graphicsWithPasteboardData(data: Data) throws -> [SKTGraphic] {
 		return try GraphicsWithPasteboardData(data)
 	}
@@ -263,16 +269,16 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [NSDictionary]? {
 			drawingFill = isDrawingFillNumber.boolValue
 		}
 		
-		if let fillColorData = properties[SKTGraphicFillColorKey] as? NSData {
-			fillColor = (NSUnarchiver.unarchiveObjectWithData(fillColorData)! as NSColor)
+		if let fillColorData = properties[SKTGraphicFillColorKey] as? Data {
+			fillColor = (NSUnarchiver.unarchiveObject(with: fillColorData) as! NSColor)
 		}
 		
-		if let isDrawingStrokeNumber = properties[SKTGraphicIsDrawingStrokeKey] as? NSNumber {
-			drawingStroke = isDrawingStrokeNumber.boolValue
+		if let isDrawingStrokeNumber = properties[SKTGraphicIsDrawingStrokeKey] as? Bool {
+			drawingStroke = isDrawingStrokeNumber
 		}
 		
-		if let strokeColorData = properties[SKTGraphicStrokeColorKey] as? NSData {
-			strokeColor = (NSUnarchiver.unarchiveObjectWithData(strokeColorData) as NSColor)
+		if let strokeColorData = properties[SKTGraphicStrokeColorKey] as? Data {
+			strokeColor = (NSUnarchiver.unarchiveObject(with: strokeColorData) as? NSColor)
 		}
 
 		if let strokeWidthNumber = properties[SKTGraphicStrokeWidthKey] as? NSNumber {
@@ -281,8 +287,8 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [NSDictionary]? {
 	}
 	
 	// Return a dictionary that can be used as property list object and contains enough information to recreate the graphic (except for its class, which is handled by +propertiesWithGraphics:). The returned dictionary must be mutable so that it can be added to efficiently, but the receiver must ignore any mutations made to it after it's been returned.
-	var properties: NSMutableDictionary {
-		var aProp = NSMutableDictionary()
+	var properties: [String: Any] {
+		var aProp = [String: Any]()
 		aProp[SKTGraphicBoundsKey] = NSStringFromRect(bounds)
 		aProp[SKTGraphicIsDrawingFillKey] = drawingFill
 		if let fillColor = self.fillColor {
@@ -320,12 +326,12 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [NSDictionary]? {
 		// Assume that -[SKTGraphic drawContentsInView:] and -[SKTGraphic drawHandlesInView:] will be doing the drawing. Start with the plain bounds of the graphic, then take drawing of handles at the corners of the bounds into account, then optional stroke drawing.
 		var outset = SKTGraphicHandleHalfWidth
 		if drawingStroke {
-			var strokeOutset: CGFloat = strokeWidth / 2
+			let strokeOutset: CGFloat = strokeWidth / 2
 			if strokeOutset > outset {
 				outset = strokeOutset
 			}
 		}
-		var inset: CGFloat = 0.0 - outset
+		let inset: CGFloat = 0.0 - outset
 		var drawingBounds = NSInsetRect(bounds, inset, inset)
 		
 		// -drawHandleInView:atPoint: draws a one-unit drop shadow too.
@@ -335,6 +341,7 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [NSDictionary]? {
 	}
 	
 	// Draw the contents the receiver in a specific view. Use isBeingCreatedOrEditing if the graphic draws differently during its creation or while it's being edited. The default implementation of this method just draws the result of invoking -bezierPathForDrawing using the current fill and stroke parameters. Subclasses have to override either this method or -bezierPathForDrawing. Subclasses that override this may have to override +keyPathsForValuesAffectingDrawingBounds, +keyPathsForValuesAffectingDrawingContents, and -drawingBounds too.
+	@objc(drawContentsInView:isBeingCreateOrEdited:)
 	dynamic func drawContentsInView(view: NSView, isBeingCreateOrEdited: Bool) {
 		// If the graphic is so so simple that it can be boiled down to a bezier path then just draw a bezier path. It's -bezierPathForDrawing's responsibility to return a path with the current stroke width.
 		if let path = bezierPathForDrawing {
@@ -357,6 +364,7 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [NSDictionary]? {
 	}
 	
 	// Draw the handles of the receiver in a specific view. The default implementation of this method just invokes -drawHandleInView:atPoint: for each point at the corners and on the sides of the rectangle returned by -bounds. Subclasses that override this probably have to override -handleUnderPoint: too.
+	@objc(drawHandlesInView:)
 	dynamic func drawHandlesInView(view: NSView) {
     // Draw handles at the corners and on the sides.
 		let bounds = self.bounds
@@ -371,13 +379,14 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [NSDictionary]? {
 	}
 	
 	// Draw handle at a specific point in a specific view. Subclasses that override -drawHandlesInView: can invoke this to easily draw handles whereever they like.
+	@objc(drawHandleInView:atPoint:)
 	func drawHandle(in view: NSView, atPoint point: NSPoint) {
 		// Figure out a rectangle that's centered on the point but lined up with device pixels.
 		var handleBounds = NSRect(x: point.x - SKTGraphicHandleHalfWidth, y:point.y - SKTGraphicHandleHalfWidth, width: SKTGraphicHandleWidth, height: SKTGraphicHandleWidth)
 		handleBounds = view.centerScanRect(handleBounds)
 		
 		// Draw the shadow of the handle.
-		var handleShadowBounds = NSOffsetRect(handleBounds, 1.0, 1.0)
+		let handleShadowBounds = NSOffsetRect(handleBounds, 1.0, 1.0)
 		NSColor.controlDarkShadowColor.set()
 		NSRectFill(handleShadowBounds);
 		
@@ -390,13 +399,9 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [NSDictionary]? {
 	
 	// Return a cursor that can be used when the user has clicked using the creation tool and is dragging the mouse to size a new instance of the receiving class.
 	//+ (NSCursor *)creationCursor;
+	@objc
 	class var creationCursor: NSCursor {
-		dispatch_once(&crosshairsCursorOnce) {
-			var crosshairsImage = NSImage(named: "Cross")!
-			let crosshairsImageSize = crosshairsImage.size
-			crosshairsCursor = NSCursor(image: crosshairsImage, hotSpot: NSMakePoint((crosshairsImageSize.width / 2.0), (crosshairsImageSize.height / 2.0)))
-		}
-		return crosshairsCursor!
+		return crosshairsCursor
 	}
 	
 	// Return the number of the handle that the user is dragging when they move the mouse after clicking to create a new instance of the receiving class. The default implementation of this method returns a number that corresponds to one of the corners of the graphic's bounds. Subclasses that override this should probably override -resizeByMovingHandle:toPoint: too.
@@ -424,6 +429,7 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [NSDictionary]? {
 	}
 	
 	// Return YES if the point is in the contents of the receiver, NO otherwise. The default implementation of this method returns YES if the point is inside [self bounds].
+	@objc(isContentsUnderPoint:)
 	func isContentsUnderPoint(point: NSPoint) -> Bool {
 		// Just check against the graphic's bounds.
 		return NSPointInRect(point, bounds);
@@ -468,7 +474,7 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [NSDictionary]? {
 	}
 	
 	// Given that one of the receiver's handles has been dragged by the user, resize to match, and return the handle number that should be passed into subsequent invocations of this same method. The default implementation of this method assumes that the passed-in handle number was returned by a previous invocation of +creationSizingHandle or -handleUnderPoint:, so subclasses that override this should probably override +creationSizingHandle and -handleUnderPoint: too. It also invokes -flipHorizontally and -flipVertically when the user flips the graphic.
-	func resizeByMovingHandle(shandle: Int, toPoint point: NSPoint) -> Int {
+	func resizeByMovingHandle(_ shandle: Int, toPoint point: NSPoint) -> Int {
 		var handle = shandle
 		// Start with the original bounds.
 		var bounds = self.bounds
@@ -580,7 +586,7 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [NSDictionary]? {
 	// Set the bounds of the graphic, doing whatever scaling and translation is necessary.
 	
 	// Set the color of the graphic, whatever that means. The default implementation of this method just sets isDrawingFill to YES and fillColor to the passed-in color. In Sketch this method is invoked when the user drops a color chip on the graphic or uses the color panel to change the color of all of the selected graphics.
-	func setColor(color: NSColor) {
+	func setColor(_ color: NSColor) {
 		// This method demonstrates something interesting: we haven't bothered to provide setter methods for the properties we want to change, but we can still change them using KVC. KVO autonotification will make sure observers hear about the change (it works with -setValue:forKey: as well as -set<Key>:). Of course, if we found ourselvings doing this a little more often we would go ahead and just add the setter methods. The point is that KVC direct instance variable access very often makes boilerplate accessors unnecessary but if you want to just put them in right away, eh, go ahead.
 		
 		// Can we fill the graphic?
@@ -594,12 +600,13 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [NSDictionary]? {
 	}
 	
 	// Given that the receiver has just been created or double-clicked on or something, create and return a view that can present its editing interface to the user, or return nil. The returned view should be suitable for becoming a subview of a view whose bounds is passed in. Its frame should match the bounds of the receiver. The receiver should not assume anything about the lifetime of the returned editing view; it may remain in use even after subsequent invocations of this method, which should, again, create a new editing view each time. In other words, overrides of this method should be prepared for a graphic to have more than editing view outstanding. The default implementation of this method returns nil. In Sketch SKTText overrides it.
-	func newEditingViewWithSuperviewBounds(superviewBounds: NSRect) -> NSView? {
+	func newEditingViewWithSuperviewBounds(_ superviewBounds: NSRect) -> NSView? {
 		// Live to be overridden.
 		return nil;
 	}
 	
 	// Given an editing view that was returned by a previous invocation of -newEditingViewWithSuperviewBounds:, tear down whatever connections exist between it and the receiver.
+	@objc(finalizeEditingView:)
 	func finalizeEditingView(editingView: NSView) {
 		// Live to be overridden.
 	}
@@ -607,12 +614,12 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [NSDictionary]? {
 	// MARK: *** Undo ***
 	
 	// Return the keys of all of the properties for which value changes are undoable. In Sketch SKTDocument observes the value for each key in the set returned by invoking this method on each graphic in the document, and registers undo operations when the values change. It also observes this "keysForValuesToObserveForUndo" property itself and reacts accordingly, because the value can change dynamically. For example, SKTText overrides this (and KVO-notifies about changes to what the override would return) for a couple of reasons.
-	var keysForValuesToObserveForUndo: NSSet {
-		return NSSet(objects: SKTGraphicIsDrawingFillKey, SKTGraphicFillColorKey, SKTGraphicIsDrawingStrokeKey, SKTGraphicStrokeColorKey, SKTGraphicStrokeWidthKey, SKTGraphicBoundsKey)
+	@objc var keysForValuesToObserveForUndo: Set<String> {
+		return Set([SKTGraphicIsDrawingFillKey, SKTGraphicFillColorKey, SKTGraphicIsDrawingStrokeKey, SKTGraphicStrokeColorKey, SKTGraphicStrokeWidthKey, SKTGraphicBoundsKey])
 	}
 	
 	// Given a key from the set returned by a previous invocation of -keysForValuesToObserveForUndo, return the human-readable, title-capitalized, localized, name of the property identified by the key, or nil for invalid keys (invokers should throw exceptions if nil is returned, because nil indicates a programming mistake). In Sketch SKTDocument uses this to create an undo action name when the user has changed the value of the property.
-	class func presentablePropertyNameForKey(key: String) -> String? {
+	class func presentablePropertyName(for key: String) -> String? {
 		// Pretty simple. Don't be surprised if you never see "Bounds" appear in an undo action name in Sketch. SKTGraphicView invokes -[NSUndoManager setActionName:] for things like moving, resizing, and aligning, thereby overwriting whatever SKTDocument sets with something more specific.
 		let presentablePropertyNamesByKey = [SKTGraphicIsDrawingFillKey: NSLocalizedString("Filling", tableName: "UndoStrings", comment: "Action name part for SKTGraphicIsDrawingFillKey."),
 			SKTGraphicFillColorKey: NSLocalizedString("Fill Color", tableName: "UndoStrings", comment: "Action name part for SKTGraphicFillColorKey."),
@@ -629,9 +636,9 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [NSDictionary]? {
 	weak var scriptingContainer: SKTGraphicScriptingContainer? = nil
 	
 	override var objectSpecifier: NSScriptObjectSpecifier? {
-		var objectSpecifier = scriptingContainer?.objectSpecifierForGraphic(self)
+		let objectSpecifier = scriptingContainer?.objectSpecifier(for: self)
 		if objectSpecifier == nil {
-			//[NSException raise:NSInternalInconsistencyException format:@"A scriptable graphic has no scriptable container, or one that doesn't implement -objectSpecifierForGraphic: correctly."];
+			NSException(name: .internalInconsistencyException, reason: "A scriptable graphic has no scriptable container, or one that doesn't implement -objectSpecifierForGraphic: correctly.", userInfo: nil).raise()
 		}
 		return objectSpecifier;
 

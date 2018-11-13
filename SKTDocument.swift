@@ -25,7 +25,7 @@ private let SKTDocumentCurrentVersion = 2;
 
 
 private class MapTableOwner {
-	let mapTable = NSMapTable(keyOptions: NSPointerFunctionsStrongMemory, valueOptions: NSPointerFunctionsStrongMemory, capacity: 0)
+	let mapTable = NSMapTable<NSObject, NSObject>(keyOptions: [], valueOptions: [], capacity: 0)
 	
 	init() {
 		
@@ -62,7 +62,7 @@ private class MapTableOwner {
 		super.init()
 		
 		// Before anything undoable happens, register for a notification we need.
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: "observeUndoManagerCheckpoint:", name: NSUndoManagerCheckpointNotification, object: undoManager)
+		NotificationCenter.default.addObserver(self, selector: "observeUndoManagerCheckpoint:", name: NSNotification.Name.NSUndoManagerCheckpoint, object: undoManager)
 	}
 	
 	deinit {
@@ -70,16 +70,16 @@ private class MapTableOwner {
 		stopObservingGraphics(graphics)
 		
 		// Undo what we did in -init.
-		NSNotificationCenter.defaultCenter().removeObserver(self, name: NSUndoManagerCheckpointNotification, object: undoManager)
+		NotificationCenter.default.removeObserver(self, name: NSNotification.Name.NSUndoManagerCheckpoint, object: undoManager)
 	}
 	
 	// MARK: *** Private KVC-Compliance for Public Properties ***
 	
 
-	func insertGraphics(graphics: [SKTGraphic], atIndexes indexes: NSIndexSet) {
-		var idx = graphics.endIndex
-		for var i = indexes.lastIndex; i != NSNotFound; i = indexes.indexLessThanIndex(i) {
-			self.graphics.insert(graphics[--idx], atIndex: i)
+	@objc(insertGraphics:atIndexes:)
+	func insert(_ graphics: [SKTGraphic], at indexes: IndexSet) {
+		for (graphic, i) in zip(graphics, indexes).reversed() {
+			self.graphics.insert(graphic, at: i)
 		}
 		
 		
@@ -89,13 +89,13 @@ private class MapTableOwner {
 		}
 		
 		// Register an action that will undo the insertion.
-		undoManager?.registerUndoWithTarget(self, selector: "removeGraphicsAtIndexes:", object: indexes)
+		undoManager?.registerUndo(withTarget: self, selector: #selector(SKTDocument.removeGraphics(at:)), object: indexes)
 		
 		// Record the inserted graphics so we can filter out observer notifications from them. This way we don't waste memory registering undo operations for changes that wouldn't have any effect because the graphics are going to be removed anyway. In Sketch this makes a difference when you create a graphic and then drag the mouse to set its initial size right away. Why don't we do this if undo registration is disabled? Because we don't want to add to this set during document reading. (See what -readFromData:ofType:error: does with the undo manager.) That would ruin the undoability of the first graphic editing you do after reading a document.
 		if let anUndo = undoManager {
-			if anUndo.undoRegistrationEnabled {
+			if anUndo.isUndoRegistrationEnabled {
 				if let undoGroup = _undoGroupInsertedGraphics {
-					undoGroup.addObjectsFromArray(graphics)
+					undoGroup.addObjects(from: graphics)
 				} else {
 					_undoGroupInsertedGraphics = NSMutableSet(array: graphics)
 				}
@@ -106,18 +106,19 @@ private class MapTableOwner {
 		startObservingGraphics(graphics)
 	}
 	
-	func removeGraphicsAtIndexes(indexes: NSIndexSet) {
+	@objc(removeGraphicsAtIndexes:)
+	func removeGraphics(at indexes: IndexSet) {
 		// Find out what graphics are being removed. We lazily create the graphics array if necessary even though it should never be necessary, just so a helpful exception will be thrown if this method is being misused.
 		let toRemoveArray = graphics.filter { (graphic) -> Bool in
-			let index = find(self.graphics, graphic)!
-			return indexes.containsIndex(index)
+			let index = self.graphics.firstIndex(of: graphic)!
+			return indexes.contains(index)
 		}
   
 		// Stop observing the just-removed graphics to balance what was done in -insertGraphics:atIndexes:.
 		stopObservingGraphics(toRemoveArray)
 		
 		// Register an action that will undo the removal. Do this before the actual removal so we don't have to worry about the releasing of the graphics that will be done.
-		undoManager?.prepareWithInvocationTarget(self).insertGraphics(toRemoveArray, atIndexes: indexes)
+		(undoManager?.prepare(withInvocationTarget: self) as AnyObject).insert(toRemoveArray, at: indexes)
 		
 		// For the purposes of scripting, every graphic had to point back to the document that contains it. Now they should stop that.
 		for graphic in toRemoveArray {
@@ -125,15 +126,15 @@ private class MapTableOwner {
 		}
 
 		// Do the actual removal.
-		for var i = indexes.lastIndex; i != NSNotFound; i = indexes.indexLessThanIndex(i) {
-			self.graphics.removeAtIndex(i)
+		for i in indexes.reversed() {
+			self.graphics.remove(at: i)
 		}
 	}
 	
-	func stopObservingGraphics(agraph: [SKTGraphic]) {
+	func stopObservingGraphics(_ agraph: [SKTGraphic]) {
 	}
 	
-	func startObservingGraphics(agraph: [SKTGraphic]) {
+	func startObservingGraphics(_ agraph: [SKTGraphic]) {
 	}
     /*
     override var windowNibName: String? {
@@ -143,34 +144,32 @@ private class MapTableOwner {
     }
     */
 
-    override func windowControllerDidLoadNib(aController: NSWindowController) {
+    override func windowControllerDidLoadNib(_ aController: NSWindowController) {
         super.windowControllerDidLoadNib(aController)
         // Add any code here that needs to be executed once the windowController has loaded the document's window.
     }
 
-    override func dataOfType(typeName: String, error outError: NSErrorPointer) -> NSData? {
+	override func data(ofType typeName: String) throws -> Data {
         // Insert code here to write your document to data of the specified type. If outError != NULL, ensure that you create and set an appropriate error when returning nil.
         // You can also choose to override -fileWrapperOfType:error:, -writeToURL:ofType:error:, or -writeToURL:ofType:forSaveOperation:originalContentsURL:error: instead.
-        outError.memory = NSError(domain: NSOSStatusErrorDomain, code: unimpErr, userInfo: nil)
-        return nil
+        throw NSError(domain: NSOSStatusErrorDomain, code: unimpErr, userInfo: nil)
     }
-    
-    override func readFromData(data: NSData, ofType typeName: String, error outError: NSErrorPointer) -> Bool {
+	
+	override func read(from data: Data, ofType typeName: String) throws {
         // Insert code here to read your document from the given data of the specified type. If outError != NULL, ensure that you create and set an appropriate error when returning NO.
         // You can also choose to override -readFromFileWrapper:ofType:error: or -readFromURL:ofType:error: instead.
         // If you override either of these, you should also override -isEntireFileLoaded to return NO if the contents are lazily loaded.
-        outError.memory = NSError(domain: NSOSStatusErrorDomain, code: unimpErr, userInfo: nil)
-        return false
+		throw NSError(domain: NSOSStatusErrorDomain, code: unimpErr, userInfo: nil)
     }
 
     override class func autosavesInPlace() -> Bool {
         return true
     }
 
-	func objectSpecifierForGraphic(graphic: SKTGraphic) -> NSScriptObjectSpecifier? {
+	func objectSpecifier(for graphic: SKTGraphic) -> NSScriptObjectSpecifier? {
 		var graphicObjectSpecifier: NSScriptObjectSpecifier? = nil
 		
-		if let graphicIndex = find(graphics, graphic) {
+		if let graphicIndex = graphics.firstIndex(of: graphic) {
 			if let keyClassDescription = self.objectSpecifier.keyClassDescription {
 			graphicObjectSpecifier = NSIndexSpecifier(containerClassDescription: keyClassDescription, containerSpecifier: objectSpecifier, key: "graphics", index: graphicIndex)
 			}
@@ -180,33 +179,33 @@ private class MapTableOwner {
 	}
 	
 	var rectangles: [SKTRectangle] {
-		return graphics.filter({
-				return $0 is SKTRectangle
-				}) as [SKTRectangle]
+		return graphics.flatMap({
+				return $0 as? SKTRectangle
+				})
 	}
 
 	var circles: [SKTCircle] {
-		return graphics.filter({
-				return $0 is SKTCircle
-				}) as [SKTCircle]
+		return graphics.flatMap({
+				return $0 as? SKTCircle
+				})
 	}
 
 	var lines: [SKTLine] {
-		return graphics.filter({
-				return $0 is SKTLine
-				}) as [SKTLine]
+		return graphics.flatMap({
+				return $0 as? SKTLine
+				})
 	}
 
 	var textAreas: [SKTText] {
-		return graphics.filter({
-				return $0 is SKTText
-				}) as [SKTText]
+		return graphics.flatMap({
+				return $0 as? SKTText
+				})
 	}
 
 	var images: [SKTImage] {
-		return graphics.filter({
-				return $0 is SKTImage
-				}) as [SKTImage]
+		return graphics.flatMap({
+				return $0 as? SKTImage
+				})
 	}
 
 }

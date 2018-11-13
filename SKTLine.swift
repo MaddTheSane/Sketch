@@ -15,8 +15,8 @@ let SKTLineEndPointKey = "endPoint";
 let SKTLineBeginHandle = 1
 let SKTLineEndHandle = 2
 
-private var presentablePropertyNamesByKey = [String: String]()
-private var presentablePropertyNamesByKeyInstance: dispatch_once_t = 0
+private let presentablePropertyNamesByKey: [String: String] = [SKTLineBeginPointKey: NSLocalizedString("Beginpoint", tableName: "UndoStrings",comment: "Action name part for SKTLineBeginPointKey."),
+															   SKTLineEndPointKey: NSLocalizedString("Endpoint", tableName: "UndoStrings",comment: "Action name part for SKTLineEndPointKey.")]
 
 @objc(SKTLine) final class SKTLine: SKTGraphic {
 	private var pointsRight = false
@@ -37,7 +37,7 @@ private var presentablePropertyNamesByKeyInstance: dispatch_once_t = 0
 		}
 		set {
 			// It's easiest to compute the results of setting these points together.
-			self.bounds = SKTLine.boundsWithBeginPoint(newValue, endPoint: endPoint, pointsRight: &pointsRight, down: &pointsDown)
+			self.bounds = SKTLine.boundsWith(beginPoint: newValue, endPoint: endPoint, pointsRight: &pointsRight, down: &pointsDown)
 		}
 	}
 	
@@ -56,7 +56,7 @@ private var presentablePropertyNamesByKeyInstance: dispatch_once_t = 0
 		}
 		set {
 			// It's easiest to compute the results of setting these points together.
-			bounds = SKTLine.boundsWithBeginPoint(beginPoint, endPoint: newValue, pointsRight: &pointsRight, down: &pointsDown)
+			bounds = SKTLine.boundsWith(beginPoint: beginPoint, endPoint: newValue, pointsRight: &pointsRight, down: &pointsDown)
 		}
 	}
 	
@@ -121,7 +121,7 @@ private var presentablePropertyNamesByKeyInstance: dispatch_once_t = 0
 		}		
 		
 		super.init(properties: properties)
-		self.bounds = SKTLine.boundsWithBeginPoint(beginPoint, endPoint: endPoint, pointsRight: &pointsRight, down: &pointsDown)
+		self.bounds = SKTLine.boundsWith(beginPoint: beginPoint, endPoint: endPoint, pointsRight: &pointsRight, down: &pointsDown)
 	}
 
 	required init() {
@@ -130,47 +130,47 @@ private var presentablePropertyNamesByKeyInstance: dispatch_once_t = 0
 		super.init()
 	}
 	
-	override var properties: NSMutableDictionary {
+	override var properties: [String: Any] {
 		// Let SKTGraphic do its job but throw out the bounds entry in the dictionary it returned and add begin and end point entries insteads. We do this instead of simply recording the currnet value of _pointsRight and _pointsDown because bounds+pointsRight+pointsDown is just too unnatural to immortalize in a file format. The dictionary must contain nothing but values that can be written in old-style property lists.
 		var aProp = super.properties
-		aProp.removeObjectForKey(SKTGraphicBoundsKey)
+		aProp.removeValue(forKey: SKTGraphicBoundsKey)
 		aProp[SKTLineBeginPointKey] = NSStringFromPoint(beginPoint)
 		aProp[SKTLineEndPointKey] = NSStringFromPoint(endPoint)
 		
 		return aProp
 	}
 	
-	override func setColor(color: NSColor) {
+	override func setColor(_ color: NSColor) {
 		// Because lines aren't filled we'll consider the stroke's color to be the one.
 		self.setValue(color, forKey: SKTGraphicStrokeColorKey)
 	}
 	
-	override func copyWithZone(zone: NSZone) -> AnyObject {
+	override func copy(with zone: NSZone?) -> Any {
 		// Do the regular Cocoa thing.
 		
-		var copy = super.copyWithZone(zone) as SKTLine
+		let copy = super.copy(with: zone) as! SKTLine
 		copy.pointsRight = self.pointsRight
 		copy.pointsDown = self.pointsDown
 		return copy
 	}
 	
-	override var keysForValuesToObserveForUndo: NSSet {
+	override var keysForValuesToObserveForUndo: Set<String> {
 		// When the user drags one of the handles of a line we don't want to just have changes to "bounds" registered in the undo group. That would be:
 		// 1) Insufficient. We would also have to register changes of "pointsRight" and "pointsDown," but we already decided to keep those properties private (see the comments in the header).
 		// 2) Not very user-friendly. We don't want the user to see an "Undo Change of Bounds" item in the Edit menu. We want them to see "Undo Change of Endpoint."
 		// So, tell the observer of undoable properties (SKTDocument, in Sketch) to observe "beginPoint" and "endPoint" instead of "bounds."
-		var oldKeys = NSMutableSet(set: super.keysForValuesToObserveForUndo)
-		oldKeys.removeObject(SKTGraphicBoundsKey)
-		oldKeys.addObject(SKTLineBeginPointKey)
-		oldKeys.addObject(SKTLineEndPointKey)
+		var oldKeys = super.keysForValuesToObserveForUndo
+		oldKeys.remove(SKTGraphicBoundsKey)
+		oldKeys.insert(SKTLineBeginPointKey)
+		oldKeys.insert(SKTLineEndPointKey)
 		
 		return oldKeys
 	}
 	
 	override var bezierPathForDrawing: NSBezierPath {
 		let path = NSBezierPath()
-		path.moveToPoint(beginPoint)
-		path.lineToPoint(endPoint)
+		path.move(to: beginPoint)
+		path.line(to: endPoint)
 		path.lineWidth = strokeWidth
 		
 		return path
@@ -178,8 +178,8 @@ private var presentablePropertyNamesByKeyInstance: dispatch_once_t = 0
 	
 	override func drawHandlesInView(view: NSView) {
 	// A line only has two handles.
-		self.drawHandleInView(view, atPoint: beginPoint)
-		self.drawHandleInView(view, atPoint: endPoint)
+		self.drawHandle(in: view, atPoint: beginPoint)
+		self.drawHandle(in: view, atPoint: endPoint)
 	}
 	
 	override func isContentsUnderPoint(point: NSPoint) -> Bool {
@@ -207,20 +207,20 @@ private var presentablePropertyNamesByKeyInstance: dispatch_once_t = 0
 		return isUnder
 	}
 	
-	override func handleUnderPoint(point: NSPoint) -> Int {
+	override func handleUnderPoint(_ point: NSPoint) -> Int {
 		// A line just has handles at its ends.
 		var handle = SKTGraphicNoHandle
 		
-		if isHandleAtPoint(beginPoint, underPoint: point) {
+		if isHandle(at: beginPoint, under: point) {
 			handle = SKTLineBeginHandle
-		} else if isHandleAtPoint(endPoint, underPoint: point) {
+		} else if isHandle(at: endPoint, under: point) {
 			handle = SKTLineEndHandle
 		}
 		
 		return handle
 	}
 	
-	override func resizeByMovingHandle(handle: Int, toPoint point: NSPoint) -> Int {
+	override func resizeByMovingHandle(_ handle: Int, toPoint point: NSPoint) -> Int {
 		// A line just has handles at its ends.
 		if handle == SKTLineBeginHandle {
 			beginPoint = point
@@ -232,16 +232,11 @@ private var presentablePropertyNamesByKeyInstance: dispatch_once_t = 0
 		return handle;
 	}
 	
-	override class func presentablePropertyNameForKey(key: String) -> String? {
+	override class func presentablePropertyName(for key: String) -> String? {
 		// Pretty simple. As is usually the case when a key is passed into a method like this, we have to invoke super if we don't recognize the key. As far as the user is concerned both points that define a line are "endpoints."
-		dispatch_once(&presentablePropertyNamesByKeyInstance, { () -> Void in
-			presentablePropertyNamesByKey[SKTLineBeginPointKey] = NSLocalizedString("Beginpoint", tableName: "UndoStrings",comment: "Action name part for SKTLineBeginPointKey.")
-			presentablePropertyNamesByKey[SKTLineEndPointKey] = NSLocalizedString("Endpoint", tableName: "UndoStrings",comment: "Action name part for SKTLineEndPointKey.")
-		})
-		
 		var presentablePropertyName = presentablePropertyNamesByKey[key]
 		if presentablePropertyName == nil {
-			presentablePropertyName = super.presentablePropertyNameForKey(key)
+			presentablePropertyName = super.presentablePropertyName(for: key)
 		}
 		
 		return presentablePropertyName

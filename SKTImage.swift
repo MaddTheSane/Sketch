@@ -17,7 +17,7 @@ let SKTImageFilePathKey = "filePath";
 private let SKTImageContentsKey = "contents";
 
 
-@objc(SKTImage) final class SKTImage: SKTGraphic, NSCopying {
+@objc(SKTImage) final class SKTImage: SKTGraphic {
 	private var flippedHorizontally = false
 	private var flippedVertically = false
 	private(set) var contents: NSImage
@@ -42,18 +42,18 @@ set {
 	
 	func setFilePath(filePath: String) {
 		// If there's a transformed version of the contents being held as a cache, it's invalid now.
-		if let newContents = NSImage(contentsOfFile: filePath.stringByStandardizingPath) {
+		if let newContents = NSImage(contentsOfFile: (filePath as NSString).standardizingPath) {
 			contents = newContents;
 		}
 	}
 	
-	func canSetDrawingFill() -> Bool {
+	override var canSetDrawingFill: Bool {
 	// Don't let the user think we would even try to fill an image with color.
 		return false
 	}
 	
 	
-	func canSetDrawingStroke() -> Bool {
+	override var canSetDrawingStroke: Bool {
 	// Don't let the user think we would even try to draw a stroke on image.
 	return false;
 	}
@@ -67,10 +67,10 @@ set {
 		self.bounds = NSRect(origin: CGPoint(x: position.x - (contentsSize.width / 2.0), y: position.y - (contentsSize.height / 2.0)), size: contentsSize)
 	}
 	
-	override func copyWithZone(zone: NSZone) -> AnyObject {
+	override func copy(with zone: NSZone? = nil) -> Any {
 		// Do the regular Cocoa thing.
-		let copy = super.copyWithZone(zone) as SKTImage
-		copy.contents = contents.copy() as NSImage
+		let copy = super.copy(with: zone) as! SKTImage
+		copy.contents = contents.copy() as! NSImage
 		return copy
 	}
 	
@@ -80,9 +80,9 @@ set {
 		super.init()
 	}
 	
-	required init(properties: [NSObject : AnyObject]) {
-		if let contentData = properties[SKTImageContentsKey] as? NSData {
-			if let otherContents = NSUnarchiver.unarchiveObjectWithData(contentData) as? NSImage {
+	required init(properties: [String : Any]) {
+		if let contentData = properties[SKTImageContentsKey] as? Data {
+			if let otherContents = NSUnarchiver.unarchiveObject(with: contentData) as? NSImage {
 				contents = otherContents
 			} else {
 				contents = NSImage()
@@ -90,10 +90,10 @@ set {
 		} else {
 			contents = NSImage()
 		}
-		if let flippedHorizNumber = properties[SKTImageIsFlippedHorizontallyKey] as? NSNumber as? Bool {
+		if let flippedHorizNumber = properties[SKTImageIsFlippedHorizontallyKey] as? Bool {
 			flippedHorizontally = flippedHorizNumber
 		}
-		if let flippedVertNumber = properties[SKTImageIsFlippedVerticallyKey] as? NSNumber as? Bool {
+		if let flippedVertNumber = properties[SKTImageIsFlippedVerticallyKey] as? Bool {
 			flippedVertically = flippedVertNumber
 		}
 		
@@ -117,54 +117,54 @@ set {
 		flippedVertically = false
 	}
 	
-	override var keysForValuesToObserveForUndo: NSSet {
-		var ourSet = NSMutableSet(set: super.keysForValuesToObserveForUndo)
-		ourSet.addObjectsFromArray([SKTImageIsFlippedHorizontallyKey, SKTImageIsFlippedVerticallyKey])
+	override var keysForValuesToObserveForUndo: Set<String> {
+		var ourSet = super.keysForValuesToObserveForUndo
+		ourSet.formIntersection([SKTImageIsFlippedHorizontallyKey, SKTImageIsFlippedVerticallyKey])
 		return ourSet
 	}
 	
-	override class func presentablePropertyNameForKey(key: String) -> String? {
+	override class func presentablePropertyName(for key: String) -> String? {
 		let presentablePropertyNamesByKey = [SKTImageIsFlippedHorizontallyKey: NSLocalizedString("Horizontal Flipping", tableName: "UndoStrings", comment: "Action name part for SKTImageIsFlippedHorizontallyKey."),
 			SKTImageIsFlippedVerticallyKey: NSLocalizedString("Vertical Flipping", tableName: "UndoStrings", comment: "Action name part for SKTImageIsFlippedVerticallyKey.")]
 		var presentablePropertyName = presentablePropertyNamesByKey[key]
 		if presentablePropertyName == nil {
-			presentablePropertyName = super.presentablePropertyNameForKey(key)
+			presentablePropertyName = super.presentablePropertyName(for: key)
 		}
 		return presentablePropertyName
 	}
 	
 	override func drawContentsInView(view: NSView, isBeingCreateOrEdited isBeingCreatedOrEditing: Bool) {
-		var bounds = self.bounds
+		let bounds = self.bounds
 		if self.drawingFill {
 			fillColor?.set()
 			NSRectFill(bounds)
 		}
 		
 		// Surprisingly, NSImage's -draw... methods don't take into account whether or not the view is flipped. In Sketch, SKTGraphicViews are flipped (and this model class is not supposed to have dependencies on the oddities of any particular view class anyway). So, just do our own transformation matrix manipulation.
-		var transform = NSAffineTransform()
+		var transform = AffineTransform()
 		
 		// Translating to actually place the image (as opposed to translating as part of flipping).
-		transform.translateXBy(bounds.origin.x, yBy: bounds.origin.y)
+		transform.translate(x: bounds.origin.x, y: bounds.origin.y)
 
 		// Flipping according to the user's wishes.
-		transform.translateXBy(flippedHorizontally ? bounds.size.width : 0.0, yBy: flippedVertically ? bounds.size.height : 0.0)
-		transform.scaleXBy(flippedHorizontally ? -1 : 1, yBy: flippedVertically ? -1 : 1)
+		transform.translate(x: flippedHorizontally ? bounds.size.width : 0.0, y: flippedVertically ? bounds.size.height : 0.0)
+		transform.scale(x: flippedHorizontally ? -1 : 1, y: flippedVertically ? -1 : 1)
 		
 		// Scaling to actually size the image (as opposed to scaling as part of flipping).
-		var contentsSize = self.contents.size
-		transform.scaleXBy(bounds.size.width / contentsSize.width, yBy: bounds.size.height / contentsSize.height)
+		let contentsSize = self.contents.size
+		transform.scale(x: bounds.size.width / contentsSize.width, y: bounds.size.height / contentsSize.height)
 		
 		// Flipping to accomodate -[NSImage drawAtPoint:fromRect:operation:fraction:]'s odd behavior.
-		if view.flipped {
-			transform.translateXBy(0, yBy: contentsSize.height)
-			transform.scaleXBy(1, yBy: -1)
+		if view.isFlipped {
+			transform.translate(x: 0, y: contentsSize.height)
+			transform.scale(x: 1, y: -1)
 		}
 		
 		// Do the actual drawing, saving and restoring the graphics state so as not to interfere with the drawing of selection handles or anything else in the same view.
-		NSGraphicsContext.currentContext()?.saveGraphicsState()
-		transform.concat()
-		contents.drawAtPoint(NSZeroPoint, fromRect: NSRect(origin: NSZeroPoint, size: contentsSize), operation: .CompositeSourceOver, fraction: 1)
-		NSGraphicsContext.currentContext()?.restoreGraphicsState()
+		NSGraphicsContext.current()?.saveGraphicsState()
+		(transform as NSAffineTransform).concat()
+		contents.draw(at: NSZeroPoint, from: NSRect(origin: .zero, size: contentsSize), operation: .sourceOver, fraction: 1)
+		NSGraphicsContext.current()?.restoreGraphicsState()
 		
 	}
 
