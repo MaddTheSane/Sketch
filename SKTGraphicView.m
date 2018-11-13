@@ -1,7 +1,9 @@
+
 /*
      File: SKTGraphicView.m
- Abstract: The view to display Sketch graphics objects.
-  Version: 1.8
+ Abstract: A view class to display Sketch graphics.
+ 
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +43,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2012 Apple Inc. All Rights Reserved.
+ Copyright (C) 2009 Apple Inc. All Rights Reserved.
  
  */
 
@@ -51,6 +53,10 @@
 #import "SKTImage.h"
 #import "SKTRenderingView.h"
 #import "SKTToolPaletteController.h"
+#import "SKTRectangle.h"
+#import "SKTCircle.h"
+#import "SKTLine.h"
+#import "SKTText.h"
 
 
 // The names of the bindings supported by this class, in addition to the ones whose support is inherited from NSView.
@@ -73,7 +79,7 @@ static CGFloat SKTGraphicViewDefaultPasteCascadeDelta = 10.0;
 
 // Some methods that are invoked by methods above them in this file.
 @interface SKTGraphicView(SKTForwardDeclarations)
-@property (readonly, copy) NSArray *graphics;
+- (NSArray *)graphics;
 - (void)stopEditing;
 - (void)stopObservingGraphics:(NSArray *)graphics;
 @end
@@ -90,7 +96,7 @@ static CGFloat SKTGraphicViewDefaultPasteCascadeDelta = 10.0;
 
 
 // An override of the superclass' designated initializer.
-- (instancetype)initWithFrame:(NSRect)frame {
+- (id)initWithFrame:(NSRect)frame {
 
     // Do the regular Cocoa thing.
     self = [super initWithFrame:frame];
@@ -132,8 +138,7 @@ static CGFloat SKTGraphicViewDefaultPasteCascadeDelta = 10.0;
 #pragma mark *** Bindings ***
 
 
-- (NSArray *)graphics
-{
+- (NSArray *)graphics {
 	
 	// A graphic view doesn't hold onto an array of the graphics it's presenting. That would be a cache that hasn't been justified by performance measurement (not yet anyway). Get the array of graphics from the bound-to object (an array controller, in Sketch's case). It's poor practice for a method that returns a collection to return nil, so never return nil.
 	NSArray *graphics = [_graphicsContainer valueForKeyPath:_graphicsKeyPath];
@@ -155,14 +160,15 @@ static CGFloat SKTGraphicViewDefaultPasteCascadeDelta = 10.0;
 }
 
 
-- (NSIndexSet *)selectionIndexes
-{
+- (NSIndexSet *)selectionIndexes {
+	
 	// A graphic view doesn't hold onto the selection indexes. That would be a cache that hasn't been justified by performance measurement (not yet anyway). Get the selection indexes from the bound-to object (an array controller, in Sketch's case). It's poor practice for a method that returns a collection (and an index set is a collection) to return nil, so never return nil.
 	NSIndexSet *selectionIndexes = [_selectionIndexesContainer valueForKeyPath:_selectionIndexesKeyPath];
 	if (!selectionIndexes) {
 		selectionIndexes = [NSIndexSet indexSet];
 	}
 	return selectionIndexes;
+	
 }
 
 
@@ -693,10 +699,13 @@ A person who assumes that a -set... method always succeeds, and always sets the 
 - (void)moveSelectedGraphicsWithEvent:(NSEvent *)event {
     NSPoint lastPoint, curPoint;
     NSArray *selGraphics = [self selectedGraphics];
+    NSUInteger c;
     BOOL didMove = NO, isMoving = NO;
     BOOL echoToRulers = [[self enclosingScrollView] rulersVisible];
     NSRect selBounds = [[SKTGraphic self] boundsOfGraphics:selGraphics];
-        
+    
+    c = [selGraphics count];
+    
     lastPoint = [self convertPoint:[event locationInWindow] fromView:nil];
     NSPoint selOriginOffset = NSMakePoint((lastPoint.x - selBounds.origin.x), (lastPoint.y - selBounds.origin.y));
     if (echoToRulers) {
@@ -743,6 +752,9 @@ A person who assumes that a -set... method always succeeds, and always sets the 
         if (didMove) {
             // Only if we really moved.
             [[self undoManager] setActionName:NSLocalizedStringFromTable(@"Move", @"UndoStrings", @"Action name for moves.")];
+	    
+	    // Post appropriate accessibility notification
+	    NSAccessibilityPostNotification(self, NSAccessibilitySelectedChildrenMovedNotification);
         }
     }
 }
@@ -804,22 +816,40 @@ A person who assumes that a -set... method always succeeds, and always sets the 
     // Clear the selection.
     [self changeSelectionIndexes:[NSIndexSet indexSet]];
 
-    // Where is the mouse pointer as graphic creation is starting? Should the location be constrained to the grid?
-    NSPoint graphicOrigin = [self convertPoint:[event locationInWindow] fromView:nil];
-    if (_grid) {
-	graphicOrigin = [_grid constrainedPoint:graphicOrigin];
+    NSPoint graphicOrigin;
+    NSSize graphicSize;
+    if (event!=nil) {
+        // Where is the mouse pointer as graphic creation is starting? Should the location be constrained to the grid?
+        graphicOrigin = [self convertPoint:[event locationInWindow] fromView:nil];
+        graphicSize = NSMakeSize(0.0f, 0.0f);
+        if (_grid) {
+            graphicOrigin = [_grid constrainedPoint:graphicOrigin];
+        }
+    } else {
+        // If there is no event, then automatically add a graphic at (10,10). Should the location and size be constrained to the grid?
+        graphicOrigin = NSMakePoint(10.0f, 10.0f);
+        graphicSize = NSMakeSize(100.0f, 100.0f);
+
+        if (_grid) {
+            graphicOrigin = [_grid constrainedPoint:graphicOrigin];
+
+            NSPoint graphicEndPoint = [_grid constrainedPoint:NSMakePoint(graphicOrigin.x+graphicSize.width, graphicOrigin.y+graphicSize.height)];
+            graphicSize = NSMakeSize(graphicEndPoint.x - graphicOrigin.x, graphicEndPoint.y - graphicOrigin.y); 
+        }
     }
 
     // Create the new graphic and set what little we know of its location.
     _creatingGraphic = [[graphicClass alloc] init];
-    [_creatingGraphic setBounds:NSMakeRect(graphicOrigin.x, graphicOrigin.y, 0.0f, 0.0f)];
+    [_creatingGraphic setBounds:NSMakeRect(graphicOrigin.x, graphicOrigin.y, graphicSize.width, graphicSize.height)];
 
     // Add it to the set of graphics right away so that it will show up in other views of the same array of graphics as the user sizes it.
     NSMutableArray *mutableGraphics = [self mutableGraphics];
     [mutableGraphics insertObject:_creatingGraphic atIndex:0];
 
-    // Let the user size the new graphic until they let go of the mouse. Because different kinds of graphics have different kinds of handles, first ask the graphic class what handle the user is dragging during this initial sizing.
-    [self resizeGraphic:_creatingGraphic usingHandle:[graphicClass creationSizingHandle] withEvent:event];
+    // If this was triggered by a user event then allow the user size the new graphic until they let go of the mouse. Because different kinds of graphics have different kinds of handles, first ask the graphic class what handle the user is dragging during this initial sizing.
+    if (event) {
+        [self resizeGraphic:_creatingGraphic usingHandle:[graphicClass creationSizingHandle] withEvent:event];
+    }
 
     // Why don't we do [undoManager endUndoGrouping] here, once, instead of twice in the following paragraphs? Because of the [undoManager setGroupsByEvent:NO] game we're playing. If we invoke -[NSUndoManager setActionName:] down below after invoking [undoManager endUndoGrouping] there won't be any open undo group, and NSUndoManager will raise an exception. If we weren't playing the [undoManager setGroupsByEvent:NO] game then it would be OK to invoke -[NSUndoManager setActionName:] after invoking [undoManager endUndoGrouping] because the action name would apply to the top-level automatically-created undo group, which is fine.
 
@@ -1096,6 +1126,8 @@ A person who assumes that a -set... method always succeeds, and always sets the 
 	// Overwrite whatever undo action name was registered during all of that with a more specific one.
         [[self undoManager] setActionName:NSLocalizedStringFromTable(@"Nudge", @"UndoStrings", @"Action name for nudge keyboard commands.")];
 
+	// Post appropriate accessibility notification
+	NSAccessibilityPostNotification(self, NSAccessibilitySelectedChildrenMovedNotification);
     }
 
 }
@@ -1651,5 +1683,33 @@ A person who assumes that a -set... method always succeeds, and always sets the 
     
 }
 
+- (IBAction)insertGraphic:(id)sender {
+    
+    Class graphicClass = nil;
+    switch ([sender tag])
+    {
+        case SKTRectToolRow:
+            graphicClass = [SKTRectangle class];
+            break;
+        case SKTCircleToolRow:
+            graphicClass = [SKTCircle class];
+            break;
+        case SKTLineToolRow:
+            graphicClass = [SKTLine class];
+            break;
+        case SKTTextToolRow:
+            graphicClass = [SKTText class];
+            break;
+        default:
+            break;
+    };
+    
+    if (graphicClass) {
+        [self createGraphicOfClass:graphicClass withEvent:nil];
+        [[SKTToolPaletteController sharedToolPaletteController] selectArrowTool];
+    }
+}
 
 @end
+
+

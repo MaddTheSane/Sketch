@@ -1,3 +1,4 @@
+
 /*
      File: SKTDocument.h
  Abstract: The main document class for the application.
@@ -81,3 +82,4 @@ In Sketch the graphics property of each SKTGraphicView is bound to the graphics 
 @property (readonly) NSSize canvasSize;
 
 @end
+

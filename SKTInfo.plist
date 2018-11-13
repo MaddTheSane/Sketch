@@ -7,6 +7,14 @@
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>sketch2</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>Draw2File</string>
+			<key>CFBundleTypeName</key>
+			<string>Apple Sketch document</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>LSItemContentTypes</key>

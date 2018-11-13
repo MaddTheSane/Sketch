@@ -1,6 +1,16 @@
+
 /*
      File: SKTImage.h
  Abstract: A graphic object to represent an image.
+
+ This class is KVC and KVO compliant for these keys:
+ 
+ "flippedHorizontally" and "flippedVertically" (boolean NSNumbers; read-only) - Whether or not the image is flipped relative to its natural orientation.
+ 
+ "filePath" (an NSString containing a path to an image file; write-only) - the scriptable property that can specified as an alias in the record passed as the "with properties" parameter of a "make" command, so you can create images via AppleScript.
+ 
+ In Sketch "flippedHorizontally" and "flippedVertically" are two more of the properties that SKTDocument observes so it can register undo actions when they change. Also, "imageFilePath" is scriptable.
+ 
   Version: 1.8
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
@@ -63,16 +73,6 @@ extern NSString *SKTImageFilePathKey;
     BOOL _isFlippedVertically;
 
 }
-
-/* This class is KVC and KVO compliant for these keys:
-
-"flippedHorizontally" and "flippedVertically" (boolean NSNumbers; read-only) - Whether or not the image is flipped relative to its natural orientation.
-
-"filePath" (an NSString containing a path to an image file; write-only) - the scriptable property that can specified as an alias in the record passed as the "with properties" parameter of a "make" command, so you can create images via AppleScript.
-
-In Sketch "flippedHorizontally" and "flippedVertically" are two more of the properties that SKTDocument observes so it can register undo actions when they change. Also, "imageFilePath" is scriptable.
-
-*/
 
 // Initialize, given the image to be presented and the location on which it should be centered.
 - (instancetype)initWithPosition:(NSPoint)position contents:(NSImage *)contents;

@@ -1,3 +1,4 @@
+
 /*
      File: SKTDocument.m
  Abstract: The main document class for the application.
@@ -140,8 +141,8 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 }
 
 
-- (void)insertGraphics:(NSArray *)graphics atIndexes:(NSIndexSet *)indexes
-{
+- (void)insertGraphics:(NSArray *)graphics atIndexes:(NSIndexSet *)indexes {
+	
 	// Do the actual insertion. Instantiate the graphics array lazily.
 	if (!_graphics) {
 		_graphics = [[NSMutableArray alloc] init];
@@ -166,6 +167,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 	
 	// Start observing the just-inserted graphics so that, when they're changed, we can record undo operations.
 	[self startObservingGraphics:graphics];
+	
 }
 
 
@@ -223,8 +225,8 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 
 
 // This method will only be invoked on Mac 10.4 and later. If you're writing an application that has to run on 10.3.x and earlier you should override -loadDataRepresentation:ofType: instead.
-- (BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError
-{
+- (BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError {
+	
 	// This application's Info.plist only declares two document types, which go by the names SKTDocumentOldTypeName/SKTDocumentOldVersion1TypeName (on Mac OS 10.4) or SKTDocumentNewTypeName/SKTDocumentNewVersion1TypeName (on 10.5), for which it can play the "editor" role, and none for which it can play the "viewer" role, so the type better match one of those. Notice that we don't compare uniform type identifiers (UTIs) with -isEqualToString:. We use -[NSWorkspace type:conformsToType:] (new in 10.5), which is nearly always the correct thing to do with UTIs.
 	BOOL readSuccessfully;
 	NSArray *graphics = nil;
@@ -275,12 +277,13 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 		
 	} // else it was the responsibility of something in the previous paragraph to set *outError.
 	return readSuccessfully;
+	
 }
 
 
 // This method will only be invoked on Mac OS 10.4 and later. If you're writing an application that has to run on 10.3.x and earlier you should override -dataRepresentationOfType: instead.
-- (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError
-{	
+- (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError {
+	
 	// This method must be prepared for typeName to be any value that might be in the array returned by any invocation of -writableTypesForSaveOperation:. Because this class:
 	// doesn't - override -writableTypesForSaveOperation:, and
 	// doesn't - override +writableTypes or +isNativeType: (which the default implementation of -writableTypesForSaveOperation: invokes),
@@ -312,21 +315,23 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 		data = [SKTRenderingView tiffDataWithGraphics:graphics error:outError];
 	}
 	return data;
+	
 }
 
 
-- (void)setPrintInfo:(NSPrintInfo *)printInfo
-{
+- (void)setPrintInfo:(NSPrintInfo *)printInfo {
+    
     // Do the regular Cocoa thing, but also be KVO-compliant for canvasSize, which is derived from the print info.
     [self willChangeValueForKey:SKTDocumentCanvasSizeKey];
     [super setPrintInfo:printInfo];
     [self didChangeValueForKey:SKTDocumentCanvasSizeKey];
+    
 }
 
 
 // This method will only be invoked on Mac 10.4 and later. If you're writing an application that has to run on 10.3.x and earlier you should override -printShowingPrintPanel: instead.
-- (NSPrintOperation *)printOperationWithSettings:(NSDictionary *)printSettings error:(NSError **)outError
-{
+- (NSPrintOperation *)printOperationWithSettings:(NSDictionary *)printSettings error:(NSError **)outError {
+	
 	// Figure out a title for the print job. It will be used with the .pdf file name extension in a save panel if the user chooses Save As PDF... in the print panel, or in a similar way if the user hits the Preview button in the print panel, or for any number of other uses the printing system might put it to. We don't want the user to see file names like "My Great Sketch.sketch2.pdf", so we can't just use [self displayName], because the document's file name extension might not be hidden. Instead, because we know that all valid Sketch documents have file name extensions, get the last path component of the file URL and strip off its file name extension, and use what's left.
 	NSString *printJobTitle = [[[[self fileURL] path] lastPathComponent] stringByDeletingPathExtension];
 	if (!printJobTitle) {
@@ -351,6 +356,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 	
 	// We don't have to autorelease the print operation because +[NSPrintOperation printOperationWithView:printInfo:] of course already autoreleased it. Nothing in this method can fail, so we never return nil, so we don't have to worry about setting *outError.
 	return printOperation;
+	
 }
 
 
@@ -359,6 +365,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
     // Start off with one document window.
     SKTWindowController *windowController = [[SKTWindowController alloc] init];
     [self addWindowController:windowController];
+
 }
 
 
@@ -372,16 +379,19 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 		NSDictionary *graphicProperties = [propertiesPerGraphic.mapTable objectForKey:graphic];
 		// Use a relatively unpopular method. Here we're effectively "casting" a key path to a key (see how these dictionaries get built in -observeValueForKeyPath:ofObject:change:context:). It had better really be a key or things will get confused. For example, this is one of the things that would need updating if -[SKTGraphic keysForValuesToObserveForUndo] someday becomes -[SKTGraphic keyPathsForValuesToObserveForUndo].
 		[graphic setValuesForKeysWithDictionary:graphicProperties];
+
 	}
 }
 
 
 - (void)observeUndoManagerCheckpoint:(NSNotification *)notification {
+
     // Start the coalescing of graphic property changes over.
     _undoGroupHasChangesToMultipleProperties = NO;
     _undoGroupPresentablePropertyName = nil;
     _undoGroupOldPropertiesPerGraphic = nil;
     _undoGroupInsertedGraphics = nil;
+
 }
 
 
@@ -409,8 +419,8 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 }
 
 
-- (void)stopObservingGraphics:(NSArray *)graphics
-{
+- (void)stopObservingGraphics:(NSArray *)graphics {
+	
 	// Do the opposite of what's done in -startObservingGraphics:.
 	for (SKTGraphic *graphic in graphics) {
 		[graphic removeObserver:self forKeyPath:SKTGraphicKeysForValuesToObserveForUndoKey];
@@ -421,12 +431,13 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 			[graphic removeObserver:self forKeyPath:key];
 		}
 	}
+	
 }
 
 
 // An override of the NSObject(NSKeyValueObserving) method.
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(NSObject *)observedObject change:(NSDictionary *)change context:(void *)context
-{
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(NSObject *)observedObject change:(NSDictionary *)change context:(void *)context {
+	
 	// Make sure we don't intercept an observer notification that's meant for NSDocument. In Mac OS 10.5 and earlier NSDocuments don't observe anything, but that could change in the future. We can do a simple pointer comparison because KVO doesn't do anything at all with the context value, not even retain or copy it.
 	if (context==(__bridge void *)(SKTDocumentUndoKeysObservationContext)) {
 		
@@ -539,7 +550,9 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 		
 		// In overrides of -observeValueForKeyPath:ofObject:change:context: always invoke super when the observer notification isn't recognized. Code in the superclass is apparently doing observation of its own. NSObject's implementation of this method throws an exception. Such an exception would be indicating a programming error that should be fixed.
 		[super observeValueForKeyPath:keyPath ofObject:observedObject change:change context:context];
+		
 	}
+	
 }
 
 
@@ -547,13 +560,14 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 
 
 // An override of the NSObject(NSScripting) method. It will only be invoked on Mac OS 10.5 and later.
-- (id)newScriptingObjectOfClass:(Class)objectClass forValueForKey:(NSString *)key withContentsValue:(id)contentsValue properties:(NSDictionary *)properties
-{
+- (id)newScriptingObjectOfClass:(Class)objectClass forValueForKey:(NSString *)key withContentsValue:(id)contentsValue properties:(NSDictionary *)properties {
+	
 	// "make new graphic" makes no sense because it's an abstract class. Use a default concrete class instead.
-	if (objectClass == [SKTGraphic class]) {
+	if (objectClass==[SKTGraphic class]) {
 		objectClass = [SKTCircle class];
 	}
 	return [super newScriptingObjectOfClass:objectClass forValueForKey:key withContentsValue:contentsValue properties:properties];
+	
 }
 
 
@@ -575,19 +589,22 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 // These are methods that wouldn't be here if this class weren't scriptable for relationships like "circles," "rectangles," etc. The first two methods are redundant with the -insertGraphics:atIndexes: and -removeGraphicsAtIndexes: methods up above, except they're a little more convenient for invoking in all of the code down below. They don't have KVO-compliant names (-insertObject:inGraphicsAtIndex: and -removeObjectFromGraphicsAtIndex:) on purpose. If they did then extra, incorrect, KVO autonotification would be done.
 
 
-- (void)insertGraphic:(SKTGraphic *)graphic atIndex:(NSUInteger)index
-{
+- (void)insertGraphic:(SKTGraphic *)graphic atIndex:(NSUInteger)index {
+
     // Just invoke the regular method up above.
     NSArray *graphics = @[graphic];
     NSIndexSet *indexes = [[NSIndexSet alloc] initWithIndex:index];
     [self insertGraphics:graphics atIndexes:indexes];
+
 }
 
 
 - (void)removeGraphicAtIndex:(NSUInteger)index {
+
     // Just invoke the regular method up above.
     NSIndexSet *indexes = [[NSIndexSet alloc] initWithIndex:index];
     [self removeGraphicsAtIndexes:indexes];
+
 }
 
 
@@ -1001,3 +1018,5 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 
 
 @end
+
+

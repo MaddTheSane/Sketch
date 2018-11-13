@@ -1,8 +1,9 @@
 
 /*
-     File: NSColor_SKTScripting.m
- Abstract: Scripting support for colors.
-  Version: 1.8
+     File: SKTLine+Accessibility.m
+ Abstract: Adds accessibility support to SKTLine.
+ 
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -42,48 +43,73 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2012 Apple Inc. All Rights Reserved.
+ Copyright (C) 2009 Apple Inc. All Rights Reserved.
  
  */
 
-#import <Cocoa/Cocoa.h>
+
+#import "SKTLine.h"
+#import "SKTGraphic+Accessibility.h"
 
 
-// The Apple event descriptor <-> Objective-C object conversion methods for the "RGB color" value type declared in Sketch.sdef. Cocoa Scripting starts with the type name, condenses it by capitalizing the first letter of each word and removing the spaces, and uses the result to find a class method whose name matches the pattern +scripting<CondensedTypeName>WithDescriptor: and an instance method whose name matches the pattern -scripting<CondensedTypeName>Descriptor.
-@implementation NSColor(SKTScripting)
 
+/* An SKTLine only has two handles instead of eight.  We override some of the accessibilty-related methods we added in SKTGraphic+Accessiblity.m to return the correct answers for lines.
+ */
+@implementation SKTLine (Accessibility)
 
-+ (NSColor *)scriptingRGBColorWithDescriptor:(NSAppleEventDescriptor *)inDescriptor {
+- (NSString *)shapeDescription {
+	return NSLocalizedStringFromTable(@"line", @"Accessibility", @"accessibility description for line graphic");
+}
 
-    // We're expected to handle everything that can be coerced to RGB colors, not just RGB colors.
-    NSColor *color = nil;
-    NSAppleEventDescriptor *rgbColorDescriptor = [inDescriptor coerceToDescriptorType:typeRGBColor];
-    if (rgbColorDescriptor) {
+- (NSIndexSet *)handleCodes {
+	return [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(1, 2)];
+}
 
-	// RGBColors contain 16-bit red, green, and blue components. Don't trust structures found in Apple event descriptors though.
-	NSData *descriptorData = [rgbColorDescriptor data];
-	if ([descriptorData length]==sizeof(RGBColor)) {
-	    const RGBColor *qdColor = (const RGBColor *)[descriptorData bytes];
-	    color = [NSColor colorWithCalibratedRed:((CGFloat)qdColor->red / 65535.0f) green:((CGFloat)qdColor->green / 65535.0f) blue:((CGFloat)qdColor->blue / 65535.0f) alpha:1.0];
-	}
+/* A handle UI element has no idea of its screen location, it needs help from its parent, the graphic proxy.  The graphic proxy needs to ask the actual graphic for the location.
+ */
 
+- (NSRect)rectangleForHandleCode:(NSInteger)handleCode {
+    NSPoint startPoint;
+    switch (handleCode) {
+		case SKTLineBeginHandle:
+			startPoint = [self beginPoint];
+			break;
+		case SKTLineEndHandle:
+			startPoint = [self endPoint];
+			break;
+		default:
+			startPoint = NSZeroPoint;
+			break;
     }
-    return color;
-
+    
+    NSRect handleBounds;
+    handleBounds.origin.x = startPoint.x - SKTGraphicHandleHalfWidth;
+    handleBounds.origin.y = startPoint.y - SKTGraphicHandleHalfWidth;
+    handleBounds.size.width = SKTGraphicHandleWidth;
+    handleBounds.size.height = SKTGraphicHandleWidth;
+	
+    return handleBounds;
+    
 }
 
-
-- (NSAppleEventDescriptor *)scriptingRGBColorDescriptor {
-
-    // RGBColors contain 16-bit red, green, and blue components.
-    NSColor *colorAsCalibratedRGB = [self colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
-    RGBColor qdColor;
-    qdColor.red = (unsigned short)([colorAsCalibratedRGB redComponent] * 65535.0f);
-    qdColor.green = (unsigned short)([colorAsCalibratedRGB greenComponent] * 65535.0f);
-    qdColor.blue = (unsigned short)([colorAsCalibratedRGB blueComponent] * 65535.0f);
-    return [NSAppleEventDescriptor descriptorWithDescriptorType:typeRGBColor bytes:&qdColor length:sizeof(RGBColor)];
-
+- (NSString *)descriptionForHandleCode:(NSInteger)handleCode {
+    NSString *accessibilityDescription = nil;
+    
+    switch (handleCode) {
+		case SKTLineBeginHandle:
+			accessibilityDescription = NSLocalizedStringFromTable(@"start", @"Accessibility", @"accessibility description for line handles");
+			break;
+		case SKTLineEndHandle:
+			accessibilityDescription = NSLocalizedStringFromTable(@"end", @"Accessibility", @"accessibility description for line handles");
+			break;
+		default:
+			accessibilityDescription = @"";
+			break;
+    }
+    
+    return accessibilityDescription;
+    
 }
-
 
 @end
+

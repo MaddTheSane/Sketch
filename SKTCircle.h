@@ -1,3 +1,4 @@
+
 /*
      File: SKTCircle.h
  Abstract: A graphic object to represent a circle.
@@ -49,3 +50,4 @@
 
 @interface SKTCircle : SKTGraphic
 @end
+

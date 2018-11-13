@@ -1,7 +1,9 @@
+
 /*
      File: SKTGraphicView.h
- Abstract: The view to display Sketch graphics objects.
-  Version: 1.8
+ Abstract: A view class to display Sketch graphics.
+ 
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +43,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2012 Apple Inc. All Rights Reserved.
+ Copyright (C) 2009 Apple Inc. All Rights Reserved.
  
  */
 
@@ -116,11 +118,10 @@ extern NSString *SKTGraphicViewGridBindingName;
 - (IBAction)paste:(id)sender;
 - (IBAction)sendToBack:(id)sender;
 - (IBAction)showOrHideRulers:(id)sender;
+- (IBAction)insertGraphic:(id)sender;
+
+// Used by accessibility
+- (NSArray *)selectedGraphics;
 
 @end
-/*
- <codex>
- <abstract></abstract>
- </codex>
- */
 

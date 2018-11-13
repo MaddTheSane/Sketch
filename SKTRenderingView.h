@@ -1,3 +1,4 @@
+
 /*
      File: SKTRenderingView.h
  Abstract: A view to create TIFF and PDF representations of a collection of graphic objects.
@@ -68,3 +69,4 @@
 - (instancetype)initWithFrame:(NSRect)frameRect NS_DESIGNATED_INITIALIZER;
 
 @end
+

@@ -1,3 +1,4 @@
+
 /*
      File: SKTRectangle.h
  Abstract: A graphic object to represent a rectangle.
@@ -49,3 +50,4 @@
 
 @interface SKTRectangle : SKTGraphic
 @end
+

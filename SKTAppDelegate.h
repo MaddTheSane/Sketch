@@ -1,3 +1,4 @@
+
 /*
      File: SKTAppDelegate.h
  Abstract: The application delegate: This object manages display of the preferences panel, graphics inspector, and tools palette.
@@ -41,7 +42,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2012 Apple Inc. All Rights Reserved.
+ Copyright (C) 2009 Apple Inc. All Rights Reserved.
  
  */
 

@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2811962914C8F3B2004103CE /* ReadMe.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2811962814C8F3B2004103CE /* ReadMe.rtf */; };
 		3805D473084D7840003B3AAC /* Preferences.nib in Resources */ = {isa = PBXBuildFile; fileRef = 3805D471084D7840003B3AAC /* Preferences.nib */; };
 		381996CC083EBC270087C524 /* SKTGrid.h in Headers */ = {isa = PBXBuildFile; fileRef = 381996CA083EBC270087C524 /* SKTGrid.h */; };
 		381996CD083EBC270087C524 /* SKTGrid.m in Sources */ = {isa = PBXBuildFile; fileRef = 381996CB083EBC270087C524 /* SKTGrid.m */; };
@@ -53,6 +52,20 @@
 		38D54A7307D51A2A00514CB8 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09B61A73FFA8B0EB11CA2CEA /* Cocoa.framework */; };
 		38FA46D10847B7AC002B08B0 /* SKTError.h in Headers */ = {isa = PBXBuildFile; fileRef = 38FA46CF0847B7AC002B08B0 /* SKTError.h */; };
 		38FA46D20847B7AC002B08B0 /* SKTError.m in Sources */ = {isa = PBXBuildFile; fileRef = 38FA46D00847B7AC002B08B0 /* SKTError.m */; };
+		53193D820FD834CC0062C62E /* SKTLine+Accessibility.m in Sources */ = {isa = PBXBuildFile; fileRef = 53193D800FD834CC0062C62E /* SKTLine+Accessibility.m */; };
+		531F36430FC335E7006BF705 /* AccessibilityImageDescriptions.strings in Resources */ = {isa = PBXBuildFile; fileRef = 531F36420FC335E7006BF705 /* AccessibilityImageDescriptions.strings */; };
+		531F36600FC34A85006BF705 /* FauxUIElement.h in Headers */ = {isa = PBXBuildFile; fileRef = 531F365A0FC34A85006BF705 /* FauxUIElement.h */; };
+		531F36610FC34A85006BF705 /* FauxUIElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 531F365B0FC34A85006BF705 /* FauxUIElement.m */; };
+		531F36620FC34A85006BF705 /* SKTHandleUIElement.h in Headers */ = {isa = PBXBuildFile; fileRef = 531F365C0FC34A85006BF705 /* SKTHandleUIElement.h */; };
+		531F36630FC34A85006BF705 /* SKTHandleUIElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 531F365D0FC34A85006BF705 /* SKTHandleUIElement.m */; };
+		531F36640FC34A85006BF705 /* SKTGraphic+Accessibility.m in Sources */ = {isa = PBXBuildFile; fileRef = 531F365E0FC34A85006BF705 /* SKTGraphic+Accessibility.m */; };
+		531F36650FC34A85006BF705 /* SKTGraphicView+Accessibility.m in Sources */ = {isa = PBXBuildFile; fileRef = 531F365F0FC34A85006BF705 /* SKTGraphicView+Accessibility.m */; };
+		531F36BE0FC35389006BF705 /* Accessibility.strings in Resources */ = {isa = PBXBuildFile; fileRef = 531F36BD0FC35389006BF705 /* Accessibility.strings */; };
+		535FB5420FD7210700DAE76C /* SKTGraphic+Accessibility.h in Headers */ = {isa = PBXBuildFile; fileRef = 535FB5410FD7210700DAE76C /* SKTGraphic+Accessibility.h */; };
+		53D61C550FD15E42004A1A2F /* SKTGraphicAccessibilityProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D61C530FD15E42004A1A2F /* SKTGraphicAccessibilityProxy.h */; };
+		53D61C560FD15E42004A1A2F /* SKTGraphicAccessibilityProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D61C540FD15E42004A1A2F /* SKTGraphicAccessibilityProxy.m */; };
+		53ED74600FD6F65E000D4D64 /* SKTPixelSliderCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53ED745E0FD6F65E000D4D64 /* SKTPixelSliderCell.h */; };
+		53ED74610FD6F65E000D4D64 /* SKTPixelSliderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53ED745F0FD6F65E000D4D64 /* SKTPixelSliderCell.m */; };
 		55CA2852219A701F00D38BDB /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55CA2851219A701F00D38BDB /* Media.xcassets */; };
 		55CA285D219A721B00D38BDB /* GenerateThumbnailForURL.m in Sources */ = {isa = PBXBuildFile; fileRef = 55CA285C219A721B00D38BDB /* GenerateThumbnailForURL.m */; };
 		55CA285F219A721B00D38BDB /* GeneratePreviewForURL.m in Sources */ = {isa = PBXBuildFile; fileRef = 55CA285E219A721B00D38BDB /* GeneratePreviewForURL.m */; };
@@ -116,16 +129,13 @@
 		0A3ECF0FFE888A39C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = English; path = English.lproj/Sketch.scriptTerminology; sourceTree = "<group>"; };
 		0A3ECF12FE888A39C02AAC07 /* Sketch.scriptSuite */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Sketch.scriptSuite; sourceTree = "<group>"; };
 		0A3ECF14FE888A39C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		0A3ECF35FE888A39C02AAC07 /* ToDo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ToDo.txt; sourceTree = "<group>"; };
-		0A3ECF36FE888A39C02AAC07 /* ReadMe.rtf */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.rtf; path = ReadMe.rtf; sourceTree = "<group>"; };
 		0A3ECF39FE888A39C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		0A3ECF3AFE888A39C02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		26D1BC9902E4B4D608C917DD /* SKTPrefix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTPrefix.h; sourceTree = "<group>"; };
-		2811962814C8F3B2004103CE /* ReadMe.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = ReadMe.rtf; sourceTree = "<group>"; };
 		3805D472084D7840003B3AAC /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Preferences.nib; sourceTree = "<group>"; };
 		381996CA083EBC270087C524 /* SKTGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTGrid.h; sourceTree = "<group>"; };
 		381996CB083EBC270087C524 /* SKTGrid.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTGrid.m; sourceTree = "<group>"; };
-		3848301F09FE857F00094A3A /* Sketch.sdef */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = Sketch.sdef; sourceTree = "<group>"; tabWidth = 4; };
+		3848301F09FE857F00094A3A /* Sketch.sdef */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Sketch.sdef; sourceTree = "<group>"; tabWidth = 4; };
 		38492FE308EF710C002FA9E4 /* SKTZoomingScrollView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKTZoomingScrollView.h; sourceTree = "<group>"; };
 		38492FE408EF710C002FA9E4 /* SKTZoomingScrollView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKTZoomingScrollView.m; sourceTree = "<group>"; };
 		386A7A460C2F433100217F5A /* SKTDocument.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKTDocument.m; sourceTree = "<group>"; };
@@ -150,6 +160,20 @@
 		38D54A7607D51A2A00514CB8 /* Sketch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sketch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		38FA46CF0847B7AC002B08B0 /* SKTError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTError.h; sourceTree = "<group>"; };
 		38FA46D00847B7AC002B08B0 /* SKTError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTError.m; sourceTree = "<group>"; };
+		53193D800FD834CC0062C62E /* SKTLine+Accessibility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SKTLine+Accessibility.m"; sourceTree = "<group>"; };
+		531F36400FC335A1006BF705 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/AccessibilityImageDescriptions.strings; sourceTree = "<group>"; };
+		531F365A0FC34A85006BF705 /* FauxUIElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FauxUIElement.h; sourceTree = "<group>"; };
+		531F365B0FC34A85006BF705 /* FauxUIElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FauxUIElement.m; sourceTree = "<group>"; };
+		531F365C0FC34A85006BF705 /* SKTHandleUIElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTHandleUIElement.h; sourceTree = "<group>"; };
+		531F365D0FC34A85006BF705 /* SKTHandleUIElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTHandleUIElement.m; sourceTree = "<group>"; };
+		531F365E0FC34A85006BF705 /* SKTGraphic+Accessibility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SKTGraphic+Accessibility.m"; sourceTree = "<group>"; };
+		531F365F0FC34A85006BF705 /* SKTGraphicView+Accessibility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SKTGraphicView+Accessibility.m"; sourceTree = "<group>"; };
+		531F36BB0FC35380006BF705 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Accessibility.strings; sourceTree = "<group>"; };
+		535FB5410FD7210700DAE76C /* SKTGraphic+Accessibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SKTGraphic+Accessibility.h"; sourceTree = "<group>"; };
+		53D61C530FD15E42004A1A2F /* SKTGraphicAccessibilityProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTGraphicAccessibilityProxy.h; sourceTree = "<group>"; };
+		53D61C540FD15E42004A1A2F /* SKTGraphicAccessibilityProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTGraphicAccessibilityProxy.m; sourceTree = "<group>"; };
+		53ED745E0FD6F65E000D4D64 /* SKTPixelSliderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTPixelSliderCell.h; sourceTree = "<group>"; };
+		53ED745F0FD6F65E000D4D64 /* SKTPixelSliderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTPixelSliderCell.m; sourceTree = "<group>"; };
 		55CA2851219A701F00D38BDB /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		55CA285A219A721B00D38BDB /* QuickLookSketch.qlgenerator */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QuickLookSketch.qlgenerator; sourceTree = BUILT_PRODUCTS_DIR; };
 		55CA285C219A721B00D38BDB /* GenerateThumbnailForURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GenerateThumbnailForURL.m; sourceTree = "<group>"; };
@@ -207,18 +231,11 @@
 				0A3ECEF6FE888A39C02AAC07 /* ToolPalette.nib */,
 				0A3ECF12FE888A39C02AAC07 /* Sketch.scriptSuite */,
 				0A3ECF0EFE888A39C02AAC07 /* Sketch.scriptTerminology */,
+				531F36BD0FC35389006BF705 /* Accessibility.strings */,
+				531F36420FC335E7006BF705 /* AccessibilityImageDescriptions.strings */,
 				3848301F09FE857F00094A3A /* Sketch.sdef */,
 			);
 			name = Resources;
-			sourceTree = "<group>";
-		};
-		0A3ECF2DFE888A39C02AAC07 /* Notes */ = {
-			isa = PBXGroup;
-			children = (
-				0A3ECF35FE888A39C02AAC07 /* ToDo.txt */,
-				0A3ECF36FE888A39C02AAC07 /* ReadMe.rtf */,
-			);
-			name = Notes;
 			sourceTree = "<group>";
 		};
 		0A3ECF37FE888A39C02AAC07 /* Frameworks */ = {
@@ -238,6 +255,23 @@
 				55CA285A219A721B00D38BDB /* QuickLookSketch.qlgenerator */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		531F36560FC34A49006BF705 /* Accessibility */ = {
+			isa = PBXGroup;
+			children = (
+				531F365A0FC34A85006BF705 /* FauxUIElement.h */,
+				531F365B0FC34A85006BF705 /* FauxUIElement.m */,
+				531F365C0FC34A85006BF705 /* SKTHandleUIElement.h */,
+				531F365D0FC34A85006BF705 /* SKTHandleUIElement.m */,
+				531F365F0FC34A85006BF705 /* SKTGraphicView+Accessibility.m */,
+				535FB5410FD7210700DAE76C /* SKTGraphic+Accessibility.h */,
+				531F365E0FC34A85006BF705 /* SKTGraphic+Accessibility.m */,
+				53193D800FD834CC0062C62E /* SKTLine+Accessibility.m */,
+				53D61C530FD15E42004A1A2F /* SKTGraphicAccessibilityProxy.h */,
+				53D61C540FD15E42004A1A2F /* SKTGraphicAccessibilityProxy.m */,
+			);
+			path = Accessibility;
 			sourceTree = "<group>";
 		};
 		55CA285B219A721B00D38BDB /* QuickLookSketch */ = {
@@ -260,6 +294,9 @@
 		55CA2879219A783200D38BDB /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				531F36560FC34A49006BF705 /* Accessibility */,
+				53ED745E0FD6F65E000D4D64 /* SKTPixelSliderCell.h */,
+				53ED745F0FD6F65E000D4D64 /* SKTPixelSliderCell.m */,
 				0A3ECEE3FE888A39C02AAC07 /* SKTAppDelegate.h */,
 				0A3ECEDAFE888A39C02AAC07 /* SKTAppDelegate.m */,
 				386A7A470C2F433100217F5A /* SKTDocument.h */,
@@ -301,11 +338,9 @@
 			isa = PBXGroup;
 			children = (
 				55CA2879219A783200D38BDB /* Classes */,
-				2811962814C8F3B2004103CE /* ReadMe.rtf */,
 				38AFB5740C2F908200AEF7A8 /* SKTError.strings */,
 				38D54A7507D51A2A00514CB8 /* SKTInfo.plist */,
 				0A3ECF0DFE888A39C02AAC07 /* Resources */,
-				0A3ECF2DFE888A39C02AAC07 /* Notes */,
 			);
 			name = Sketch;
 			sourceTree = "<group>";
@@ -333,6 +368,11 @@
 				38D54A3C07D51A2A00514CB8 /* SKTToolPaletteController.h in Headers */,
 				38D54A3807D51A2A00514CB8 /* SKTWindowController.h in Headers */,
 				38492FE508EF710C002FA9E4 /* SKTZoomingScrollView.h in Headers */,
+				531F36600FC34A85006BF705 /* FauxUIElement.h in Headers */,
+				531F36620FC34A85006BF705 /* SKTHandleUIElement.h in Headers */,
+				53D61C550FD15E42004A1A2F /* SKTGraphicAccessibilityProxy.h in Headers */,
+				53ED74600FD6F65E000D4D64 /* SKTPixelSliderCell.h in Headers */,
+				535FB5420FD7210700DAE76C /* SKTGraphic+Accessibility.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -400,7 +440,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 3833E1A30889EBD20049736A /* Build configuration list for PBXProject "Sketch" */;
+			buildConfigurationList = 3833E1A30889EBD20049736A /* Build configuration list for PBXProject "Sketch+Accessibility" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
@@ -434,7 +474,8 @@
 				55CA2852219A701F00D38BDB /* Media.xcassets in Resources */,
 				38AFB5760C2F908200AEF7A8 /* SKTError.strings in Resources */,
 				38D54A4C07D51A2A00514CB8 /* ToolPalette.nib in Resources */,
-				2811962914C8F3B2004103CE /* ReadMe.rtf in Resources */,
+				531F36430FC335E7006BF705 /* AccessibilityImageDescriptions.strings in Resources */,
+				531F36BE0FC35389006BF705 /* Accessibility.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -469,6 +510,13 @@
 				38D54A6207D51A2A00514CB8 /* SKTWindowController.m in Sources */,
 				38492FE608EF710C002FA9E4 /* SKTZoomingScrollView.m in Sources */,
 				38C1482B0C3E2D03001085CE /* NSColor_SKTScripting.m in Sources */,
+				531F36610FC34A85006BF705 /* FauxUIElement.m in Sources */,
+				531F36630FC34A85006BF705 /* SKTHandleUIElement.m in Sources */,
+				531F36640FC34A85006BF705 /* SKTGraphic+Accessibility.m in Sources */,
+				531F36650FC34A85006BF705 /* SKTGraphicView+Accessibility.m in Sources */,
+				53D61C560FD15E42004A1A2F /* SKTGraphicAccessibilityProxy.m in Sources */,
+				53ED74610FD6F65E000D4D64 /* SKTPixelSliderCell.m in Sources */,
+				53193D820FD834CC0062C62E /* SKTLine+Accessibility.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -572,6 +620,22 @@
 				38AFB5750C2F908200AEF7A8 /* English */,
 			);
 			name = SKTError.strings;
+			sourceTree = "<group>";
+		};
+		531F36420FC335E7006BF705 /* AccessibilityImageDescriptions.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				531F36400FC335A1006BF705 /* English */,
+			);
+			name = AccessibilityImageDescriptions.strings;
+			sourceTree = "<group>";
+		};
+		531F36BD0FC35389006BF705 /* Accessibility.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				531F36BB0FC35380006BF705 /* English */,
+			);
+			name = Accessibility.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -770,7 +834,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3833E1A30889EBD20049736A /* Build configuration list for PBXProject "Sketch" */ = {
+		3833E1A30889EBD20049736A /* Build configuration list for PBXProject "Sketch+Accessibility" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3833E1A40889EBD20049736A /* Debug */,

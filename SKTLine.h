@@ -1,8 +1,18 @@
+
 /*
      File: SKTLine.h
  Abstract: A graphic object to represent a line.
-  Version: 1.8
+
+ This class is KVC and KVO compliant for these keys:
  
+ "beginPoint" and "endPoint" (NSPoint-containing NSValues; read-only) - The two points that define the line segment.
+ 
+ In Sketch "beginPoint" and "endPoint" are two more of the properties that SKTDocument observes so it can register undo actions when they change.
+ 
+ Notice that we don't guarantee KVC or KVO compliance for "pointsRight" and "pointsDown." Those aren't just private instance variables, they're private properties, concepts that no code outside of SKTLine should care about.
+ 
+  Version: 1.8
+
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
  terms, and your use, installation, modification or redistribution of
@@ -51,6 +61,12 @@
 extern NSString *SKTLineBeginPointKey;
 extern NSString *SKTLineEndPointKey;
 
+// SKTGraphic's default selection handle machinery draws more handles than we need, so this class implements its own.
+enum {
+    SKTLineBeginHandle = 1,
+    SKTLineEndHandle = 2
+};
+
 @interface SKTLine : SKTGraphic {
     @private
 
@@ -60,14 +76,8 @@ extern NSString *SKTLineEndPointKey;
 
 }
 
-/* This class is KVC and KVO compliant for these keys:
-
-"beginPoint" and "endPoint" (NSPoint-containing NSValues; read-only) - The two points that define the line segment.
-
-In Sketch "beginPoint" and "endPoint" are two more of the properties that SKTDocument observes so it can register undo actions when they change.
-
-Notice that we don't guarantee KVC or KVO compliance for "pointsRight" and "pointsDown." Those aren't just private instance variables, they're private properties, concepts that no code outside of SKTLine should care about.
-
-*/
+- (NSPoint)beginPoint;
+- (NSPoint)endPoint;
 
 @end
+

@@ -11,7 +11,7 @@
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <menu title="Draw2" systemMenu="main" id="29" userLabel="MainMenu">
             <items>
                 <menuItem title="Sketch" id="318">
@@ -504,6 +504,40 @@
                                 <connections>
                                     <action selector="chooseSelectionTool:" target="204" id="353"/>
                                 </connections>
+                            </menuItem>
+                            <menuItem title="Insert Object" id="363">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Insert Object" id="364">
+                                    <items>
+                                        <menuItem tag="1" keyEquivalent="s" id="365">
+                                            <string key="title" base64-UTF8="YES">
+E1NxdWFyZQ
+</string>
+                                            <modifierMask key="keyEquivalentModifierMask" control="YES" option="YES"/>
+                                            <connections>
+                                                <action selector="insertGraphic:" target="-1" id="369"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Circle" tag="2" keyEquivalent="c" id="366">
+                                            <modifierMask key="keyEquivalentModifierMask" control="YES" option="YES"/>
+                                            <connections>
+                                                <action selector="insertGraphic:" target="-1" id="370"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Line" tag="3" keyEquivalent="l" id="368">
+                                            <modifierMask key="keyEquivalentModifierMask" control="YES" option="YES"/>
+                                            <connections>
+                                                <action selector="insertGraphic:" target="-1" id="371"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Text" tag="4" keyEquivalent="t" id="367">
+                                            <modifierMask key="keyEquivalentModifierMask" control="YES" option="YES"/>
+                                            <connections>
+                                                <action selector="insertGraphic:" target="-1" id="372"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
                             </menuItem>
                         </items>
                     </menu>

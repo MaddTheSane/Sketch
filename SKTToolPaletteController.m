@@ -1,3 +1,4 @@
+
 /*
      File: SKTToolPaletteController.m
  Abstract: A controller to manage the tools palette.
@@ -51,14 +52,6 @@
 #import "SKTRectangle.h"
 #import "SKTText.h"
 
-enum {
-    SKTArrowToolRow = 0,
-    SKTRectToolRow,
-    SKTCircleToolRow,
-    SKTLineToolRow,
-    SKTTextToolRow,
-};
-
 NSString *SKTSelectedToolDidChangeNotification = @"SKTSelectedToolDidChange";
 
 @implementation SKTToolPaletteController
@@ -91,7 +84,11 @@ NSString *SKTSelectedToolDidChangeNotification = @"SKTSelectedToolDidChange";
         [cells[i] setRefusesFirstResponder:YES];
     }
     [(NSPanel *)[self window] setBecomesKeyOnlyIfNeeded:YES];
-
+    
+    // Set the AXDescription of the window since it does not have a title
+    NSString *description = NSLocalizedStringFromTable(@"tool palette", @"SKTToolPalette", @"A window title");
+    [[self window] accessibilitySetOverrideValue:description forAttribute:NSAccessibilityDescriptionAttribute];
+    
     // Interface Builder (IB 2.4.1, anyway) won't let us set the window's width to less than 59 pixels, but we really only need 42.
     [[self window] setContentSize:[toolButtons frame].size];
 }
@@ -121,3 +118,4 @@ NSString *SKTSelectedToolDidChangeNotification = @"SKTSelectedToolDidChange";
 }
 
 @end
+

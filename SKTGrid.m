@@ -1,6 +1,28 @@
+
 /*
      File: SKTGrid.m
  Abstract: An object to represent a grid drawn on a Sketch canvas.
+
+ This class is KVC and KVO compliant for these keys:
+ 
+ "color" (an NSColor; read-write) - The color that will be used when the grid is shown.
+ 
+ "spacing" (a floating point NSNumber; read-write) - The distance (in user space units) between the grid lines used when showing the grid or constraining points to it.
+ 
+ "alwaysShown" (a boolean NSNumber; read-write) - Whether or not the user wants the grid to always be visible. -drawRect:inView: may draw a visible grid even when the value of this property is NO, if it's animating itself to provide good user feedback about a change to one of its properties.
+ 
+ "constraining" (a boolean NSNumber; read-write) - Whether or not the user wants graphics to be constrained to this grid. Graphic views should not need to access this property. They should invoke -constrainedPoint: instead.
+ 
+ "usable" (a boolean NSNumber; read-only) - Whether or not grid parameters are currently set to values that are valid enough that grid showing and constraining of graphics to the grid can be done. This wouldn't be necessary if we didn't allow zero to be a valid value for grid spacing, but we do, even though we don't want to draw zero-space grids, because there's no other reasonable number to use as the miminum value for the grid spacing slider in the grid panel. Why not use "one-point-oh" you ask? What's so special about that value I ask back. Grid spacing isn't in terms of pixel widths. It's in terms of user space units. Why not implement a validation method for the "gridSpacing" property to catch the user trying to set it to zero? Because the best thing that could come of that would be an alert that's presented to the user whenever they drag the spacing slider all the way to the left, or maybe just a beep, and either would be obnoxious. [User interface advice given in the comments of Sketch sample code is strictly the opinion of the engineer who's rewriting Sketch, and hasn't been reviewed by Apple's actual user interface designers, but, really.] By the way, an alternative to binding to this property would be binding directly to the "spacing" property using a very simple SKTIsGreaterThanZero value transformer of our own making. That would be putting a little to much logic into the nibs though, and a couple of nibs would require updating if we someday had to change the rules about when the grid is useful. This way we would just have to update this class' -isUsable method.
+ 
+ "canSetColor" (a boolean NSNumber; read-only) - Whether or not grid parameters are currently set to values that are valid enough that setting the grid color would do something useful, from the user's point of view.
+ 
+ "canSetSpacing" (a boolean NSNumber; read-only) - Whether or not grid parameters are currently set to values that are valid enough that setting grid spacing would do something useful, from the user's point of view. This wouldn't be necessary if we just forbade the user from changing the grid spacing when the grid wasn't shown, because then we could just bind the "editable" property of controls that set the grid spacing to to "alwaysShown" instead, but that would be a little weak. The grid spacing is useful for constraining graphics to the grid even when the grid isn't shown. Now, whenever we let the user change the grid spacing we have to provide good immediate feedback to the user about it, and Sketch does. See -setSpacing for our solution to that problem.
+ 
+ "any" (no value; not readable or writable) - A virtual property for which KVO change notifications are sent whenever any of the properties that affect the drawing of the grid have changed. We use KVO for this instead of more traditional methods so that we don't have to write any code other than an invocation of KVO's +setKeys:triggerChangeNotificationsForDependentKey:. (To use NSNotificationCenter for instance we would have to write -set...: methods for all of this object's settable properties. That's pretty easy, but it's nice to avoid such boilerplate when possible.) There is no value for this property, because it would not be useful, and this class isn't KVC-compliant for "any." This property is not called "needsDrawing" or some such thing because instances of this class do not know how many views are using it, and potentially there will be moments when it "needs drawing" in some views but not others.
+ 
+ In Sketch various properties of the controls of the grid inspector are bound to the properties (all except for the "any" property) of the grid belonging to the window controller of the main window. Each SKTGraphicView observes the "any" property of the grid to which its bound so it knows when the grid needs drawing.
+ 
   Version: 1.8
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
@@ -61,7 +83,7 @@ static NSTimeInterval SKTGridTemporaryShowingTime = 1.0;
 
 // An override of the superclass' designated initializer.
 - (instancetype)init {
-    
+	
     // Do the regular Cocoa thing.
     self = [super init];
     if (self) {
@@ -76,8 +98,8 @@ static NSTimeInterval SKTGridTemporaryShowingTime = 1.0;
 }
 
 
-- (void)dealloc
-{
+- (void)dealloc {
+
     // If we've set a timer to hide the grid invalidate it so it doesn't send a message to this object's zombie.
     [_hidingTimer invalidate];
 }
@@ -102,11 +124,12 @@ static NSTimeInterval SKTGridTemporaryShowingTime = 1.0;
     // Tell observing views to redraw. By the way, it is virtually always a mistake to put willChange/didChange invocations together with nothing in between. Doing so can result in bugs that are hard to track down. You should always invoke -willChangeValueForKey:theKey before the result of -valueForKey:theKey would change, and then invoke -didChangeValueForKey:theKey after the result of -valueForKey:theKey would have changed. We can get away with this here because there is no value for the "any" key.
     [self willChangeValueForKey:SKTGridAnyKey];
     [self didChangeValueForKey:SKTGridAnyKey];
+
 }
 
 
-- (void)setSpacing:(CGFloat)spacing
-{
+- (void)setSpacing:(CGFloat)spacing {
+	
 	// Weed out redundant invocations.
 	if (spacing!=_spacing) {
 		_spacing = spacing;
@@ -132,6 +155,7 @@ static NSTimeInterval SKTGridTemporaryShowingTime = 1.0;
 		}
 		
 	}
+	
 }
 
 
@@ -195,14 +219,15 @@ static NSTimeInterval SKTGridTemporaryShowingTime = 1.0;
 }
 
 
-- (NSPoint)constrainedPoint:(NSPoint)point
-{
+- (NSPoint)constrainedPoint:(NSPoint)point {
+	
 	// The grid might not be usable right now, or constraining might be turned off.
 	if ([self isUsable] && _isConstraining) {
 		point.x = floor((point.x / _spacing) + 0.5) * _spacing;
 		point.y = floor((point.y / _spacing) + 0.5) * _spacing;
 	}
 	return point;
+	
 }
 
 
@@ -214,8 +239,8 @@ static NSTimeInterval SKTGridTemporaryShowingTime = 1.0;
 }
 
 
-- (NSRect)alignedRect:(NSRect)rect
-{
+- (NSRect)alignedRect:(NSRect)rect {
+	
 	// Aligning is done even when constraining is not.
 	NSPoint upperRight = NSMakePoint(NSMaxX(rect), NSMaxY(rect));
 	rect.origin.x = floor((rect.origin.x / _spacing) + 0.5) * _spacing;
@@ -225,6 +250,7 @@ static NSTimeInterval SKTGridTemporaryShowingTime = 1.0;
 	rect.size.width = upperRight.x - rect.origin.x;
 	rect.size.height = upperRight.y - rect.origin.y;
 	return rect;
+	
 }
 
 
@@ -250,8 +276,12 @@ static NSTimeInterval SKTGridTemporaryShowingTime = 1.0;
 		[_color set];
 		[gridPath setLineWidth:0.0];
 		[gridPath stroke];
+		
 	}
+	
 }
 
 
 @end
+
+

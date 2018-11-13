@@ -1,8 +1,9 @@
 
 /*
-     File: NSColor_SKTScripting.m
- Abstract: Scripting support for colors.
-  Version: 1.8
+     File: SKTPixelSliderCell.m
+ Abstract: Adds accessibility support for a slider cell.
+ 
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -42,48 +43,43 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2012 Apple Inc. All Rights Reserved.
+ Copyright (C) 2009 Apple Inc. All Rights Reserved.
  
  */
 
-#import <Cocoa/Cocoa.h>
+#import "SKTPixelSliderCell.h"
 
 
-// The Apple event descriptor <-> Objective-C object conversion methods for the "RGB color" value type declared in Sketch.sdef. Cocoa Scripting starts with the type name, condenses it by capitalizing the first letter of each word and removing the spaces, and uses the result to find a class method whose name matches the pattern +scripting<CondensedTypeName>WithDescriptor: and an instance method whose name matches the pattern -scripting<CondensedTypeName>Descriptor.
-@implementation NSColor(SKTScripting)
+@implementation SKTPixelSliderCell
 
-
-+ (NSColor *)scriptingRGBColorWithDescriptor:(NSAppleEventDescriptor *)inDescriptor {
-
-    // We're expected to handle everything that can be coerced to RGB colors, not just RGB colors.
-    NSColor *color = nil;
-    NSAppleEventDescriptor *rgbColorDescriptor = [inDescriptor coerceToDescriptorType:typeRGBColor];
-    if (rgbColorDescriptor) {
-
-	// RGBColors contain 16-bit red, green, and blue components. Don't trust structures found in Apple event descriptors though.
-	NSData *descriptorData = [rgbColorDescriptor data];
-	if ([descriptorData length]==sizeof(RGBColor)) {
-	    const RGBColor *qdColor = (const RGBColor *)[descriptorData bytes];
-	    color = [NSColor colorWithCalibratedRed:((CGFloat)qdColor->red / 65535.0f) green:((CGFloat)qdColor->green / 65535.0f) blue:((CGFloat)qdColor->blue / 65535.0f) alpha:1.0];
-	}
-
+-(NSArray *)accessibilityAttributeNames
+{
+    static NSArray *names = nil;
+    if ( names == nil ) {
+        names = [[[super accessibilityAttributeNames] arrayByAddingObject:NSAccessibilityValueDescriptionAttribute] retain];
     }
-    return color;
+    
+    return names;
+} 
 
+-(id)accessibilityAttributeValue:(NSString *)attribute
+{
+    if ( [attribute isEqualToString:NSAccessibilityValueDescriptionAttribute] ) {
+        // to be locale friendly we use a NumberFormatter to create our string
+        NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+        [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
+        [formatter setMinimumFractionDigits:2];
+        [formatter setMaximumFractionDigits:2];
+        
+        // create the string for the value description
+        NSString *returnValue = [formatter stringForObjectValue:[self objectValue]];
+        [formatter release];
+        
+        return returnValue;
+    } else 
+        return [super accessibilityAttributeValue:attribute];
 }
-
-
-- (NSAppleEventDescriptor *)scriptingRGBColorDescriptor {
-
-    // RGBColors contain 16-bit red, green, and blue components.
-    NSColor *colorAsCalibratedRGB = [self colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
-    RGBColor qdColor;
-    qdColor.red = (unsigned short)([colorAsCalibratedRGB redComponent] * 65535.0f);
-    qdColor.green = (unsigned short)([colorAsCalibratedRGB greenComponent] * 65535.0f);
-    qdColor.blue = (unsigned short)([colorAsCalibratedRGB blueComponent] * 65535.0f);
-    return [NSAppleEventDescriptor descriptorWithDescriptorType:typeRGBColor bytes:&qdColor length:sizeof(RGBColor)];
-
-}
-
 
 @end
+
+

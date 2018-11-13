@@ -1,6 +1,30 @@
+
 /*
      File: SKTWindowController.m
  Abstract: A window controller to manage display of a Sketch window.
+
+ This class is KVC and KVO compliant for this key:
+ 
+ "graphicsController" (an NSArrayController; read-only) - The controller that manages the selection for the graphic view in the controlled window.
+ 
+ "grid" (an SKTGrid; read-only) - An instance of SKTGrid.
+ 
+ "zoomFactor" (a floating point NSNumber; read-write) - The zoom factor for the graphic view, following the meaning established by SKTZoomingScrollView's bindable "factor" property.
+ 
+ In Sketch:
+ 
+ Each SKTGraphicView's graphics and selection indexes properties are bound to the arranged objects and selection indexes properties of the containing SKTWindowController's graphics controller.
+ 
+ Each SKTGraphicView's grid property is bound to the grid property of the SKTWindowController that contains it.
+ 
+ Each SKTZoomingScrollView's factor property is bound to the zoom factor property of the SKTWindowController that contains it.
+ 
+ Various properties of the controls of the graphics inspector are bound to properties of the selection of the graphics controller of the main window's SKTWindowController.
+ 
+ Various properties of the controls of the grid inspector are bound to properties of the grid of the main window's SKTWindowController.
+ 
+ Grids and zoom factors are owned by window controllers instead of the views that use them; in the future we may want to make the same grid and zoom factor apply to multiple views, or make the grid parameters and zoom factor into stored per-document preferences.
+ 
   Version: 1.8
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
@@ -61,7 +85,7 @@ static NSString *SKTWindowControllerCanvasSizeObservationContext = @"com.apple.S
 @implementation SKTWindowController
 
 
-- (instancetype)init {
+- (id)init {
 
     // Do the regular Cocoa thing, specifying a particular nib.
     self = [super initWithWindowNibName:@"DrawWindow"];
@@ -252,3 +276,5 @@ static NSString *SKTWindowControllerCanvasSizeObservationContext = @"com.apple.S
 
 
 @end
+
+

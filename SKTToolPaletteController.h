@@ -1,3 +1,4 @@
+
 /*
      File: SKTToolPaletteController.h
  Abstract: A controller to manage the tools palette.
@@ -47,6 +48,14 @@
 
 #import <Cocoa/Cocoa.h>
 
+enum {
+    SKTArrowToolRow = 0,
+    SKTRectToolRow,
+    SKTCircleToolRow,
+    SKTLineToolRow,
+    SKTTextToolRow,
+};
+
 @interface SKTToolPaletteController : NSWindowController {
     IBOutlet NSMatrix *toolButtons;
 }
@@ -61,3 +70,4 @@
 @end
 
 extern NSString *SKTSelectedToolDidChangeNotification;
+

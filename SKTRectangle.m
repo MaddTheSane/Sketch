@@ -1,3 +1,4 @@
+
 /*
      File: SKTRectangle.m
  Abstract: A graphic object to represent a rectangle.

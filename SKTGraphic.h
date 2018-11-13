@@ -1,7 +1,42 @@
+
 /*
      File: SKTGraphic.h
- Abstract: The base class for Sketch graphics objects.
-  Version: 1.8
+ Abstract: Abstract superclass for Sketch graphics classes.
+ 
+ This class is KVC (except for "drawingContents") and KVO (except for the scripting-only properties) compliant for these keys:
+ 
+ "canSetDrawingFill" and "canSetDrawingStroke" (boolean NSNumbers; read-only) - Whether or not it even makes sense to try to change the value of the "drawingFill" or "drawingStroke" property.
+ 
+ "drawingFill" (a boolean NSNumber; read-write) - Whether or not the user wants this graphic to be filled with the "fillColor" when it's drawn.
+ 
+ "fillColor" (an NSColor; read-write) - The color that will be used to fill this graphic when it's drawn. The value of this property is ignored when the value of "drawingFill" is NO.
+ 
+ "drawingStroke" (a boolean NSNumber; read-write) - Whether or not the user wants this graphic to be stroked with a path that is "strokeWidth" units wide, using the "strokeColor," when it's drawn.
+ 
+ "strokeColor" (an NSColor; read-write) - The color that will be used to stroke this graphic when it's drawn. The value of this property is ignored when the value of "drawingStroke" is NO.
+ 
+ "strokeWidth" (a floating point NSNumber; read-write) - The width of the stroke that will be used when this graphic is drawn. The value of this property is ignored when the value of "drawingStroke" is NO.
+ 
+ "xPosition" and "yPosition" (floating point NSNumbers; read-write) - The coordinate of the upper-left corner of the graphic.
+ 
+ "width" and "height" (floating point NSNumbers; read-write) - The size of the graphic.
+ 
+ "bounds" (an NSRect-containing NSValue; read-only) - The basic shape of the graphic. For instance, this doesn't include the width of any strokes that are drawn (so "bounds" is really a bit of a misnomer). Being KVO-compliant for bounds contributes to the automatic KVO compliance for drawingBounds via the use of KVO's dependency mechanism. See +[SKTGraphic keyPathsForValuesAffectingDrawingBounds].
+ 
+ "drawingBounds" (an NSRect-containing NSValue; read-only) - The bounding box of anything the graphic might draw when sent a -drawContentsInView: or -drawHandlesInView: message.
+ 
+ "drawingContents" (no value; not readable or writable) - A virtual property for which KVO change notifications are sent whenever any of the properties that affect the drawing of the graphic without affecting its bounds change. We use KVO for this instead of more traditional methods so that we don't have to write any code other than an invocation of KVO's +setKeys:triggerChangeNotificationsForDependentKey:. (To use NSNotificationCenter for instance we would have to write -set...: methods for all of this object's settable properties. That's pretty easy, but it's nice to avoid such boilerplate when possible.) There is no value for this property, because it would not be useful, so this class isn't actually KVC-compliant for "drawingContents." This property is not called "needsDrawing" or some such thing because instances of this class do not know how many views are using it, and potentially there will moments when it "needs drawing" in some views but not others.
+ 
+ "keysForValuesToObserveForUndo" (an NSSet of NSStrings; read-only) - See the comment for -keysForValuesToObserveForUndo below.
+ 
+ "scriptingFillColor" and "scriptingStrokeColor" (NSColors; read-write) - The colors that will be used to fill or stroke this graphic when it's drawn, or nil if filling or stroking is not being done. These attributes are computed from "drawingFill"/"fillColor" and "drawingStroke"/"strokeColor." They're here because, even though the separate boolean properties are OK for presenting in checkboxes in the UI, we don't want to make scripters deal with them. For scripters a color of nil ("missing value") is what's used to turn off filling or stroking.
+ 
+ "scriptingStrokeWidth" (a floating point NSNumber; read-write) - The width of the stroke that will be used for this graphic when it's drawn, or nil if stroking is not being done. This attribute is derived from "strokeWidth." It's here because we want to accurately report "missing value" when stroking is not being done. Since it's here we might as well let scripters turn off stroking by setting "missing value" too.
+ 
+ In Sketch various properties of the controls of the grid inspector are bound to the properties of the selection of the graphics controller belonging to the window controller of the main window. Each SKTGraphicView observes the "drawingBounds" and "drawingContents" properties of every graphic that it's displaying so it knows when they need redrawing. Each SKTDocument observes many properties of every of one of its graphics so it can register undo actions when they change; for each graphic the exact set of such properties is determined by the current value of the "keysForValuesToObserveForUndo" property. Also, many of these properties are scriptable.
+ 
+ 
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -69,6 +104,20 @@ extern NSString *SKTGraphicKeysForValuesToObserveForUndoKey;
 // The value that is returned by -handleUnderPoint: to indicate that no selection handle is under the point.
 extern const NSInteger SKTGraphicNoHandle;
 
+enum {
+    SKTGraphicUpperLeftHandle = 1,
+    SKTGraphicUpperMiddleHandle = 2,
+    SKTGraphicUpperRightHandle = 3,
+    SKTGraphicMiddleLeftHandle = 4,
+    SKTGraphicMiddleRightHandle = 5,
+    SKTGraphicLowerLeftHandle = 6,
+    SKTGraphicLowerMiddleHandle = 7,
+    SKTGraphicLowerRightHandle = 8,
+};
+
+extern CGFloat SKTGraphicHandleWidth;
+extern CGFloat SKTGraphicHandleHalfWidth;
+
 @interface SKTGraphic : NSObject<NSCopying> {
     @private
 
@@ -86,39 +135,6 @@ extern const NSInteger SKTGraphicNoHandle;
 
 }
 
-/* This class is KVC (except for "drawingContents") and KVO (except for the scripting-only properties) compliant for these keys:
-
-"canSetDrawingFill" and "canSetDrawingStroke" (boolean NSNumbers; read-only) - Whether or not it even makes sense to try to change the value of the "drawingFill" or "drawingStroke" property.
-
-"drawingFill" (a boolean NSNumber; read-write) - Whether or not the user wants this graphic to be filled with the "fillColor" when it's drawn.
-
-"fillColor" (an NSColor; read-write) - The color that will be used to fill this graphic when it's drawn. The value of this property is ignored when the value of "drawingFill" is NO.
-
-"drawingStroke" (a boolean NSNumber; read-write) - Whether or not the user wants this graphic to be stroked with a path that is "strokeWidth" units wide, using the "strokeColor," when it's drawn.
-
-"strokeColor" (an NSColor; read-write) - The color that will be used to stroke this graphic when it's drawn. The value of this property is ignored when the value of "drawingStroke" is NO.
-
-"strokeWidth" (a floating point NSNumber; read-write) - The width of the stroke that will be used when this graphic is drawn. The value of this property is ignored when the value of "drawingStroke" is NO.
-
-"xPosition" and "yPosition" (floating point NSNumbers; read-write) - The coordinate of the upper-left corner of the graphic.
-
-"width" and "height" (floating point NSNumbers; read-write) - The size of the graphic.
-
-"bounds" (an NSRect-containing NSValue; read-only) - The basic shape of the graphic. For instance, this doesn't include the width of any strokes that are drawn (so "bounds" is really a bit of a misnomer). Being KVO-compliant for bounds contributes to the automatic KVO compliance for drawingBounds via the use of KVO's dependency mechanism. See +[SKTGraphic keyPathsForValuesAffectingDrawingBounds].
-
-"drawingBounds" (an NSRect-containing NSValue; read-only) - The bounding box of anything the graphic might draw when sent a -drawContentsInView: or -drawHandlesInView: message.
-
-"drawingContents" (no value; not readable or writable) - A virtual property for which KVO change notifications are sent whenever any of the properties that affect the drawing of the graphic without affecting its bounds change. We use KVO for this instead of more traditional methods so that we don't have to write any code other than an invocation of KVO's +setKeys:triggerChangeNotificationsForDependentKey:. (To use NSNotificationCenter for instance we would have to write -set...: methods for all of this object's settable properties. That's pretty easy, but it's nice to avoid such boilerplate when possible.) There is no value for this property, because it would not be useful, so this class isn't actually KVC-compliant for "drawingContents." This property is not called "needsDrawing" or some such thing because instances of this class do not know how many views are using it, and potentially there will moments when it "needs drawing" in some views but not others.
-
-"keysForValuesToObserveForUndo" (an NSSet of NSStrings; read-only) - See the comment for -keysForValuesToObserveForUndo below.
-
-"scriptingFillColor" and "scriptingStrokeColor" (NSColors; read-write) - The colors that will be used to fill or stroke this graphic when it's drawn, or nil if filling or stroking is not being done. These attributes are computed from "drawingFill"/"fillColor" and "drawingStroke"/"strokeColor." They're here because, even though the separate boolean properties are OK for presenting in checkboxes in the UI, we don't want to make scripters deal with them. For scripters a color of nil ("missing value") is what's used to turn off filling or stroking.
-
-"scriptingStrokeWidth" (a floating point NSNumber; read-write) - The width of the stroke that will be used for this graphic when it's drawn, or nil if stroking is not being done. This attribute is derived from "strokeWidth." It's here because we want to accurately report "missing value" when stroking is not being done. Since it's here we might as well let scripters turn off stroking by setting "missing value" too.
-
-In Sketch various properties of the controls of the grid inspector are bound to the properties of the selection of the graphics controller belonging to the window controller of the main window. Each SKTGraphicView observes the "drawingBounds" and "drawingContents" properties of every graphic that it's displaying so it knows when they need redrawing. Each SKTDocument observes many properties of every of one of its graphics so it can register undo actions when they change; for each graphic the exact set of such properties is determined by the current value of the "keysForValuesToObserveForUndo" property. Also, many of these properties are scriptable.
-
-*/
 
 #pragma mark *** Convenience ***
 
@@ -223,6 +239,7 @@ In Sketch various properties of the controls of the grid inspector are bound to 
 - (void)makeNaturalSize;
 
 // Set the bounds of the graphic, doing whatever scaling and translation is necessary.
+- (void)setBounds:(NSRect)bounds;
 
 // Set the color of the graphic, whatever that means. The default implementation of this method just sets isDrawingFill to YES and fillColor to the passed-in color. In Sketch this method is invoked when the user drops a color chip on the graphic or uses the color panel to change the color of all of the selected graphics.
 - (void)setColor:(NSColor *)color;

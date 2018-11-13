@@ -1,3 +1,4 @@
+
 /*
      File: SKTAppDelegate.m
  Abstract: The application delegate: This object manages display of the preferences panel, graphics inspector, and tools palette.
