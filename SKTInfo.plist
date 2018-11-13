@@ -23,7 +23,7 @@
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
-	<string>Sketch</string>
+	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIconFile</key>
 	<string>Draw2App</string>
 	<key>CFBundleIdentifier</key>
