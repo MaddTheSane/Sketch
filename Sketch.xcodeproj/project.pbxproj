@@ -57,7 +57,7 @@
 		55CA285D219A721B00D38BDB /* GenerateThumbnailForURL.m in Sources */ = {isa = PBXBuildFile; fileRef = 55CA285C219A721B00D38BDB /* GenerateThumbnailForURL.m */; };
 		55CA285F219A721B00D38BDB /* GeneratePreviewForURL.m in Sources */ = {isa = PBXBuildFile; fileRef = 55CA285E219A721B00D38BDB /* GeneratePreviewForURL.m */; };
 		55CA2861219A721B00D38BDB /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 55CA2860219A721B00D38BDB /* main.c */; };
-		55CA2866219A723D00D38BDB /* QuickLookSketch.qlgenerator in Embed PlugIns */ = {isa = PBXBuildFile; fileRef = 55CA285A219A721B00D38BDB /* QuickLookSketch.qlgenerator */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		55CA2866219A723D00D38BDB /* QuickLookSketch.qlgenerator in Embed Spotlight */ = {isa = PBXBuildFile; fileRef = 55CA285A219A721B00D38BDB /* QuickLookSketch.qlgenerator */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		55CA286C219A73FA00D38BDB /* SKTDrawDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = 55CA286A219A73FA00D38BDB /* SKTDrawDocument.h */; };
 		55CA286D219A73FA00D38BDB /* SKTDrawDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 55CA286B219A73FA00D38BDB /* SKTDrawDocument.m */; };
 		55CA286E219A763300D38BDB /* SKTError.m in Sources */ = {isa = PBXBuildFile; fileRef = 38FA46D00847B7AC002B08B0 /* SKTError.m */; };
@@ -82,21 +82,21 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		55CA2869219A723D00D38BDB /* Embed PlugIns */ = {
+		55CA2869219A723D00D38BDB /* Embed Spotlight */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 13;
+			dstPath = Contents/Library/Spotlight;
+			dstSubfolderSpec = 1;
 			files = (
-				55CA2866219A723D00D38BDB /* QuickLookSketch.qlgenerator in Embed PlugIns */,
+				55CA2866219A723D00D38BDB /* QuickLookSketch.qlgenerator in Embed Spotlight */,
 			);
-			name = "Embed PlugIns";
+			name = "Embed Spotlight";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		09B61A73FFA8B0EB11CA2CEA /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		09B61A73FFA8B0EB11CA2CEA /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		0A3ECEDAFE888A39C02AAC07 /* SKTAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTAppDelegate.m; sourceTree = "<group>"; };
 		0A3ECEDBFE888A39C02AAC07 /* SKTWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTWindowController.m; sourceTree = "<group>"; };
 		0A3ECEDCFE888A39C02AAC07 /* SKTGraphicView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTGraphicView.m; sourceTree = "<group>"; };
@@ -118,8 +118,8 @@
 		0A3ECF14FE888A39C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		0A3ECF35FE888A39C02AAC07 /* ToDo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ToDo.txt; sourceTree = "<group>"; };
 		0A3ECF36FE888A39C02AAC07 /* ReadMe.rtf */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.rtf; path = ReadMe.rtf; sourceTree = "<group>"; };
-		0A3ECF39FE888A39C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
-		0A3ECF3AFE888A39C02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		0A3ECF39FE888A39C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		0A3ECF3AFE888A39C02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		26D1BC9902E4B4D608C917DD /* SKTPrefix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTPrefix.h; sourceTree = "<group>"; };
 		2811962814C8F3B2004103CE /* ReadMe.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = ReadMe.rtf; sourceTree = "<group>"; };
 		3805D472084D7840003B3AAC /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Preferences.nib; sourceTree = "<group>"; };
@@ -155,7 +155,7 @@
 		55CA285C219A721B00D38BDB /* GenerateThumbnailForURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GenerateThumbnailForURL.m; sourceTree = "<group>"; };
 		55CA285E219A721B00D38BDB /* GeneratePreviewForURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratePreviewForURL.m; sourceTree = "<group>"; };
 		55CA2860219A721B00D38BDB /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
-		55CA2862219A721B00D38BDB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		55CA2862219A721B00D38BDB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; usesTabs = 1; };
 		55CA286A219A73FA00D38BDB /* SKTDrawDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTDrawDocument.h; sourceTree = "<group>"; };
 		55CA286B219A73FA00D38BDB /* SKTDrawDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTDrawDocument.m; sourceTree = "<group>"; };
 		55CA2875219A76C700D38BDB /* SKTTextArea.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTTextArea.h; sourceTree = "<group>"; };
@@ -184,46 +184,14 @@
 		0A3ECED8FE888A39C02AAC07 /* Sketch */ = {
 			isa = PBXGroup;
 			children = (
+				55CA2879219A783200D38BDB /* Classes */,
 				2811962814C8F3B2004103CE /* ReadMe.rtf */,
-				0A3ECEE3FE888A39C02AAC07 /* SKTAppDelegate.h */,
-				0A3ECEDAFE888A39C02AAC07 /* SKTAppDelegate.m */,
-				386A7A470C2F433100217F5A /* SKTDocument.h */,
-				386A7A460C2F433100217F5A /* SKTDocument.m */,
-				0A3ECEE4FE888A39C02AAC07 /* SKTWindowController.h */,
-				0A3ECEDBFE888A39C02AAC07 /* SKTWindowController.m */,
-				0A3ECEE5FE888A39C02AAC07 /* SKTGraphicView.h */,
-				0A3ECEDCFE888A39C02AAC07 /* SKTGraphicView.m */,
-				386A7A4F0C2F435100217F5A /* SKTGraphic.h */,
-				386A7A4E0C2F435100217F5A /* SKTGraphic.m */,
-				386A7A4A0C2F434500217F5A /* SKTCircle.h */,
-				386A7A4B0C2F434500217F5A /* SKTCircle.m */,
-				386A7A570C2F436300217F5A /* SKTImage.h */,
-				386A7A540C2F436300217F5A /* SKTImage.m */,
-				386A7A520C2F436300217F5A /* SKTLine.h */,
-				386A7A550C2F436300217F5A /* SKTLine.m */,
-				386A7A590C2F436300217F5A /* SKTRectangle.h */,
-				386A7A530C2F436300217F5A /* SKTRectangle.m */,
-				386A7A580C2F436300217F5A /* SKTText.h */,
-				386A7A560C2F436300217F5A /* SKTText.m */,
-				38FA46CF0847B7AC002B08B0 /* SKTError.h */,
-				38FA46D00847B7AC002B08B0 /* SKTError.m */,
 				38AFB5740C2F908200AEF7A8 /* SKTError.strings */,
-				381996CA083EBC270087C524 /* SKTGrid.h */,
-				381996CB083EBC270087C524 /* SKTGrid.m */,
-				386A7AAF0C2F47BC00217F5A /* SKTRenderingView.h */,
-				386A7AAE0C2F47BC00217F5A /* SKTRenderingView.m */,
-				0A3ECEE8FE888A39C02AAC07 /* SKTToolPaletteController.h */,
-				0A3ECEDFFE888A39C02AAC07 /* SKTToolPaletteController.m */,
-				38492FE308EF710C002FA9E4 /* SKTZoomingScrollView.h */,
-				38492FE408EF710C002FA9E4 /* SKTZoomingScrollView.m */,
 				38D54A7507D51A2A00514CB8 /* SKTInfo.plist */,
-				0A3ECEECFE888A39C02AAC07 /* SKTMain.m */,
-				26D1BC9902E4B4D608C917DD /* SKTPrefix.h */,
-				38C1482A0C3E2D03001085CE /* NSColor_SKTScripting.m */,
 				0A3ECF0DFE888A39C02AAC07 /* Resources */,
 				0A3ECF2DFE888A39C02AAC07 /* Notes */,
-				0A3ECF37FE888A39C02AAC07 /* Frameworks */,
 				55CA285B219A721B00D38BDB /* QuickLookSketch */,
+				0A3ECF37FE888A39C02AAC07 /* Frameworks */,
 				20846A42FE943C2411CA2CEA /* Products */,
 			);
 			name = Sketch;
@@ -294,6 +262,46 @@
 			sourceTree = "<group>";
 			usesTabs = 0;
 		};
+		55CA2879219A783200D38BDB /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				0A3ECEE3FE888A39C02AAC07 /* SKTAppDelegate.h */,
+				0A3ECEDAFE888A39C02AAC07 /* SKTAppDelegate.m */,
+				386A7A470C2F433100217F5A /* SKTDocument.h */,
+				386A7A460C2F433100217F5A /* SKTDocument.m */,
+				0A3ECEE4FE888A39C02AAC07 /* SKTWindowController.h */,
+				0A3ECEDBFE888A39C02AAC07 /* SKTWindowController.m */,
+				0A3ECEE5FE888A39C02AAC07 /* SKTGraphicView.h */,
+				0A3ECEDCFE888A39C02AAC07 /* SKTGraphicView.m */,
+				386A7A4F0C2F435100217F5A /* SKTGraphic.h */,
+				386A7A4E0C2F435100217F5A /* SKTGraphic.m */,
+				386A7A4A0C2F434500217F5A /* SKTCircle.h */,
+				386A7A4B0C2F434500217F5A /* SKTCircle.m */,
+				386A7A570C2F436300217F5A /* SKTImage.h */,
+				386A7A540C2F436300217F5A /* SKTImage.m */,
+				386A7A520C2F436300217F5A /* SKTLine.h */,
+				386A7A550C2F436300217F5A /* SKTLine.m */,
+				386A7A590C2F436300217F5A /* SKTRectangle.h */,
+				386A7A530C2F436300217F5A /* SKTRectangle.m */,
+				386A7A580C2F436300217F5A /* SKTText.h */,
+				386A7A560C2F436300217F5A /* SKTText.m */,
+				38FA46CF0847B7AC002B08B0 /* SKTError.h */,
+				38FA46D00847B7AC002B08B0 /* SKTError.m */,
+				381996CA083EBC270087C524 /* SKTGrid.h */,
+				381996CB083EBC270087C524 /* SKTGrid.m */,
+				386A7AAF0C2F47BC00217F5A /* SKTRenderingView.h */,
+				386A7AAE0C2F47BC00217F5A /* SKTRenderingView.m */,
+				0A3ECEE8FE888A39C02AAC07 /* SKTToolPaletteController.h */,
+				0A3ECEDFFE888A39C02AAC07 /* SKTToolPaletteController.m */,
+				38492FE308EF710C002FA9E4 /* SKTZoomingScrollView.h */,
+				38492FE408EF710C002FA9E4 /* SKTZoomingScrollView.m */,
+				0A3ECEECFE888A39C02AAC07 /* SKTMain.m */,
+				26D1BC9902E4B4D608C917DD /* SKTPrefix.h */,
+				38C1482A0C3E2D03001085CE /* NSColor_SKTScripting.m */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -340,8 +348,7 @@
 				38D54A4807D51A2A00514CB8 /* Resources */,
 				38D54A6007D51A2A00514CB8 /* Sources */,
 				38D54A7207D51A2A00514CB8 /* Frameworks */,
-				38D54A7407D51A2A00514CB8 /* ShellScript */,
-				55CA2869219A723D00D38BDB /* Embed PlugIns */,
+				55CA2869219A723D00D38BDB /* Embed Spotlight */,
 			);
 			buildRules = (
 			);
@@ -381,7 +388,7 @@
 				TargetAttributes = {
 					55CA2859219A721B00D38BDB = {
 						CreatedOnToolsVersion = 10.1;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 				};
 			};
@@ -431,18 +438,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		38D54A7407D51A2A00514CB8 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-			shellPath = /bin/sh;
-			shellScript = "# This shell-script build phase happens only when installing and causes the \n# project sources (which are shipped as an example) to be installed.\n\nEXAMPLESDIR=${SYSTEM_DEVELOPER_DIR}/Examples\n\n# install the source\nxcodebuild installsrc \"SYMROOT=${SYMROOT}\" \"OBJROOT=${OBJROOT}\" \"DSTROOT=${DSTROOT}\" \"SRCROOT=${DSTROOT}${EXAMPLESDIR}/${PRODUCT_NAME}\"\n\n# strip out garbage\nfind ${DSTROOT}${EXAMPLESDIR}/${PRODUCT_NAME} -name \"*~\" -exec rm -rf {} \\; -prune ; \nfind ${DSTROOT}${EXAMPLESDIR}/${PRODUCT_NAME} -name \"*~.*\" -exec rm -rf {} \\; -prune ; \nfind ${DSTROOT}${EXAMPLESDIR}/${PRODUCT_NAME} -type d -name \"CVS\" -exec rm -rf {} \\; -prune ;\nfind ${DSTROOT}${EXAMPLESDIR}/${PRODUCT_NAME} -name \"*.pbxuser\" -exec rm -rf {} \\; ;\nfind ${DSTROOT}${EXAMPLESDIR}/${PRODUCT_NAME} -name \"*.perspective\" -exec rm -rf {} \\; ;\nfind ${DSTROOT}${EXAMPLESDIR}/${PRODUCT_NAME} -name \"*.mode[1234567890]\" -exec rm -rf {} \\; ;\nfind ${DSTROOT}${EXAMPLESDIR}/${PRODUCT_NAME} -name \"*.mode[1234567890]v[1234567890]\" -exec rm -rf {} \\; ;\nfind ${DSTROOT}${EXAMPLESDIR}/${PRODUCT_NAME} -name \".nfs*\" -exec rm -rf {} \\; ;\nfind ${DSTROOT}${EXAMPLESDIR}/${PRODUCT_NAME} -name \".gdb*\" -exec rm -rf {} \\; ;\nfind ${DSTROOT}${EXAMPLESDIR}/${PRODUCT_NAME} -name \".#*\" -exec rm -rf {} \\; ;\nfind ${DSTROOT}${EXAMPLESDIR}/${PRODUCT_NAME} -name \".DS_Store\" -exec rm -rf {} \\; ;\nrm -rf ${DSTROOT}${EXAMPLESDIR}/${PRODUCT_NAME}/build\n\n# set permissions\nchmod -R u+rwX,go+rX,go-w ${DSTROOT}${EXAMPLESDIR}/${PRODUCT_NAME}\nchown -R ${INSTALL_OWNER}:${INSTALL_GROUP} ${DSTROOT}${EXAMPLESDIR}/${PRODUCT_NAME}\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		38D54A6007D51A2A00514CB8 /* Sources */ = {
@@ -581,9 +576,7 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "-";
 				CURRENT_PROJECT_VERSION = 51;
-				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = SKTPrefix.h;
 				INFOPLIST_FILE = SKTInfo.plist;
@@ -604,7 +597,6 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "-";
 				CURRENT_PROJECT_VERSION = 51;
-				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = SKTPrefix.h;
 				INFOPLIST_FILE = SKTInfo.plist;
@@ -621,11 +613,19 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
@@ -633,23 +633,30 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
@@ -659,11 +666,19 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
@@ -671,22 +686,28 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -694,37 +715,24 @@
 		55CA2864219A721B00D38BDB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "-";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
+				DEVELOPMENT_TEAM = "";
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = QuickLook/Info.plist;
 				INSTALL_PATH = /Library/QuickLook;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.apple.sketch.quicklookgenerator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				WRAPPER_EXTENSION = qlgenerator;
 			};
 			name = Debug;
@@ -732,32 +740,20 @@
 		55CA2865219A721B00D38BDB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "-";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_NS_ASSERTIONS = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = QuickLook/Info.plist;
 				INSTALL_PATH = /Library/QuickLook;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.apple.sketch.quicklookgenerator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				WRAPPER_EXTENSION = qlgenerator;
 			};
 			name = Release;
