@@ -27,7 +27,7 @@
 	<key>CFBundleIconFile</key>
 	<string>Draw2App</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.apple.CocoaExamples.Sketch</string>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
@@ -44,17 +44,19 @@
 	<string>Draw2</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>NSSupportsSuddenTermination</key>
+	<true/>
 	<key>OSAScriptingDefinition</key>
 	<string>Sketch.sdef</string>
 	<key>UTExportedTypeDeclarations</key>
 	<array>
 		<dict>
-			<key>UTTypeDescription</key>
-			<string>Apple Sketch document</string>
 			<key>UTTypeConformsTo</key>
 			<array>
 				<string>public.data</string>
 			</array>
+			<key>UTTypeDescription</key>
+			<string>Apple Sketch document</string>
 			<key>UTTypeIconFile</key>
 			<string>Draw2File</string>
 			<key>UTTypeIdentifier</key>
@@ -68,7 +70,5 @@
 			</dict>
 		</dict>
 	</array>
-	<key>NSSupportsSuddenTermination</key>
-	<true/>
 </dict>
 </plist>

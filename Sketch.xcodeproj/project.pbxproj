@@ -61,6 +61,7 @@
 		38D54A7307D51A2A00514CB8 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09B61A73FFA8B0EB11CA2CEA /* Cocoa.framework */; };
 		38FA46D10847B7AC002B08B0 /* SKTError.h in Headers */ = {isa = PBXBuildFile; fileRef = 38FA46CF0847B7AC002B08B0 /* SKTError.h */; };
 		38FA46D20847B7AC002B08B0 /* SKTError.m in Sources */ = {isa = PBXBuildFile; fileRef = 38FA46D00847B7AC002B08B0 /* SKTError.m */; };
+		55CA2852219A701F00D38BDB /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55CA2851219A701F00D38BDB /* Media.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -89,7 +90,7 @@
 		0A3ECF0BFE888A39C02AAC07 /* Draw2File.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Draw2File.icns; sourceTree = "<group>"; };
 		0A3ECF0FFE888A39C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = English; path = English.lproj/Sketch.scriptTerminology; sourceTree = "<group>"; };
 		0A3ECF12FE888A39C02AAC07 /* Sketch.scriptSuite */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Sketch.scriptSuite; sourceTree = "<group>"; };
-		0A3ECF14FE888A39C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		0A3ECF14FE888A39C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		0A3ECF35FE888A39C02AAC07 /* ToDo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ToDo.txt; sourceTree = "<group>"; };
 		0A3ECF36FE888A39C02AAC07 /* ReadMe.rtf */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.rtf; path = ReadMe.rtf; sourceTree = "<group>"; };
 		0A3ECF39FE888A39C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
@@ -118,12 +119,13 @@
 		386A7A590C2F436300217F5A /* SKTRectangle.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKTRectangle.h; sourceTree = "<group>"; };
 		386A7AAE0C2F47BC00217F5A /* SKTRenderingView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKTRenderingView.m; sourceTree = "<group>"; };
 		386A7AAF0C2F47BC00217F5A /* SKTRenderingView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKTRenderingView.h; sourceTree = "<group>"; };
-		38AFB5750C2F908200AEF7A8 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/SKTError.strings; sourceTree = "<group>"; };
+		38AFB5750C2F908200AEF7A8 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/SKTError.strings; sourceTree = "<group>"; };
 		38C1482A0C3E2D03001085CE /* NSColor_SKTScripting.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NSColor_SKTScripting.m; sourceTree = "<group>"; };
 		38D54A7507D51A2A00514CB8 /* SKTInfo.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = SKTInfo.plist; sourceTree = "<group>"; tabWidth = 4; };
 		38D54A7607D51A2A00514CB8 /* Sketch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sketch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		38FA46CF0847B7AC002B08B0 /* SKTError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTError.h; sourceTree = "<group>"; };
 		38FA46D00847B7AC002B08B0 /* SKTError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTError.m; sourceTree = "<group>"; };
+		55CA2851219A701F00D38BDB /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -188,6 +190,7 @@
 		0A3ECF0DFE888A39C02AAC07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				55CA2851219A701F00D38BDB /* Media.xcassets */,
 				0A3ECF01FE888A39C02AAC07 /* Draw2App.icns */,
 				0A3ECF0BFE888A39C02AAC07 /* Draw2File.icns */,
 				0A3ECF13FE888A39C02AAC07 /* InfoPlist.strings */,
@@ -291,7 +294,7 @@
 		0A3ECED7FE888A39C02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0610;
+				LastUpgradeCheck = 1010;
 			};
 			buildConfigurationList = 3833E1A30889EBD20049736A /* Build configuration list for PBXProject "Sketch" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -330,6 +333,7 @@
 				38D54A5E07D51A2A00514CB8 /* Sketch.scriptSuite in Resources */,
 				38D54A5C07D51A2A00514CB8 /* Sketch.scriptTerminology in Resources */,
 				3848302009FE857F00094A3A /* Sketch.sdef in Resources */,
+				55CA2852219A701F00D38BDB /* Media.xcassets in Resources */,
 				38AFB5760C2F908200AEF7A8 /* SKTError.strings in Resources */,
 				38D54A5607D51A2A00514CB8 /* TextGraphic.tiff in Resources */,
 				38D54A4C07D51A2A00514CB8 /* ToolPalette.nib in Resources */,
@@ -466,6 +470,7 @@
 				GCC_PREFIX_HEADER = SKTPrefix.h;
 				INFOPLIST_FILE = SKTInfo.plist;
 				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.apple.CocoaExamples.Sketch;
 				PRODUCT_NAME = Sketch;
 				RC_PROJECT_NAME = Draw2;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -483,6 +488,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = SKTPrefix.h;
 				INFOPLIST_FILE = SKTInfo.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = com.apple.CocoaExamples.Sketch;
 				PRODUCT_NAME = Sketch;
 				RC_PROJECT_NAME = Draw2;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -494,15 +500,28 @@
 		3833E1A40889EBD20049736A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -519,15 +538,27 @@
 		3833E1A50889EBD20049736A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;

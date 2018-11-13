@@ -49,10 +49,10 @@
 
 
 // A string constant declared in the header.
-NSString *SKTErrorDomain = @"SketchErrorDomain";
+NSString *const SKTErrorDomain = @"SketchErrorDomain";
 
 
-NSError *SKTErrorWithCode(NSInteger code) {
+NSError *SKTErrorWithCode(SKTErrorCode code) {
     
     // An NSError has a bunch of parameters that determine how it's presented to the user. We specify two of them here. They're localized strings that we look up in SKTError.strings, whose keys are derived from the error code and an indicator of which kind of localized string we're looking up. The value: strings are specified so that at least something is shown if there's a problem with the strings file, but really they should never ever be shown to the user. When testing an app like Sketch you really have to make sure that you've seen every call of SKTErrorWithCode() executed since the last time you did things like change the set of available error codes or edit the strings files.
     NSBundle *mainBundle = [NSBundle mainBundle];
