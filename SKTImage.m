@@ -1,7 +1,7 @@
 /*
      File: SKTImage.m
  Abstract: A graphic object to represent an image.
-  Version: 1.7.3
+  Version: 1.8
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -69,13 +69,6 @@ static NSString *SKTImageContentsKey = @"contents";
 }
 
 
-- (void)dealloc {
-
-    // Do the regular Cocoa thing.
-    [_contents release];
-    [super dealloc];
-
-}
 
 
 #pragma mark *** Private KVC-Compliance for Public Properties ***
@@ -101,10 +94,7 @@ static NSString *SKTImageContentsKey = @"contents";
 
     // If there's a transformed version of the contents being held as a cache, it's invalid now.
     NSImage *newContents = [[NSImage alloc] initWithContentsOfFile:[filePath stringByStandardizingPath]];
-    if (_contents) {
-	[_contents release];
-    }
-    _contents = [newContents retain];
+    _contents = newContents;
     
 }
 
@@ -112,12 +102,12 @@ static NSString *SKTImageContentsKey = @"contents";
 #pragma mark *** Public Methods ***
 
 
-- (id)initWithPosition:(NSPoint)position contents:(NSImage *)contents {
+- (instancetype)initWithPosition:(NSPoint)position contents:(NSImage *)contents {
 
     // Do the regular Cocoa thing.
     self = [self init];
     if (self) {
-	_contents = [contents retain];
+	_contents = contents;
 
 	// Leave the image centered on the mouse pointer.
 	NSSize contentsSize = [_contents size];
@@ -132,25 +122,25 @@ static NSString *SKTImageContentsKey = @"contents";
 #pragma mark *** Overrides of SKTGraphic Methods ***
 
 
-- (id)initWithProperties:(NSDictionary *)properties {
+- (instancetype)initWithProperties:(NSDictionary *)properties {
     
     // Let SKTGraphic do its job and then handle the additional properties defined by this subclass.
     self = [super initWithProperties:properties];
     if (self) {
 
 	// The dictionary entries are all instances of the classes that can be written in property lists. Don't trust the type of something you get out of a property list unless you know your process created it or it was read from your application or framework's resources. We don't have to worry about KVO-compliance in initializers like this by the way; no one should be observing an unitialized object.
-	NSData *contentsData = [properties objectForKey:SKTImageContentsKey];
+	NSData *contentsData = properties[SKTImageContentsKey];
 	if ([contentsData isKindOfClass:[NSData class]]) {
 	    NSImage *contents = [NSUnarchiver unarchiveObjectWithData:contentsData];
 	    if ([contents isKindOfClass:[NSImage class]]) {
-		_contents = [contents retain];
+		_contents = contents;
 	    }
 	}
-	NSNumber *isFlippedHorizontallyNumber = [properties objectForKey:SKTImageIsFlippedHorizontallyKey];
+	NSNumber *isFlippedHorizontallyNumber = properties[SKTImageIsFlippedHorizontallyKey];
 	if ([isFlippedHorizontallyNumber isKindOfClass:[NSNumber class]]) {
 	    _isFlippedHorizontally = [isFlippedHorizontallyNumber boolValue];
 	}
-	NSNumber *isFlippedVerticallyNumber = [properties objectForKey:SKTImageIsFlippedVerticallyKey];
+	NSNumber *isFlippedVerticallyNumber = properties[SKTImageIsFlippedVerticallyKey];
 	if ([isFlippedVerticallyNumber isKindOfClass:[NSNumber class]]) {
 	    _isFlippedVertically = [isFlippedVerticallyNumber boolValue];
 	}
@@ -165,9 +155,9 @@ static NSString *SKTImageContentsKey = @"contents";
 
     // Let SKTGraphic do its job and then handle the one additional property defined by this subclass. The dictionary must contain nothing but values that can be written in old-style property lists.
     NSMutableDictionary *properties = [super properties];
-    [properties setObject:[NSArchiver archivedDataWithRootObject:_contents] forKey:SKTImageContentsKey];
-    [properties setObject:[NSNumber numberWithBool:_isFlippedHorizontally] forKey:SKTImageIsFlippedHorizontallyKey];
-    [properties setObject:[NSNumber numberWithBool:_isFlippedVertically] forKey:SKTImageIsFlippedVerticallyKey];
+    properties[SKTImageContentsKey] = [NSArchiver archivedDataWithRootObject:_contents];
+    properties[SKTImageIsFlippedHorizontallyKey] = @(_isFlippedHorizontally);
+    properties[SKTImageIsFlippedVerticallyKey] = @(_isFlippedVertically);
     return properties;
 
 }
@@ -195,7 +185,7 @@ static NSString *SKTImageContentsKey = @"contents";
     NSMutableSet *keys = [[super keyPathsForValuesAffectingDrawingContents] mutableCopy];
     [keys addObject:SKTImageIsFlippedHorizontallyKey];
     [keys addObject:SKTImageIsFlippedVerticallyKey];
-    return [keys autorelease];
+    return keys;
 
 }
 
@@ -295,7 +285,7 @@ static NSString *SKTImageContentsKey = @"contents";
     NSMutableSet *keys = [[super keysForValuesToObserveForUndo] mutableCopy];
     [keys addObject:SKTImageIsFlippedHorizontallyKey];
     [keys addObject:SKTImageIsFlippedVerticallyKey];
-    return [keys autorelease];
+    return keys;
     
 }
 
@@ -310,7 +300,7 @@ static NSString *SKTImageContentsKey = @"contents";
 	    NSLocalizedStringFromTable(@"Vertical Flipping", @"UndoStrings",@"Action name part for SKTImageIsFlippedVerticallyKey."), SKTImageIsFlippedVerticallyKey,
 	    nil];
     }
-    NSString *presentablePropertyName = [presentablePropertyNamesByKey objectForKey:key];
+    NSString *presentablePropertyName = presentablePropertyNamesByKey[key];
     if (!presentablePropertyName) {
 	presentablePropertyName = [super presentablePropertyNameForKey:key];
     }

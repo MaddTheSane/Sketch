@@ -1,7 +1,7 @@
 /*
      File: SKTDocument.h
  Abstract: The main document class for the application.
-  Version: 1.7.3
+  Version: 1.8
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -46,14 +46,14 @@
  */
 
 #import <Cocoa/Cocoa.h>
-
+#import "SKTGraphic.h"
 // The keys described down below.
 extern NSString *SKTDocumentCanvasSizeKey;
 extern NSString *SKTDocumentGraphicsKey;
 
 @class SKTMapTableOwner;
 
-@interface SKTDocument : NSDocument {
+@interface SKTDocument : NSDocument <SKTGraphicScriptingContainer> {
     @private
 
     // The value underlying the key-value coding (KVC) and observing (KVO) compliance described below. 
@@ -78,6 +78,6 @@ In Sketch the graphics property of each SKTGraphicView is bound to the graphics 
 */
 
 // Return the current value of the property.
-- (NSSize)canvasSize;
+@property (readonly) NSSize canvasSize;
 
 @end

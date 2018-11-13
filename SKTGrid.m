@@ -1,7 +1,7 @@
 /*
      File: SKTGrid.m
  Abstract: An object to represent a grid drawn on a Sketch canvas.
-  Version: 1.7.3
+  Version: 1.8
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -60,14 +60,14 @@ static NSTimeInterval SKTGridTemporaryShowingTime = 1.0;
 
 
 // An override of the superclass' designated initializer.
-- (id)init {
+- (instancetype)init {
     
     // Do the regular Cocoa thing.
     self = [super init];
     if (self) {
 
 	// Establish reasonable defaults. 9 points is an eighth of an inch, which is a reasonable default.
-	_color = [[NSColor lightGrayColor] retain];
+	_color = [NSColor lightGrayColor];
 	_spacing = 9.0f;
 	
     }
@@ -76,15 +76,10 @@ static NSTimeInterval SKTGridTemporaryShowingTime = 1.0;
 }
 
 
-- (void)dealloc {
-
+- (void)dealloc
+{
     // If we've set a timer to hide the grid invalidate it so it doesn't send a message to this object's zombie.
     [_hidingTimer invalidate];
-
-    // Do the regular Cocoa thing.
-    [_color release];
-    [super dealloc];
-
 }
 
 
@@ -107,38 +102,36 @@ static NSTimeInterval SKTGridTemporaryShowingTime = 1.0;
     // Tell observing views to redraw. By the way, it is virtually always a mistake to put willChange/didChange invocations together with nothing in between. Doing so can result in bugs that are hard to track down. You should always invoke -willChangeValueForKey:theKey before the result of -valueForKey:theKey would change, and then invoke -didChangeValueForKey:theKey after the result of -valueForKey:theKey would have changed. We can get away with this here because there is no value for the "any" key.
     [self willChangeValueForKey:SKTGridAnyKey];
     [self didChangeValueForKey:SKTGridAnyKey];
-
 }
 
 
-- (void)setSpacing:(CGFloat)spacing {
-    
-    // Weed out redundant invocations.
-    if (spacing!=_spacing) {
-        _spacing = spacing;
-
-	// If the grid is drawable, make sure the user gets visual feedback of the change. We don't have to do anything special if the grid is being shown right now.  Observers of "any" will get notified of this change because of what we did in +initialize. They're expected to invoke -drawRect:inView:. 
-	if (_spacing>0 && !_isAlwaysShown) {
-
-	    // Are we already showing the grid temporarily?
-	    if (_hidingTimer) {
+- (void)setSpacing:(CGFloat)spacing
+{
+	// Weed out redundant invocations.
+	if (spacing!=_spacing) {
+		_spacing = spacing;
 		
-		// Yes, and now the user's changed the grid spacing again, so put off the hiding of the grid.
-		[_hidingTimer setFireDate:[NSDate dateWithTimeIntervalSinceNow:SKTGridTemporaryShowingTime]];
+		// If the grid is drawable, make sure the user gets visual feedback of the change. We don't have to do anything special if the grid is being shown right now.  Observers of "any" will get notified of this change because of what we did in +initialize. They're expected to invoke -drawRect:inView:.
+		if (_spacing>0 && !_isAlwaysShown) {
+			
+			// Are we already showing the grid temporarily?
+			if (_hidingTimer) {
+				
+				// Yes, and now the user's changed the grid spacing again, so put off the hiding of the grid.
+				[_hidingTimer setFireDate:[NSDate dateWithTimeIntervalSinceNow:SKTGridTemporaryShowingTime]];
+				
+			} else {
+				
+				// No, so show it the next time -drawRect:inView: is invoked, and then hide it again in one second.
+				_hidingTimer = [NSTimer scheduledTimerWithTimeInterval:SKTGridTemporaryShowingTime target:self selector:@selector(stopShowingGridForTimer:) userInfo:nil repeats:NO];
+				
+				// Don't bother with a separate _showsGridTemporarily instance variable. -drawRect: can just check to see if _hidingTimer is non-nil.
+				
+			}
+			
+		}
 		
-	    } else {
-		
-		// No, so show it the next time -drawRect:inView: is invoked, and then hide it again in one second.
-		_hidingTimer = [NSTimer scheduledTimerWithTimeInterval:SKTGridTemporaryShowingTime target:self selector:@selector(stopShowingGridForTimer:) userInfo:nil repeats:NO];
-		
-		// Don't bother with a separate _showsGridTemporarily instance variable. -drawRect: can just check to see if _hidingTimer is non-nil.
-		
-	    }
-	    
 	}
-	
-    }
-    
 }
 
 
@@ -166,18 +159,13 @@ static NSTimeInterval SKTGridTemporaryShowingTime = 1.0;
 
 #pragma mark *** Public Methods ***
 
+@synthesize alwaysShown = _isAlwaysShown;
+@synthesize constraining = _isConstraining;
 
 // Boilerplate.
 - (BOOL)isAlwaysShown {
     return _isAlwaysShown;
 }
-- (BOOL)isConstraining {
-    return _isConstraining;
-}
-- (void)setConstraining:(BOOL)isConstraining {
-    _isConstraining = isConstraining;
-}
-
 
 + (NSSet *)keyPathsForValuesAffectingUsable {
     return [NSSet setWithObject:@"spacing"];
@@ -199,7 +187,6 @@ static NSTimeInterval SKTGridTemporaryShowingTime = 1.0;
 	// If we're temporarily showing the grid then there's a timer that's going to hide it. If we're supposed to show the grid right now then we don't want the timer to undo that. If we're supposed to hide the grid right now then the hiding that the timer would do is redundant.
 	if (_hidingTimer) {
 	    [_hidingTimer invalidate];
-	    [_hidingTimer release];
 	    _hidingTimer = nil;
 	}
 
@@ -208,15 +195,14 @@ static NSTimeInterval SKTGridTemporaryShowingTime = 1.0;
 }
 
 
-- (NSPoint)constrainedPoint:(NSPoint)point {
-    
-    // The grid might not be usable right now, or constraining might be turned off.
-    if ([self isUsable] && _isConstraining) {
-	point.x = floor((point.x / _spacing) + 0.5) * _spacing;
-	point.y = floor((point.y / _spacing) + 0.5) * _spacing;
-    }
-    return point;
-    
+- (NSPoint)constrainedPoint:(NSPoint)point
+{
+	// The grid might not be usable right now, or constraining might be turned off.
+	if ([self isUsable] && _isConstraining) {
+		point.x = floor((point.x / _spacing) + 0.5) * _spacing;
+		point.y = floor((point.y / _spacing) + 0.5) * _spacing;
+	}
+	return point;
 }
 
 
@@ -228,46 +214,43 @@ static NSTimeInterval SKTGridTemporaryShowingTime = 1.0;
 }
 
 
-- (NSRect)alignedRect:(NSRect)rect {
-    
-    // Aligning is done even when constraining is not.
-    NSPoint upperRight = NSMakePoint(NSMaxX(rect), NSMaxY(rect));
-    rect.origin.x = floor((rect.origin.x / _spacing) + 0.5) * _spacing;
-    rect.origin.y = floor((rect.origin.y / _spacing) + 0.5) * _spacing;
-    upperRight.x = floor((upperRight.x / _spacing) + 0.5) * _spacing;
-    upperRight.y = floor((upperRight.y / _spacing) + 0.5) * _spacing;
-    rect.size.width = upperRight.x - rect.origin.x;
-    rect.size.height = upperRight.y - rect.origin.y;
-    return rect;
-
+- (NSRect)alignedRect:(NSRect)rect
+{
+	// Aligning is done even when constraining is not.
+	NSPoint upperRight = NSMakePoint(NSMaxX(rect), NSMaxY(rect));
+	rect.origin.x = floor((rect.origin.x / _spacing) + 0.5) * _spacing;
+	rect.origin.y = floor((rect.origin.y / _spacing) + 0.5) * _spacing;
+	upperRight.x = floor((upperRight.x / _spacing) + 0.5) * _spacing;
+	upperRight.y = floor((upperRight.y / _spacing) + 0.5) * _spacing;
+	rect.size.width = upperRight.x - rect.origin.x;
+	rect.size.height = upperRight.y - rect.origin.y;
+	return rect;
 }
 
 
 - (void)drawRect:(NSRect)rect inView:(NSView *)view {
-    
-    // The grid might not be usable right now. It might be shown, but only temporarily.
-    if ([self isUsable] && (_isAlwaysShown || _hidingTimer)) {
 	
-	// Figure out a big bezier path that corresponds to the entire grid. It will consist of the vertical lines and then the horizontal lines.
-	NSBezierPath *gridPath = [NSBezierPath bezierPath];
-	NSInteger lastVerticalLineNumber = floor(NSMaxX(rect) / _spacing);
-	for (NSInteger lineNumber = ceil(NSMinX(rect) / _spacing); lineNumber<=lastVerticalLineNumber; lineNumber++) {
-	    [gridPath moveToPoint:NSMakePoint((lineNumber * _spacing), NSMinY(rect))];
-	    [gridPath lineToPoint:NSMakePoint((lineNumber * _spacing), NSMaxY(rect))];
+	// The grid might not be usable right now. It might be shown, but only temporarily.
+	if ([self isUsable] && (_isAlwaysShown || _hidingTimer)) {
+		
+		// Figure out a big bezier path that corresponds to the entire grid. It will consist of the vertical lines and then the horizontal lines.
+		NSBezierPath *gridPath = [NSBezierPath bezierPath];
+		NSInteger lastVerticalLineNumber = floor(NSMaxX(rect) / _spacing);
+		for (NSInteger lineNumber = ceil(NSMinX(rect) / _spacing); lineNumber<=lastVerticalLineNumber; lineNumber++) {
+			[gridPath moveToPoint:NSMakePoint((lineNumber * _spacing), NSMinY(rect))];
+			[gridPath lineToPoint:NSMakePoint((lineNumber * _spacing), NSMaxY(rect))];
+		}
+		NSInteger lastHorizontalLineNumber = floor(NSMaxY(rect) / _spacing);
+		for (NSInteger lineNumber = ceil(NSMinY(rect) / _spacing); lineNumber<=lastHorizontalLineNumber; lineNumber++) {
+			[gridPath moveToPoint:NSMakePoint(NSMinX(rect), (lineNumber * _spacing))];
+			[gridPath lineToPoint:NSMakePoint(NSMaxX(rect), (lineNumber * _spacing))];
+		}
+		
+		// Draw the grid as one-pixel-wide lines of a specific color.
+		[_color set];
+		[gridPath setLineWidth:0.0];
+		[gridPath stroke];
 	}
-	NSInteger lastHorizontalLineNumber = floor(NSMaxY(rect) / _spacing);
-	for (NSInteger lineNumber = ceil(NSMinY(rect) / _spacing); lineNumber<=lastHorizontalLineNumber; lineNumber++) {
-	    [gridPath moveToPoint:NSMakePoint(NSMinX(rect), (lineNumber * _spacing))];
-	    [gridPath lineToPoint:NSMakePoint(NSMaxX(rect), (lineNumber * _spacing))];
-	}
-	
-	// Draw the grid as one-pixel-wide lines of a specific color.
-	[_color set];
-	[gridPath setLineWidth:0.0];
-	[gridPath stroke];
-	
-    }
-	
 }
 
 

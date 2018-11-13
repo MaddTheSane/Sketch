@@ -1,7 +1,7 @@
 /*
      File: SKTError.h
  Abstract: Custom error domain and constants for Sketch, and a function to create a new error object.
-  Version: 1.7.3
+  Version: 1.8
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following

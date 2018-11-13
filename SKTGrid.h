@@ -1,7 +1,7 @@
 /*
      File: SKTGrid.h
  Abstract: An object to represent a grid drawn on a Sketch canvas.
-  Version: 1.7.3
+  Version: 1.8
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -87,17 +87,15 @@ In Sketch various properties of the controls of the grid inspector are bound to 
 */
 
 // Simple accessors.
-- (BOOL)isAlwaysShown;
-- (BOOL)isConstraining;
-- (BOOL)isUsable;
-- (void)setAlwaysShown:(BOOL)isAlwaysShown;
-- (void)setConstraining:(BOOL)isConstraining;
+@property (getter=isAlwaysShown) BOOL alwaysShown;
+@property (getter=isConstraining) BOOL constraining;
+@property (getter=isUsable, readonly) BOOL usable;
 
 // Given a point, return a point that is constrained to the grid, if constraining is being done. Otherwise just return the passed-in point.
 - (NSPoint)constrainedPoint:(NSPoint)point;
 
 // Return YES if this grid can be used to align right now, NO otherwise. The difference between "align" and "constrain" in this class' naming scheme is that constraining is controlled by the user's setting of the value of "constraining," while aligning is not.
-- (BOOL)canAlign;
+@property (readonly) BOOL canAlign;
 
 // Given a rectangle, return a rectangle the four corners of which are aligned to the grid, regardless of whether this grid is constraining right now. It's a programming error invoke this when -canAlign would return NO though.
 - (NSRect)alignedRect:(NSRect)rect;

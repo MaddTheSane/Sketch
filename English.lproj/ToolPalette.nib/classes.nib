@@ -1,11 +1,12 @@
 {
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = NSObject; LANGUAGE = ObjC; }, 
         {
             ACTIONS = {selectToolAction = id; }; 
             CLASS = SKTToolPaletteController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {toolButtons = id; }; 
+            OUTLETS = {toolButtons = NSMatrix; }; 
             SUPERCLASS = NSWindowController; 
         }
     ); 

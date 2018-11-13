@@ -1,7 +1,7 @@
 /*
      File: SKTGraphic.h
  Abstract: The base class for Sketch graphics objects.
-  Version: 1.7.3
+  Version: 1.8
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -47,6 +47,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+@protocol SKTGraphicScriptingContainer;
+
 // The keys described down below.
 extern NSString *SKTGraphicCanSetDrawingFillKey;
 extern NSString *SKTGraphicCanSetDrawingStrokeKey;
@@ -80,7 +82,7 @@ extern const NSInteger SKTGraphicNoHandle;
     CGFloat _strokeWidth;
 
     // The object that contains the graphic (unretained), from the point of view of scriptability. This is here only for use by this class' override of scripting's -objectSpecifier method. In Sketch this is an SKTDocument.
-    NSObject *_scriptingContainer;
+    id<SKTGraphicScriptingContainer> _scriptingContainer;
 
 }
 
@@ -150,20 +152,20 @@ In Sketch various properties of the controls of the grid inspector are bound to 
 /* Subclasses of SKTGraphic might have reason to override any of the rest of this class' methods, starting here. */
 
 // Given a dictionary having the sort of entries that would be in a dictionary returned by -properties, but whose validity has not been determined, initialize, setting the values of as many properties as possible from it. Ignore unrecognized dictionary entries. Use default values for missing dictionary entries. This is not the designated initializer for this class (-init is).
-- (id)initWithProperties:(NSDictionary *)properties;
+- (instancetype)initWithProperties:(NSDictionary *)properties;
 
 // Return a dictionary that can be used as property list object and contains enough information to recreate the graphic (except for its class, which is handled by +propertiesWithGraphics:). The returned dictionary must be mutable so that it can be added to efficiently, but the receiver must ignore any mutations made to it after it's been returned.
-- (NSMutableDictionary *)properties;
+@property (readonly, copy) NSMutableDictionary *properties;
 
 #pragma mark *** Simple Property Getting ***
 
 // Accessors for properties that this class stores as instance variables. These methods provide readable KVC-compliance for several of the keys mentioned in comments above, but that's not why they're here (KVC direct instance variable access makes them unnecessary for that). They're here just for invoking and overriding by subclass code.
-- (NSRect)bounds;
-- (BOOL)isDrawingFill;
-- (NSColor *)fillColor;
-- (BOOL)isDrawingStroke;
-- (NSColor *)strokeColor;
-- (CGFloat)strokeWidth;
+@property  NSRect bounds;
+@property (getter=isDrawingFill, readonly) BOOL drawingFill;
+@property (readonly, copy) NSColor *fillColor;
+@property (getter=isDrawingStroke, readonly) BOOL drawingStroke;
+@property (readonly, copy) NSColor *strokeColor;
+@property (readonly) CGFloat strokeWidth;
 
 #pragma mark *** Drawing ***
 
@@ -172,13 +174,13 @@ In Sketch various properties of the controls of the grid inspector are bound to 
 + (NSSet *)keyPathsForValuesAffectingDrawingContents;
 
 // Return the bounding box of everything the receiver might draw when sent a -draw...InView: message. The default implementation of this method returns a bounds that assumes the default implementations of -drawContentsInView: and -drawHandlesInView:. Subclasses that override this probably have to override +keyPathsForValuesAffectingDrawingBounds too.
-- (NSRect)drawingBounds;
+@property (readonly) NSRect drawingBounds;
 
 // Draw the contents the receiver in a specific view. Use isBeingCreatedOrEditing if the graphic draws differently during its creation or while it's being edited. The default implementation of this method just draws the result of invoking -bezierPathForDrawing using the current fill and stroke parameters. Subclasses have to override either this method or -bezierPathForDrawing. Subclasses that override this may have to override +keyPathsForValuesAffectingDrawingBounds, +keyPathsForValuesAffectingDrawingContents, and -drawingBounds too.
 - (void)drawContentsInView:(NSView *)view isBeingCreateOrEdited:(BOOL)isBeingCreatedOrEditing;
 
 // Return a bezier path that can be stroked and filled to draw the graphic, if the graphic can be drawn so simply, nil otherwise. The default implementation of this method returns nil. Subclasses have to override either this method or -drawContentsInView:. Any returned bezier path should already have the graphic's current stroke width set in it.
-- (NSBezierPath *)bezierPathForDrawing;
+@property (readonly, copy) NSBezierPath *bezierPathForDrawing;
 
 // Draw the handles of the receiver in a specific view. The default implementation of this method just invokes -drawHandleInView:atPoint: for each point at the corners and on the sides of the rectangle returned by -bounds. Subclasses that override this probably have to override -handleUnderPoint: too.
 - (void)drawHandlesInView:(NSView *)view;
@@ -195,11 +197,11 @@ In Sketch various properties of the controls of the grid inspector are bound to 
 + (NSInteger)creationSizingHandle;
 
 // Return YES if it's useful to let the user toggle drawing of the fill or stroke, NO otherwise. The default implementations of these methods return YES.
-- (BOOL)canSetDrawingFill;
-- (BOOL)canSetDrawingStroke;
+@property (readonly) BOOL canSetDrawingFill;
+@property (readonly) BOOL canSetDrawingStroke;
 
 // Return YES if sending -makeNaturalSize to the receiver would do something noticable by the user, NO otherwise. The default implementation of this method returns YES if the defaultimplementation of -makeNaturalSize would actually do something, NO otherwise.
-- (BOOL)canMakeNaturalSize;
+@property (readonly) BOOL canMakeNaturalSize;
 
 // Return YES if the point is in the contents of the receiver, NO otherwise. The default implementation of this method returns YES if the point is inside [self bounds].
 - (BOOL)isContentsUnderPoint:(NSPoint)point;
@@ -221,13 +223,12 @@ In Sketch various properties of the controls of the grid inspector are bound to 
 - (void)makeNaturalSize;
 
 // Set the bounds of the graphic, doing whatever scaling and translation is necessary.
-- (void)setBounds:(NSRect)bounds;
 
 // Set the color of the graphic, whatever that means. The default implementation of this method just sets isDrawingFill to YES and fillColor to the passed-in color. In Sketch this method is invoked when the user drops a color chip on the graphic or uses the color panel to change the color of all of the selected graphics.
 - (void)setColor:(NSColor *)color;
 
 // Given that the receiver has just been created or double-clicked on or something, create and return a view that can present its editing interface to the user, or return nil. The returned view should be suitable for becoming a subview of a view whose bounds is passed in. Its frame should match the bounds of the receiver. The receiver should not assume anything about the lifetime of the returned editing view; it may remain in use even after subsequent invocations of this method, which should, again, create a new editing view each time. In other words, overrides of this method should be prepared for a graphic to have more than editing view outstanding. The default implementation of this method returns nil. In Sketch SKTText overrides it.
-- (NSView *)newEditingViewWithSuperviewBounds:(NSRect)superviewBounds NS_RETURNS_NOT_RETAINED;
+- (NSView *)newEditingViewWithSuperviewBounds:(NSRect)superviewBounds;
 
 // Given an editing view that was returned by a previous invocation of -newEditingViewWithSuperviewBounds:, tear down whatever connections exist between it and the receiver.
 - (void)finalizeEditingView:(NSView *)editingView;
@@ -235,7 +236,7 @@ In Sketch various properties of the controls of the grid inspector are bound to 
 #pragma mark *** Undo ***
 
 // Return the keys of all of the properties for which value changes are undoable. In Sketch SKTDocument observes the value for each key in the set returned by invoking this method on each graphic in the document, and registers undo operations when the values change. It also observes this "keysForValuesToObserveForUndo" property itself and reacts accordingly, because the value can change dynamically. For example, SKTText overrides this (and KVO-notifies about changes to what the override would return) for a couple of reasons.
-- (NSSet *)keysForValuesToObserveForUndo;
+@property (readonly, copy) NSSet *keysForValuesToObserveForUndo;
 
 // Given a key from the set returned by a previous invocation of -keysForValuesToObserveForUndo, return the human-readable, title-capitalized, localized, name of the property identified by the key, or nil for invalid keys (invokers should throw exceptions if nil is returned, because nil indicates a programming mistake). In Sketch SKTDocument uses this to create an undo action name when the user has changed the value of the property.
 + (NSString *)presentablePropertyNameForKey:(NSString *)key;
@@ -243,11 +244,11 @@ In Sketch various properties of the controls of the grid inspector are bound to 
 #pragma mark *** Scripting ***
 
 // Given that the receiver is now contained by some other object, or is no longer contained by another, take a pointer to its container, but do not retain it.
-- (void)setScriptingContainer:(NSObject *)scriptingContainer;
+@property (nonatomic, strong) id<SKTGraphicScriptingContainer> scriptingContainer;
 
 @end
 
-@interface NSObject(SKTGraphicScriptingContainer)
+@protocol SKTGraphicScriptingContainer <NSObject>
 
 // An informal protocol to which scriptable containers of SKTGraphics must conform. We declare this instead of just making it an SKTDocument method because that would needlessly reduce SKTGraphic's reusability (they would only be containable by SKTDocuments).
 - (NSScriptObjectSpecifier *)objectSpecifierForGraphic:(SKTGraphic *)graphic;

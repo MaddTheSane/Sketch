@@ -1,7 +1,7 @@
 /*
      File: SKTWindowController.m
  Abstract: A window controller to manage display of a Sketch window.
-  Version: 1.7.3
+  Version: 1.8
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -61,7 +61,7 @@ static NSString *SKTWindowControllerCanvasSizeObservationContext = @"com.apple.S
 @implementation SKTWindowController
 
 
-- (id)init {
+- (instancetype)init {
 
     // Do the regular Cocoa thing, specifying a particular nib.
     self = [super initWithWindowNibName:@"DrawWindow"];
@@ -88,8 +88,6 @@ static NSString *SKTWindowControllerCanvasSizeObservationContext = @"com.apple.S
     [[self document] removeObserver:self forKeyPath:SKTDocumentCanvasSizeKey];
 
     // Do the regular Cocoa thing.
-    [_grid release];
-    [super dealloc];
 
 }
 
@@ -111,10 +109,10 @@ static NSString *SKTWindowControllerCanvasSizeObservationContext = @"com.apple.S
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(NSObject *)observedObject change:(NSDictionary *)change context:(void *)context {
 
     // Make sure we don't intercept an observer notification that's meant for NSWindowController. In Mac OS 10.5 and earlier NSWindowControllers don't observe anything, but that could change in the future. We can do a simple pointer comparison because KVO doesn't do anything at all with the context value, not even retain or copy it.
-    if (context==SKTWindowControllerCanvasSizeObservationContext) {
+    if (context==(__bridge void *)(SKTWindowControllerCanvasSizeObservationContext)) {
 
 	// The "new value" in the change dictionary will be NSNull, instead of just not existing, if the value for some key in the key path is nil. In this case there are times in an NSWindowController's life cycle when its document is nil. Don't update the graphic view's size when we get notifications about that.
-	NSValue *documentCanvasSizeValue = [change objectForKey:NSKeyValueChangeNewKey];
+	NSValue *documentCanvasSizeValue = change[NSKeyValueChangeNewKey];
 	if (![documentCanvasSizeValue isEqual:[NSNull null]]) {
 	    [self observeDocumentCanvasSize:[documentCanvasSizeValue sizeValue]];
 	}
@@ -158,7 +156,7 @@ static NSString *SKTWindowControllerCanvasSizeObservationContext = @"com.apple.S
     // Redo the observing of the document's canvas size when the document changes. You would think we would just be able to observe self's "document.canvasSize" in -windowDidLoad or maybe even -init, but KVO wasn't really designed with observing of self in mind so things get a little squirrelly.
     [[self document] removeObserver:self forKeyPath:SKTDocumentCanvasSizeKey];
     [super setDocument:document];
-    [[self document] addObserver:self forKeyPath:SKTDocumentCanvasSizeKey options:NSKeyValueObservingOptionNew context:SKTWindowControllerCanvasSizeObservationContext];
+    [[self document] addObserver:self forKeyPath:SKTDocumentCanvasSizeKey options:NSKeyValueObservingOptionNew context:(__bridge void *)(SKTWindowControllerCanvasSizeObservationContext)];
 
 }
 
@@ -233,7 +231,6 @@ static NSString *SKTWindowControllerCanvasSizeObservationContext = @"com.apple.S
     SKTWindowController *windowController = [[SKTWindowController alloc] init];
     [[self document] addWindowController:windowController];
     [windowController showWindow:self];
-    [windowController release];
 
 }
 

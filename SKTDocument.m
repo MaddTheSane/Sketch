@@ -1,7 +1,7 @@
 /*
      File: SKTDocument.m
  Abstract: The main document class for the application.
-  Version: 1.7.3
+  Version: 1.8
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -79,30 +79,24 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 
 // Some methods are invoked by methods above them in this file.
 @interface SKTDocument(SKTForwardDeclarations)
-- (NSArray *)graphics;
+@property (readonly, copy) NSArray *graphics;
 - (void)startObservingGraphics:(NSArray *)graphics;
 - (void)stopObservingGraphics:(NSArray *)graphics;
 @end
 
 
 // A class we use to add reference counting to NSMapTable, which was not an object in Mac OS 10.4 and earlier. Why bother with a -mapTable accessor instead of a public instance variable for such a trivial case? Because Foundation's zombie debugging feature kicks in for method invocations but not public instance variable access.
-@interface SKTMapTableOwner : NSObject {
-    @private
-    NSMapTable *_mapTable;
-}
+@interface SKTMapTableOwner : NSObject
+@property (strong, readonly) NSMapTable *mapTable;
 @end
+
 @implementation SKTMapTableOwner
-- (id)init {
-    self = [super init];
-    _mapTable = NSCreateMapTable(NSObjectMapKeyCallBacks, NSObjectMapValueCallBacks, 0);
+@synthesize mapTable = _mapTable;
+- (instancetype)init {
+	if (self = [super init]) {
+		_mapTable = [[NSMapTable alloc] initWithKeyOptions:NSPointerFunctionsStrongMemory valueOptions:NSPointerFunctionsStrongMemory capacity:0];
+	}
     return self;
-}
-- (void)dealloc {
-    NSFreeMapTable(_mapTable);
-    [super dealloc];
-}
-- (NSMapTable *)mapTable {
-    return _mapTable;
 }
 @end
 
@@ -111,11 +105,10 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 
 
 // An override of the superclass' designated initializer, which means it should always be invoked.
-- (id)init {
+- (instancetype)init {
 
     // Do the regular Cocoa thing.
-    self = [super init];
-    if (self) {
+    if (self = [super init]) {
 
 	// Before anything undoable happens, register for a notification we need.
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeUndoManagerCheckpoint:) name:NSUndoManagerCheckpointNotification object:[self undoManager]];
@@ -133,14 +126,6 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 
     // Undo what we did in -init.
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NSUndoManagerCheckpointNotification object:[self undoManager]];
-
-    // Do the regular Cocoa thing.
-    [_undoGroupPresentablePropertyName release];
-    [_undoGroupOldPropertiesPerGraphic release];
-    [_undoGroupInsertedGraphics release];
-    [_graphics release];
-    [super dealloc];
-
 }
 
 
@@ -150,38 +135,37 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 - (NSArray *)graphics {
     
     // Never return nil when the invoker's expecting an empty collection.
-    return _graphics ? _graphics : [NSArray array];
+    return _graphics ? _graphics : @[];
     
 }
 
 
-- (void)insertGraphics:(NSArray *)graphics atIndexes:(NSIndexSet *)indexes {
-
-    // Do the actual insertion. Instantiate the graphics array lazily.
-    if (!_graphics) {
-	_graphics = [[NSMutableArray alloc] init];
-    }
-    [_graphics insertObjects:graphics atIndexes:indexes];
-
-    // For the purposes of scripting, every graphic has to point back to the document that contains it.
-    [graphics makeObjectsPerformSelector:@selector(setScriptingContainer:) withObject:self];
-
-    // Register an action that will undo the insertion.
-    NSUndoManager *undoManager = [self undoManager];
-    [undoManager registerUndoWithTarget:self selector:@selector(removeGraphicsAtIndexes:) object:indexes];
-
-    // Record the inserted graphics so we can filter out observer notifications from them. This way we don't waste memory registering undo operations for changes that wouldn't have any effect because the graphics are going to be removed anyway. In Sketch this makes a difference when you create a graphic and then drag the mouse to set its initial size right away. Why don't we do this if undo registration is disabled? Because we don't want to add to this set during document reading. (See what -readFromData:ofType:error: does with the undo manager.) That would ruin the undoability of the first graphic editing you do after reading a document.
-    if ([undoManager isUndoRegistrationEnabled]) {
-	if (_undoGroupInsertedGraphics) {
-	    [_undoGroupInsertedGraphics addObjectsFromArray:graphics];
-	} else {
-	    _undoGroupInsertedGraphics = [[NSMutableSet alloc] initWithArray:graphics];
+- (void)insertGraphics:(NSArray *)graphics atIndexes:(NSIndexSet *)indexes
+{
+	// Do the actual insertion. Instantiate the graphics array lazily.
+	if (!_graphics) {
+		_graphics = [[NSMutableArray alloc] init];
 	}
-    }
-
-    // Start observing the just-inserted graphics so that, when they're changed, we can record undo operations.
-    [self startObservingGraphics:graphics];
-
+	[_graphics insertObjects:graphics atIndexes:indexes];
+	
+	// For the purposes of scripting, every graphic has to point back to the document that contains it.
+	[graphics makeObjectsPerformSelector:@selector(setScriptingContainer:) withObject:self];
+	
+	// Register an action that will undo the insertion.
+	NSUndoManager *undoManager = [self undoManager];
+	[undoManager registerUndoWithTarget:self selector:@selector(removeGraphicsAtIndexes:) object:indexes];
+	
+	// Record the inserted graphics so we can filter out observer notifications from them. This way we don't waste memory registering undo operations for changes that wouldn't have any effect because the graphics are going to be removed anyway. In Sketch this makes a difference when you create a graphic and then drag the mouse to set its initial size right away. Why don't we do this if undo registration is disabled? Because we don't want to add to this set during document reading. (See what -readFromData:ofType:error: does with the undo manager.) That would ruin the undoability of the first graphic editing you do after reading a document.
+	if ([undoManager isUndoRegistrationEnabled]) {
+		if (_undoGroupInsertedGraphics) {
+			[_undoGroupInsertedGraphics addObjectsFromArray:graphics];
+		} else {
+			_undoGroupInsertedGraphics = [[NSMutableSet alloc] initWithArray:graphics];
+		}
+	}
+	
+	// Start observing the just-inserted graphics so that, when they're changed, we can record undo operations.
+	[self startObservingGraphics:graphics];
 }
 
 
@@ -239,139 +223,134 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 
 
 // This method will only be invoked on Mac 10.4 and later. If you're writing an application that has to run on 10.3.x and earlier you should override -loadDataRepresentation:ofType: instead.
-- (BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError {
-
-    // This application's Info.plist only declares two document types, which go by the names SKTDocumentOldTypeName/SKTDocumentOldVersion1TypeName (on Mac OS 10.4) or SKTDocumentNewTypeName/SKTDocumentNewVersion1TypeName (on 10.5), for which it can play the "editor" role, and none for which it can play the "viewer" role, so the type better match one of those. Notice that we don't compare uniform type identifiers (UTIs) with -isEqualToString:. We use -[NSWorkspace type:conformsToType:] (new in 10.5), which is nearly always the correct thing to do with UTIs.
-    BOOL readSuccessfully;
-    NSArray *graphics = nil;
-    NSPrintInfo *printInfo = nil;
-    NSWorkspace *workspace = [NSWorkspace sharedWorkspace];
-    BOOL useTypeConformance = [workspace respondsToSelector:@selector(type:conformsToType:)];
-    if ((useTypeConformance && [workspace type:typeName conformsToType:SKTDocumentNewTypeName]) || [typeName isEqualToString:SKTDocumentOldTypeName]) {
-
-	// The file uses Sketch 2's new format. Read in the property list.
-	NSDictionary *properties = [NSPropertyListSerialization propertyListFromData:data mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:NULL];
-	if (properties) {
-
-	    // Get the graphics. Strictly speaking the property list of an empty document should have an empty graphics array, not no graphics array, but we cope easily with either. Don't trust the type of something you get out of a property list unless you know your process created it or it was read from your application or framework's resources.
-	    NSArray *graphicPropertiesArray = [properties objectForKey:SKTDocumentGraphicsKey];
-	    graphics = [graphicPropertiesArray isKindOfClass:[NSArray class]] ? [SKTGraphic graphicsWithProperties:graphicPropertiesArray] : [NSArray array];
-
-	    // Get the page setup. There's no point in considering the opening of the document to have failed if we can't get print info. A more finished app might present a panel warning the user that something's fishy though.
-	    NSData *printInfoData = [properties objectForKey:SKTDocumentPrintInfoKey];
-	    printInfo = [printInfoData isKindOfClass:[NSData class]] ? [NSUnarchiver unarchiveObjectWithData:printInfoData] : [[[NSPrintInfo alloc] init] autorelease];
-
-	} else if (outError) {
-
-	    // If property list parsing fails we have no choice but to admit that we don't know what went wrong. The error description returned by +[NSPropertyListSerialization propertyListFromData:mutabilityOption:format:errorDescription:] would be pretty technical, and not the sort of thing that we should show to a user.
-	    *outError = SKTErrorWithCode(SKTUnknownFileReadError);
-	
+- (BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError
+{
+	// This application's Info.plist only declares two document types, which go by the names SKTDocumentOldTypeName/SKTDocumentOldVersion1TypeName (on Mac OS 10.4) or SKTDocumentNewTypeName/SKTDocumentNewVersion1TypeName (on 10.5), for which it can play the "editor" role, and none for which it can play the "viewer" role, so the type better match one of those. Notice that we don't compare uniform type identifiers (UTIs) with -isEqualToString:. We use -[NSWorkspace type:conformsToType:] (new in 10.5), which is nearly always the correct thing to do with UTIs.
+	BOOL readSuccessfully;
+	NSArray *graphics = nil;
+	NSPrintInfo *printInfo = nil;
+	NSWorkspace *workspace = [NSWorkspace sharedWorkspace];
+	BOOL useTypeConformance = [workspace respondsToSelector:@selector(type:conformsToType:)];
+	if ((useTypeConformance && [workspace type:typeName conformsToType:SKTDocumentNewTypeName]) || [typeName isEqualToString:SKTDocumentOldTypeName]) {
+		
+		// The file uses Sketch 2's new format. Read in the property list.
+		NSDictionary *properties = [NSPropertyListSerialization propertyListFromData:data mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:NULL];
+		if (properties) {
+			
+			// Get the graphics. Strictly speaking the property list of an empty document should have an empty graphics array, not no graphics array, but we cope easily with either. Don't trust the type of something you get out of a property list unless you know your process created it or it was read from your application or framework's resources.
+			NSArray *graphicPropertiesArray = properties[SKTDocumentGraphicsKey];
+			graphics = [graphicPropertiesArray isKindOfClass:[NSArray class]] ? [SKTGraphic graphicsWithProperties:graphicPropertiesArray] : @[];
+			
+			// Get the page setup. There's no point in considering the opening of the document to have failed if we can't get print info. A more finished app might present a panel warning the user that something's fishy though.
+			NSData *printInfoData = properties[SKTDocumentPrintInfoKey];
+			printInfo = [printInfoData isKindOfClass:[NSData class]] ? [NSUnarchiver unarchiveObjectWithData:printInfoData] : [[NSPrintInfo alloc] init];
+			
+		} else if (outError) {
+			
+			// If property list parsing fails we have no choice but to admit that we don't know what went wrong. The error description returned by +[NSPropertyListSerialization propertyListFromData:mutabilityOption:format:errorDescription:] would be pretty technical, and not the sort of thing that we should show to a user.
+			*outError = SKTErrorWithCode(SKTUnknownFileReadError);
+			
+		}
+		readSuccessfully = properties ? YES : NO;
+		
+	} else {
+		NSParameterAssert((useTypeConformance && [workspace type:typeName conformsToType:SKTDocumentNewVersion1TypeName]) || [typeName isEqualToString:SKTDocumentOldVersion1TypeName]);
+		
+		// The file uses Sketch's old format. Sketch is still a work in progress.
+		graphics = @[];
+		printInfo = [[NSPrintInfo alloc] init];
+		readSuccessfully = YES;
+		
 	}
-	readSuccessfully = properties ? YES : NO;
-
-    } else {
-	NSParameterAssert((useTypeConformance && [workspace type:typeName conformsToType:SKTDocumentNewVersion1TypeName]) || [typeName isEqualToString:SKTDocumentOldVersion1TypeName]);
-
-	// The file uses Sketch's old format. Sketch is still a work in progress.
-	graphics = [NSArray array];
-	printInfo = [[[NSPrintInfo alloc] init] autorelease];
-	readSuccessfully = YES;
-
-    }
-
-    // Did the reading work? In this method we ought to either do nothing and return an error or overwrite every property of the document. Don't leave the document in a half-baked state.
-    if (readSuccessfully) {
-
-	// Update the document's list of graphics by going through KVC-compliant mutation methods. KVO notifications will be automatically sent to observers (which does matter, because this might be happening at some time other than document opening; reverting, for instance). Update its page setup the regular way. Don't let undo actions get registered while doing any of this. The fact that we have to explicitly protect against useless undo actions is considered an NSDocument bug nowadays, and will someday be fixed.
-	[[self undoManager] disableUndoRegistration];
-	[self removeGraphicsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [[self graphics] count])]];
-	[self insertGraphics:graphics atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [graphics count])]];
-	[self setPrintInfo:printInfo];
-	[[self undoManager] enableUndoRegistration];
-
-    } // else it was the responsibility of something in the previous paragraph to set *outError.
-    return readSuccessfully;
-
+	
+	// Did the reading work? In this method we ought to either do nothing and return an error or overwrite every property of the document. Don't leave the document in a half-baked state.
+	if (readSuccessfully) {
+		
+		// Update the document's list of graphics by going through KVC-compliant mutation methods. KVO notifications will be automatically sent to observers (which does matter, because this might be happening at some time other than document opening; reverting, for instance). Update its page setup the regular way. Don't let undo actions get registered while doing any of this. The fact that we have to explicitly protect against useless undo actions is considered an NSDocument bug nowadays, and will someday be fixed.
+		[[self undoManager] disableUndoRegistration];
+		[self removeGraphicsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [[self graphics] count])]];
+		[self insertGraphics:graphics atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [graphics count])]];
+		[self setPrintInfo:printInfo];
+		[[self undoManager] enableUndoRegistration];
+		
+	} // else it was the responsibility of something in the previous paragraph to set *outError.
+	return readSuccessfully;
 }
 
 
 // This method will only be invoked on Mac OS 10.4 and later. If you're writing an application that has to run on 10.3.x and earlier you should override -dataRepresentationOfType: instead.
-- (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError {
-
-    // This method must be prepared for typeName to be any value that might be in the array returned by any invocation of -writableTypesForSaveOperation:. Because this class:
-    // doesn't - override -writableTypesForSaveOperation:, and
-    // doesn't - override +writableTypes or +isNativeType: (which the default implementation of -writableTypesForSaveOperation: invokes),
-    // and because:
-    // - Sketch has a "Save a Copy As..." file menu item that results in NSSaveToOperations,
-    // we know that that the type names we have to handle here include:
-    // - SKTDocumentOldTypeName (on Mac OS 10.4) or SKTDocumentNewTypeName (on 10.5), because this application's Info.plist file declares that instances of this class can play the "editor" role for it, and
-    // - NSPDFPboardType (on 10.4) or kUTTypePDF (on 10.5) and NSTIFFPboardType (on 10.4) or kUTTypeTIFF (on 10.5), because according to the Info.plist a Sketch document is exportable as them.
-    // We use -[NSWorkspace type:conformsToType:] (new in 10.5), which is nearly always the correct thing to do with UTIs, but the arguments are reversed here compared to what's typical. Think about it: this method doesn't know how to write any particular subtype of the supported types, so it should assert if it's asked to. It does however effectively know how to write all of the supertypes of the supported types (like public.data), and there's no reason for it to refuse to do so. Not particularly useful in the context of an app like Sketch, but correct.
-    // If we had reason to believe that +[SKTRenderingView pdfDataWithGraphics:] or +[SKTGraphic propertiesWithGraphics:] could return nil we would have to arrange for *outError to be set to a real value when that happens. If you signal failure in a method that takes an error: parameter and outError!=NULL you must set *outError to something decent.
-    NSData *data;
-    NSArray *graphics = [self graphics];
-    NSPrintInfo *printInfo = [self printInfo];
-    NSWorkspace *workspace = [NSWorkspace sharedWorkspace];
-    BOOL useTypeConformance = [workspace respondsToSelector:@selector(type:conformsToType:)];
-    if ((useTypeConformance && [workspace type:SKTDocumentNewTypeName conformsToType:typeName]) || [typeName isEqualToString:SKTDocumentOldTypeName]) {
-
-	// Convert the contents of the document to a property list and then flatten the property list.
-	NSMutableDictionary *properties = [NSMutableDictionary dictionary];
-	[properties setObject:[NSNumber numberWithInteger:SKTDocumentCurrentVersion] forKey:SKTDocumentVersionKey];
-	[properties setObject:[SKTGraphic propertiesWithGraphics:graphics] forKey:SKTDocumentGraphicsKey];
-	[properties setObject:[NSArchiver archivedDataWithRootObject:printInfo] forKey:SKTDocumentPrintInfoKey];
-	data = [NSPropertyListSerialization dataFromPropertyList:properties format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL];
-
-    } else if ((useTypeConformance && [workspace type:(NSString *)kUTTypePDF conformsToType:typeName]) || [typeName isEqualToString:NSPDFPboardType]) {
-	data = [SKTRenderingView pdfDataWithGraphics:graphics];
-    } else {
-	NSParameterAssert((useTypeConformance && [workspace type:(NSString *)kUTTypeTIFF conformsToType:typeName]) || [typeName isEqualToString:NSTIFFPboardType]);
-	data = [SKTRenderingView tiffDataWithGraphics:graphics error:outError];
-    }
-    return data;
-
+- (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError
+{	
+	// This method must be prepared for typeName to be any value that might be in the array returned by any invocation of -writableTypesForSaveOperation:. Because this class:
+	// doesn't - override -writableTypesForSaveOperation:, and
+	// doesn't - override +writableTypes or +isNativeType: (which the default implementation of -writableTypesForSaveOperation: invokes),
+	// and because:
+	// - Sketch has a "Save a Copy As..." file menu item that results in NSSaveToOperations,
+	// we know that that the type names we have to handle here include:
+	// - SKTDocumentOldTypeName (on Mac OS 10.4) or SKTDocumentNewTypeName (on 10.5), because this application's Info.plist file declares that instances of this class can play the "editor" role for it, and
+	// - NSPDFPboardType (on 10.4) or kUTTypePDF (on 10.5) and NSTIFFPboardType (on 10.4) or kUTTypeTIFF (on 10.5), because according to the Info.plist a Sketch document is exportable as them.
+	// We use -[NSWorkspace type:conformsToType:] (new in 10.5), which is nearly always the correct thing to do with UTIs, but the arguments are reversed here compared to what's typical. Think about it: this method doesn't know how to write any particular subtype of the supported types, so it should assert if it's asked to. It does however effectively know how to write all of the supertypes of the supported types (like public.data), and there's no reason for it to refuse to do so. Not particularly useful in the context of an app like Sketch, but correct.
+	// If we had reason to believe that +[SKTRenderingView pdfDataWithGraphics:] or +[SKTGraphic propertiesWithGraphics:] could return nil we would have to arrange for *outError to be set to a real value when that happens. If you signal failure in a method that takes an error: parameter and outError!=NULL you must set *outError to something decent.
+	NSData *data;
+	NSArray *graphics = [self graphics];
+	NSPrintInfo *printInfo = [self printInfo];
+	NSWorkspace *workspace = [NSWorkspace sharedWorkspace];
+	BOOL useTypeConformance = [workspace respondsToSelector:@selector(type:conformsToType:)];
+	if ((useTypeConformance && [workspace type:SKTDocumentNewTypeName conformsToType:typeName]) || [typeName isEqualToString:SKTDocumentOldTypeName]) {
+		
+		// Convert the contents of the document to a property list and then flatten the property list.
+		NSMutableDictionary *properties = [NSMutableDictionary dictionary];
+		properties[SKTDocumentVersionKey] = @(SKTDocumentCurrentVersion);
+		properties[SKTDocumentGraphicsKey] = [SKTGraphic propertiesWithGraphics:graphics];
+		properties[SKTDocumentPrintInfoKey] = [NSArchiver archivedDataWithRootObject:printInfo];
+		data = [NSPropertyListSerialization dataFromPropertyList:properties format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL];
+		
+	} else if ((useTypeConformance && [workspace type:(NSString *)kUTTypePDF conformsToType:typeName]) || [typeName isEqualToString:NSPDFPboardType]) {
+		data = [SKTRenderingView pdfDataWithGraphics:graphics];
+	} else {
+		NSParameterAssert((useTypeConformance && [workspace type:(NSString *)kUTTypeTIFF conformsToType:typeName]) || [typeName isEqualToString:NSTIFFPboardType]);
+		data = [SKTRenderingView tiffDataWithGraphics:graphics error:outError];
+	}
+	return data;
 }
 
 
-- (void)setPrintInfo:(NSPrintInfo *)printInfo {
-    
+- (void)setPrintInfo:(NSPrintInfo *)printInfo
+{
     // Do the regular Cocoa thing, but also be KVO-compliant for canvasSize, which is derived from the print info.
     [self willChangeValueForKey:SKTDocumentCanvasSizeKey];
     [super setPrintInfo:printInfo];
     [self didChangeValueForKey:SKTDocumentCanvasSizeKey];
-    
 }
 
 
 // This method will only be invoked on Mac 10.4 and later. If you're writing an application that has to run on 10.3.x and earlier you should override -printShowingPrintPanel: instead.
-- (NSPrintOperation *)printOperationWithSettings:(NSDictionary *)printSettings error:(NSError **)outError {
-
-    // Figure out a title for the print job. It will be used with the .pdf file name extension in a save panel if the user chooses Save As PDF... in the print panel, or in a similar way if the user hits the Preview button in the print panel, or for any number of other uses the printing system might put it to. We don't want the user to see file names like "My Great Sketch.sketch2.pdf", so we can't just use [self displayName], because the document's file name extension might not be hidden. Instead, because we know that all valid Sketch documents have file name extensions, get the last path component of the file URL and strip off its file name extension, and use what's left.
-    NSString *printJobTitle = [[[[self fileURL] path] lastPathComponent] stringByDeletingPathExtension];
-    if (!printJobTitle) {
-
-	// Wait, this document doesn't have a file associated with it. Just use -displayName after all. It will be "Untitled" or "Untitled 2" or something, which is fine.
-	printJobTitle = [self displayName];
-
-    }
-
-    // Create a view that will be used just for printing.
-    NSSize documentSize = [self canvasSize];
-    SKTRenderingView *renderingView = [[SKTRenderingView alloc] initWithFrame:NSMakeRect(0.0, 0.0, documentSize.width, documentSize.height) graphics:[self graphics] printJobTitle:printJobTitle];
-    
-    // Create a print operation.
-    NSPrintOperation *printOperation = [NSPrintOperation printOperationWithView:renderingView printInfo:[self printInfo]];
-    [renderingView release];
-    
-    // Specify that the print operation can run in a separate thread. This will cause the print progress panel to appear as a sheet on the document window.
-    [printOperation setCanSpawnSeparateThread:YES];
-    
-    // Set any print settings that might have been specified in a Print Document Apple event. We do it this way because we shouldn't be mutating the result of [self printInfo] here, and using the result of [printOperation printInfo], a copy of the original print info, means we don't have to make yet another temporary copy of [self printInfo].
-    [[[printOperation printInfo] dictionary] addEntriesFromDictionary:printSettings];
-    
-    // We don't have to autorelease the print operation because +[NSPrintOperation printOperationWithView:printInfo:] of course already autoreleased it. Nothing in this method can fail, so we never return nil, so we don't have to worry about setting *outError.
-    return printOperation;
-    
+- (NSPrintOperation *)printOperationWithSettings:(NSDictionary *)printSettings error:(NSError **)outError
+{
+	// Figure out a title for the print job. It will be used with the .pdf file name extension in a save panel if the user chooses Save As PDF... in the print panel, or in a similar way if the user hits the Preview button in the print panel, or for any number of other uses the printing system might put it to. We don't want the user to see file names like "My Great Sketch.sketch2.pdf", so we can't just use [self displayName], because the document's file name extension might not be hidden. Instead, because we know that all valid Sketch documents have file name extensions, get the last path component of the file URL and strip off its file name extension, and use what's left.
+	NSString *printJobTitle = [[[[self fileURL] path] lastPathComponent] stringByDeletingPathExtension];
+	if (!printJobTitle) {
+		
+		// Wait, this document doesn't have a file associated with it. Just use -displayName after all. It will be "Untitled" or "Untitled 2" or something, which is fine.
+		printJobTitle = [self displayName];
+		
+	}
+	
+	// Create a view that will be used just for printing.
+	NSSize documentSize = [self canvasSize];
+	SKTRenderingView *renderingView = [[SKTRenderingView alloc] initWithFrame:NSMakeRect(0.0, 0.0, documentSize.width, documentSize.height) graphics:[self graphics] printJobTitle:printJobTitle];
+	
+	// Create a print operation.
+	NSPrintOperation *printOperation = [NSPrintOperation printOperationWithView:renderingView printInfo:[self printInfo]];
+	
+	// Specify that the print operation can run in a separate thread. This will cause the print progress panel to appear as a sheet on the document window.
+	[printOperation setCanSpawnSeparateThread:YES];
+	
+	// Set any print settings that might have been specified in a Print Document Apple event. We do it this way because we shouldn't be mutating the result of [self printInfo] here, and using the result of [printOperation printInfo], a copy of the original print info, means we don't have to make yet another temporary copy of [self printInfo].
+	[[[printOperation printInfo] dictionary] addEntriesFromDictionary:printSettings];
+	
+	// We don't have to autorelease the print operation because +[NSPrintOperation printOperationWithView:printInfo:] of course already autoreleased it. Nothing in this method can fail, so we never return nil, so we don't have to worry about setting *outError.
+	return printOperation;
 }
 
 
@@ -380,8 +359,6 @@ static NSInteger SKTDocumentCurrentVersion = 2;
     // Start off with one document window.
     SKTWindowController *windowController = [[SKTWindowController alloc] init];
     [self addWindowController:windowController];
-    [windowController release];
-
 }
 
 
@@ -391,31 +368,20 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 - (void)setGraphicProperties:(SKTMapTableOwner *)propertiesPerGraphic {
 
     // The passed-in dictionary is keyed by graphic with values that are dictionaries of properties, keyed by key-value coding key.
-    SKTGraphic *graphic;
-    NSDictionary *graphicProperties;
-    NSMapEnumerator propertiesPerGraphicEnumerator = NSEnumerateMapTable([propertiesPerGraphic mapTable]);
-    while (NSNextMapEnumeratorPair(&propertiesPerGraphicEnumerator, (void **)&graphic, (void **)&graphicProperties)) {
-
-	// Use a relatively unpopular method. Here we're effectively "casting" a key path to a key (see how these dictionaries get built in -observeValueForKeyPath:ofObject:change:context:). It had better really be a key or things will get confused. For example, this is one of the things that would need updating if -[SKTGraphic keysForValuesToObserveForUndo] someday becomes -[SKTGraphic keyPathsForValuesToObserveForUndo].
-	[graphic setValuesForKeysWithDictionary:graphicProperties];
-
-    }
-    NSEndMapTableEnumeration(&propertiesPerGraphicEnumerator);
-
+	for (SKTGraphic *graphic in [propertiesPerGraphic mapTable]) {
+		NSDictionary *graphicProperties = [propertiesPerGraphic.mapTable objectForKey:graphic];
+		// Use a relatively unpopular method. Here we're effectively "casting" a key path to a key (see how these dictionaries get built in -observeValueForKeyPath:ofObject:change:context:). It had better really be a key or things will get confused. For example, this is one of the things that would need updating if -[SKTGraphic keysForValuesToObserveForUndo] someday becomes -[SKTGraphic keyPathsForValuesToObserveForUndo].
+		[graphic setValuesForKeysWithDictionary:graphicProperties];
+	}
 }
 
 
 - (void)observeUndoManagerCheckpoint:(NSNotification *)notification {
-
     // Start the coalescing of graphic property changes over.
     _undoGroupHasChangesToMultipleProperties = NO;
-    [_undoGroupPresentablePropertyName release];
     _undoGroupPresentablePropertyName = nil;
-    [_undoGroupOldPropertiesPerGraphic release];
     _undoGroupOldPropertiesPerGraphic = nil;
-    [_undoGroupInsertedGraphics release];
     _undoGroupInsertedGraphics = nil;
-
 }
 
 
@@ -424,163 +390,156 @@ static NSInteger SKTDocumentCurrentVersion = 2;
     // Each graphic can have a different set of properties that need to be observed.
     NSUInteger graphicCount = [graphics count];
     for (NSUInteger index = 0; index<graphicCount; index++) {
-	SKTGraphic *graphic = [graphics objectAtIndex:index];
+	SKTGraphic *graphic = graphics[index];
 	NSSet *keys = [graphic keysForValuesToObserveForUndo];
 	NSEnumerator *keyEnumerator = [keys objectEnumerator];
 	NSString *key;
 	while (key = [keyEnumerator nextObject]) {
 
 	    // We use NSKeyValueObservingOptionOld because when something changes we want to record the old value, which is what has to be set in the undo operation. We use NSKeyValueObservingOptionNew because we compare the new value against the old value in an attempt to ignore changes that aren't really changes.
-	    [graphic addObserver:self forKeyPath:key options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:SKTDocumentUndoObservationContext];
+	    [graphic addObserver:self forKeyPath:key options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:(__bridge void *)(SKTDocumentUndoObservationContext)];
 
 	}
 
 	// The set of properties to be observed can itself change.
-	[graphic addObserver:self forKeyPath:SKTGraphicKeysForValuesToObserveForUndoKey options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:SKTDocumentUndoKeysObservationContext];
+	[graphic addObserver:self forKeyPath:SKTGraphicKeysForValuesToObserveForUndoKey options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:(__bridge void *)(SKTDocumentUndoKeysObservationContext)];
 
     }
 
 }
 
 
-- (void)stopObservingGraphics:(NSArray *)graphics {
-
-    // Do the opposite of what's done in -startObservingGraphics:.
-    NSUInteger graphicCount = [graphics count];
-    for (NSUInteger index = 0; index<graphicCount; index++) {
-	SKTGraphic *graphic = [graphics objectAtIndex:index];
-	[graphic removeObserver:self forKeyPath:SKTGraphicKeysForValuesToObserveForUndoKey];
-	NSSet *keys = [graphic keysForValuesToObserveForUndo];
-	NSEnumerator *keyEnumerator = [keys objectEnumerator];
-	NSString *key;
-	while (key = [keyEnumerator nextObject]) {
-	    [graphic removeObserver:self forKeyPath:key];
+- (void)stopObservingGraphics:(NSArray *)graphics
+{
+	// Do the opposite of what's done in -startObservingGraphics:.
+	for (SKTGraphic *graphic in graphics) {
+		[graphic removeObserver:self forKeyPath:SKTGraphicKeysForValuesToObserveForUndoKey];
+		NSSet *keys = [graphic keysForValuesToObserveForUndo];
+		NSEnumerator *keyEnumerator = [keys objectEnumerator];
+		NSString *key;
+		while (key = [keyEnumerator nextObject]) {
+			[graphic removeObserver:self forKeyPath:key];
+		}
 	}
-    }
-
 }
 
 
 // An override of the NSObject(NSKeyValueObserving) method.
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(NSObject *)observedObject change:(NSDictionary *)change context:(void *)context {
-
-    // Make sure we don't intercept an observer notification that's meant for NSDocument. In Mac OS 10.5 and earlier NSDocuments don't observe anything, but that could change in the future. We can do a simple pointer comparison because KVO doesn't do anything at all with the context value, not even retain or copy it.
-    if (context==SKTDocumentUndoKeysObservationContext) {
-
-	// The set of properties that we should be observing has changed for some graphic. Stop or start observing.
-	NSSet *oldKeys = [change objectForKey:NSKeyValueChangeOldKey];
-	NSSet *newKeys = [change objectForKey:NSKeyValueChangeNewKey];
-	NSString *key;
-	NSEnumerator *oldKeyEnumerator = [oldKeys objectEnumerator];
-	while (key = [oldKeyEnumerator nextObject]) {
-	    if (![newKeys containsObject:key]) {
-		[observedObject removeObserver:self forKeyPath:key];
-	    }
-	}
-	NSEnumerator *newKeyEnumerator = [newKeys objectEnumerator];
-	while (key = [newKeyEnumerator nextObject]) {
-	    if (![oldKeys containsObject:key]) {
-		[observedObject addObserver:self forKeyPath:key options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:SKTDocumentUndoObservationContext];
-	    }
-	}
-
-    } else if (context==SKTDocumentUndoObservationContext) {
-
-	// The value of some graphic's property has changed. Don't waste memory by recording undo operations affecting graphics that would be removed during undo anyway. In Sketch this check matters when you use a creation tool to create a new graphic and then drag the mouse to resize it; there's no reason to record a change of "bounds" in that situation.
-	SKTGraphic *graphic = (SKTGraphic *)observedObject;
-	if (![_undoGroupInsertedGraphics containsObject:graphic]) {
-
-	    // Ignore changes that aren't really changes. Now that Sketch's inspector panel allows you to change a property of all selected graphics at once (it didn't always, as recently as the version that appears in Mac OS 10.4's /Developer/Examples/AppKit), it's easy for the user to cause a big batch of SKTGraphics to be sent -setValue:forKeyPath: messages that don't do anything useful. Try this simple example: create 10 circles, and set all but one to be filled. Select them all. In the inspector panel the Fill checkbox will show the mixed state indicator (a dash). Click on it. Cocoa's bindings machinery sends [theCircle setValue:[NSNumber numberWithBOOL:YES] forKeyPath:SKTGraphicIsDrawingFillKey] to each selected circle. KVO faithfully notifies this SKTDocument, which is observing all of its graphics, for each circle object, even though the old value of the SKTGraphicIsDrawingFillKey property for 9 out of the 10 circles was already YES. If we didn't actively filter out useless notifications like these we would be wasting memory by recording undo operations that don't actually do anything.
-	    // How much processor time does this memory optimization cost? We don't know, because we haven't measured it. The use of NSKeyValueObservingOptionNew in -startObservingGraphics:, which makes NSKeyValueChangeNewKey entries appear in change dictionaries, definitely costs something when KVO notifications are sent (it costs virtually nothing at observer registration time). Regardless, it's probably a good idea to do simple memory optimizations like this as they're discovered and debug just enough to confirm that they're saving the expected memory (and not introducing bugs). Later on it will be easier to test for good responsiveness and sample to hunt down processor time problems than it will be to figure out where all the darn memory went when your app turns out to be notably RAM-hungry (and therefore slowing down _other_ apps on your user's computers too, if the problem is bad enough to cause paging).
-	    // Is this a premature optimization? No. Leaving out this very simple check, because we're worried about the processor time cost of using NSKeyValueChangeNewKey, would be a premature optimization.
-	    id newValue = [change objectForKey:NSKeyValueChangeNewKey];
-	    id oldValue = [change objectForKey:NSKeyValueChangeOldKey];
-	    if (![newValue isEqualTo:oldValue]) {
-
-		// Is this the first observed graphic change in the current undo group?
-		NSUndoManager *undoManager = [self undoManager];
-		if (!_undoGroupOldPropertiesPerGraphic) {
-
-		    // We haven't recorded changes for any graphics at all since the last undo manager checkpoint. Get ready to start collecting them.
-		    _undoGroupOldPropertiesPerGraphic = [[SKTMapTableOwner alloc] init];
-
-		    // Register an undo operation for any graphic property changes that are going to be coalesced between now and the next invocation of -observeUndoManagerCheckpoint:. The fact that the object: argument here must really be an object is why _undoGroupOldPropertiesPerGraphic is an SKTMapTableOwner instead of just an NSMapTable.
-		    [undoManager registerUndoWithTarget:self selector:@selector(setGraphicProperties:) object:_undoGroupOldPropertiesPerGraphic];
-
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(NSObject *)observedObject change:(NSDictionary *)change context:(void *)context
+{
+	// Make sure we don't intercept an observer notification that's meant for NSDocument. In Mac OS 10.5 and earlier NSDocuments don't observe anything, but that could change in the future. We can do a simple pointer comparison because KVO doesn't do anything at all with the context value, not even retain or copy it.
+	if (context==(__bridge void *)(SKTDocumentUndoKeysObservationContext)) {
+		
+		// The set of properties that we should be observing has changed for some graphic. Stop or start observing.
+		NSSet *oldKeys = change[NSKeyValueChangeOldKey];
+		NSSet *newKeys = change[NSKeyValueChangeNewKey];
+		NSString *key;
+		NSEnumerator *oldKeyEnumerator = [oldKeys objectEnumerator];
+		while (key = [oldKeyEnumerator nextObject]) {
+			if (![newKeys containsObject:key]) {
+				[observedObject removeObserver:self forKeyPath:key];
+			}
 		}
-
-		// Find the dictionary in which we're recording the old values of properties for the changed graphic.
-		NSMutableDictionary *oldGraphicProperties = NSMapGet([_undoGroupOldPropertiesPerGraphic mapTable], graphic);
-		if (!oldGraphicProperties) {
-
-		    // We have to create a dictionary to hold old values for the changed graphic. -[NSMutableDictionary setObject:forKey:] always makes a copy of the key object, but we don't want to make copies of SKTGraphics here, so we can't use NSMutableDictionary. That's why _undoGroupOldPropertiesPerGraphic uses NSMapTable despite the hassle of having to wrap it in SKTMapTableOwner.
-		    oldGraphicProperties = [[NSMutableDictionary alloc] init];
-		    NSMapInsert([_undoGroupOldPropertiesPerGraphic mapTable], graphic, oldGraphicProperties);
-		    [oldGraphicProperties release];
-
+		NSEnumerator *newKeyEnumerator = [newKeys objectEnumerator];
+		while (key = [newKeyEnumerator nextObject]) {
+			if (![oldKeys containsObject:key]) {
+				[observedObject addObserver:self forKeyPath:key options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:(__bridge void *)(SKTDocumentUndoObservationContext)];
+			}
 		}
-
-		// Record the old value for the changed property, unless an older value has already been recorded for the current undo group. Here we're "casting" a KVC key path to a dictionary key, but that should be OK. -[NSMutableDictionary setObject:forKey:] doesn't know the difference.
-		if (![oldGraphicProperties objectForKey:keyPath]) {
-		    [oldGraphicProperties setObject:oldValue forKey:keyPath];
-		}
-
-		// Don't set the undo action name during undoing and redoing. In Sketch, SKTGraphicView sometimes overwrites whatever action name we set up here with something more specific (as in, "Move" or "Resize" instead of "Change of Bounds"), but only during the building of the original undo action. During undoing and redoing SKTGraphicView doesn't get a chance to do that desirable overwriting again. Just leave the action name alone during undoing and redoing and the action name from the original undo group will continue to be used.
-		if (![undoManager isUndoing] && ![undoManager isRedoing]) {
-
-		    // What's the human-readable name of the property that's just been changed? Here we're effectively "casting" a key path to a key. It had better really be a key or things will get confused. For example, this is one of the things that would need updating if -[SKTGraphic keysForValuesToObserveForUndo] someday becomes -[SKTGraphic keyPathsForValuesToObserveForUndo].
-		    Class graphicClass = [graphic class];
-		    NSString *presentablePropertyName = [graphicClass presentablePropertyNameForKey:keyPath];
-		    if (!presentablePropertyName) {
-
-			// Someone overrode -[SKTGraphic keysForValuesToObserveForUndo] but didn't override +[SKTGraphic presentablePropertyNameForKey:] to match. Help debug a little. Hopefully the SKTGraphic public interface makes it so that you only have to test a little bit to find bugs like this.
-			NSString *graphicClassName = NSStringFromClass(graphicClass);
-			[NSException raise:NSInternalInconsistencyException format:@"[[%@ class] keysForValuesToObserveForUndo] returns a set that includes @\"%@\", but [[%@ class] presentablePropertyNameForKey:@\"%@\"] returns nil.", graphicClassName, keyPath, graphicClassName, keyPath];
-
-		    }
-
-		    // Have we set an action name for the current undo group yet?
-		    if (_undoGroupPresentablePropertyName || _undoGroupHasChangesToMultipleProperties) {
-
-			// Yes. Have we already determined that we have to use a generic undo action name, and set it? If so, there's nothing to do.
-			if (!_undoGroupHasChangesToMultipleProperties) {
-
+		
+	} else if (context==(__bridge void *)(SKTDocumentUndoObservationContext)) {
+		
+		// The value of some graphic's property has changed. Don't waste memory by recording undo operations affecting graphics that would be removed during undo anyway. In Sketch this check matters when you use a creation tool to create a new graphic and then drag the mouse to resize it; there's no reason to record a change of "bounds" in that situation.
+		SKTGraphic *graphic = (SKTGraphic *)observedObject;
+		if (![_undoGroupInsertedGraphics containsObject:graphic]) {
+			
+			// Ignore changes that aren't really changes. Now that Sketch's inspector panel allows you to change a property of all selected graphics at once (it didn't always, as recently as the version that appears in Mac OS 10.4's /Developer/Examples/AppKit), it's easy for the user to cause a big batch of SKTGraphics to be sent -setValue:forKeyPath: messages that don't do anything useful. Try this simple example: create 10 circles, and set all but one to be filled. Select them all. In the inspector panel the Fill checkbox will show the mixed state indicator (a dash). Click on it. Cocoa's bindings machinery sends [theCircle setValue:[NSNumber numberWithBOOL:YES] forKeyPath:SKTGraphicIsDrawingFillKey] to each selected circle. KVO faithfully notifies this SKTDocument, which is observing all of its graphics, for each circle object, even though the old value of the SKTGraphicIsDrawingFillKey property for 9 out of the 10 circles was already YES. If we didn't actively filter out useless notifications like these we would be wasting memory by recording undo operations that don't actually do anything.
+			// How much processor time does this memory optimization cost? We don't know, because we haven't measured it. The use of NSKeyValueObservingOptionNew in -startObservingGraphics:, which makes NSKeyValueChangeNewKey entries appear in change dictionaries, definitely costs something when KVO notifications are sent (it costs virtually nothing at observer registration time). Regardless, it's probably a good idea to do simple memory optimizations like this as they're discovered and debug just enough to confirm that they're saving the expected memory (and not introducing bugs). Later on it will be easier to test for good responsiveness and sample to hunt down processor time problems than it will be to figure out where all the darn memory went when your app turns out to be notably RAM-hungry (and therefore slowing down _other_ apps on your user's computers too, if the problem is bad enough to cause paging).
+			// Is this a premature optimization? No. Leaving out this very simple check, because we're worried about the processor time cost of using NSKeyValueChangeNewKey, would be a premature optimization.
+			id newValue = change[NSKeyValueChangeNewKey];
+			id oldValue = change[NSKeyValueChangeOldKey];
+			if (![newValue isEqualTo:oldValue]) {
+				
+				// Is this the first observed graphic change in the current undo group?
+				NSUndoManager *undoManager = [self undoManager];
+				if (!_undoGroupOldPropertiesPerGraphic) {
+					
+					// We haven't recorded changes for any graphics at all since the last undo manager checkpoint. Get ready to start collecting them.
+					_undoGroupOldPropertiesPerGraphic = [[SKTMapTableOwner alloc] init];
+					
+					// Register an undo operation for any graphic property changes that are going to be coalesced between now and the next invocation of -observeUndoManagerCheckpoint:. The fact that the object: argument here must really be an object is why _undoGroupOldPropertiesPerGraphic is an SKTMapTableOwner instead of just an NSMapTable.
+					[undoManager registerUndoWithTarget:self selector:@selector(setGraphicProperties:) object:_undoGroupOldPropertiesPerGraphic];
+					
+				}
+				
+				// Find the dictionary in which we're recording the old values of properties for the changed graphic.
+				NSMutableDictionary *oldGraphicProperties = (__bridge NSMutableDictionary *)(NSMapGet([_undoGroupOldPropertiesPerGraphic mapTable], (__bridge const void *)(graphic)));
+				if (!oldGraphicProperties) {
+					
+					// We have to create a dictionary to hold old values for the changed graphic. -[NSMutableDictionary setObject:forKey:] always makes a copy of the key object, but we don't want to make copies of SKTGraphics here, so we can't use NSMutableDictionary. That's why _undoGroupOldPropertiesPerGraphic uses NSMapTable despite the hassle of having to wrap it in SKTMapTableOwner.
+					oldGraphicProperties = [[NSMutableDictionary alloc] init];
+					NSMapInsert([_undoGroupOldPropertiesPerGraphic mapTable], (__bridge const void *)(graphic), (__bridge const void *)(oldGraphicProperties));
+					
+				}
+				
+				// Record the old value for the changed property, unless an older value has already been recorded for the current undo group. Here we're "casting" a KVC key path to a dictionary key, but that should be OK. -[NSMutableDictionary setObject:forKey:] doesn't know the difference.
+				if (!oldGraphicProperties[keyPath]) {
+					oldGraphicProperties[keyPath] = oldValue;
+				}
+				
+				// Don't set the undo action name during undoing and redoing. In Sketch, SKTGraphicView sometimes overwrites whatever action name we set up here with something more specific (as in, "Move" or "Resize" instead of "Change of Bounds"), but only during the building of the original undo action. During undoing and redoing SKTGraphicView doesn't get a chance to do that desirable overwriting again. Just leave the action name alone during undoing and redoing and the action name from the original undo group will continue to be used.
+				if (![undoManager isUndoing] && ![undoManager isRedoing]) {
+					
+					// What's the human-readable name of the property that's just been changed? Here we're effectively "casting" a key path to a key. It had better really be a key or things will get confused. For example, this is one of the things that would need updating if -[SKTGraphic keysForValuesToObserveForUndo] someday becomes -[SKTGraphic keyPathsForValuesToObserveForUndo].
+					Class graphicClass = [graphic class];
+					NSString *presentablePropertyName = [graphicClass presentablePropertyNameForKey:keyPath];
+					if (!presentablePropertyName) {
+						
+						// Someone overrode -[SKTGraphic keysForValuesToObserveForUndo] but didn't override +[SKTGraphic presentablePropertyNameForKey:] to match. Help debug a little. Hopefully the SKTGraphic public interface makes it so that you only have to test a little bit to find bugs like this.
+						NSString *graphicClassName = NSStringFromClass(graphicClass);
+						[NSException raise:NSInternalInconsistencyException format:@"[[%@ class] keysForValuesToObserveForUndo] returns a set that includes @\"%@\", but [[%@ class] presentablePropertyNameForKey:@\"%@\"] returns nil.", graphicClassName, keyPath, graphicClassName, keyPath];
+						
+					}
+					
+					// Have we set an action name for the current undo group yet?
+					if (_undoGroupPresentablePropertyName || _undoGroupHasChangesToMultipleProperties) {
+						
+						// Yes. Have we already determined that we have to use a generic undo action name, and set it? If so, there's nothing to do.
+						if (!_undoGroupHasChangesToMultipleProperties) {
+							
 			    // So far we've set an action name for the current undo group that mentions a specific property. Is the property that's just been changed the same one mentioned in that action name (regardless of which graphic has been changed)? If so, there's nothing to do.
 			    if (![_undoGroupPresentablePropertyName isEqualToString:presentablePropertyName]) {
-
-				// The undo action is going to restore the old values of different properties. Set a generic undo action name and record the fact that we've done so.
-				[undoManager setActionName:NSLocalizedStringFromTable(@"Change of Multiple Graphic Properties", @"UndoStrings", @"Generic action name for complex graphic property changes.")];
-				_undoGroupHasChangesToMultipleProperties = YES;
-
-				// This is useless now.
-				[_undoGroupPresentablePropertyName release];
-				_undoGroupPresentablePropertyName = nil;
-
-			    }
-
+					
+					// The undo action is going to restore the old values of different properties. Set a generic undo action name and record the fact that we've done so.
+					[undoManager setActionName:NSLocalizedStringFromTable(@"Change of Multiple Graphic Properties", @"UndoStrings", @"Generic action name for complex graphic property changes.")];
+					_undoGroupHasChangesToMultipleProperties = YES;
+					
+					// This is useless now.
+					_undoGroupPresentablePropertyName = nil;
+					
+				}
+							
+						}
+						
+					} else {
+						
+						// So far the action of the current undo group is going to be the restoration of the value of one property. Set a specific undo action name and record the fact that we've done so.
+						[undoManager setActionName:[NSString stringWithFormat:NSLocalizedStringFromTable(@"Change of %@", @"UndoStrings", @"Specific action name for simple graphic property changes. The argument is the name of a property."), presentablePropertyName]];
+						_undoGroupPresentablePropertyName = [presentablePropertyName copy];
+						
+					}
+					
+				}
+				
 			}
-
-		    } else {
-
-			// So far the action of the current undo group is going to be the restoration of the value of one property. Set a specific undo action name and record the fact that we've done so.
-			[undoManager setActionName:[NSString stringWithFormat:NSLocalizedStringFromTable(@"Change of %@", @"UndoStrings", @"Specific action name for simple graphic property changes. The argument is the name of a property."), presentablePropertyName]];
-			_undoGroupPresentablePropertyName = [presentablePropertyName copy];
-
-		    }
-
+			
 		}
-
-	    }
-
+		
+	} else {
+		
+		// In overrides of -observeValueForKeyPath:ofObject:change:context: always invoke super when the observer notification isn't recognized. Code in the superclass is apparently doing observation of its own. NSObject's implementation of this method throws an exception. Such an exception would be indicating a programming error that should be fixed.
+		[super observeValueForKeyPath:keyPath ofObject:observedObject change:change context:context];
 	}
-
-    } else {
-
-	// In overrides of -observeValueForKeyPath:ofObject:change:context: always invoke super when the observer notification isn't recognized. Code in the superclass is apparently doing observation of its own. NSObject's implementation of this method throws an exception. Such an exception would be indicating a programming error that should be fixed.
-	[super observeValueForKeyPath:keyPath ofObject:observedObject change:change context:context];
-
-    }
-    
 }
 
 
@@ -588,14 +547,13 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 
 
 // An override of the NSObject(NSScripting) method. It will only be invoked on Mac OS 10.5 and later.
-- (id)newScriptingObjectOfClass:(Class)objectClass forValueForKey:(NSString *)key withContentsValue:(id)contentsValue properties:(NSDictionary *)properties {
-
-    // "make new graphic" makes no sense because it's an abstract class. Use a default concrete class instead.
-    if (objectClass==[SKTGraphic class]) {
-	objectClass = [SKTCircle class];
-    }
-    return [super newScriptingObjectOfClass:objectClass forValueForKey:key withContentsValue:contentsValue properties:properties];
-
+- (id)newScriptingObjectOfClass:(Class)objectClass forValueForKey:(NSString *)key withContentsValue:(id)contentsValue properties:(NSDictionary *)properties
+{
+	// "make new graphic" makes no sense because it's an abstract class. Use a default concrete class instead.
+	if (objectClass == [SKTGraphic class]) {
+		objectClass = [SKTCircle class];
+	}
+	return [super newScriptingObjectOfClass:objectClass forValueForKey:key withContentsValue:contentsValue properties:properties];
 }
 
 
@@ -607,7 +565,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
     NSUInteger graphicIndex = [[self graphics] indexOfObjectIdenticalTo:graphic];
     if (graphicIndex!=NSNotFound) {
 	NSScriptObjectSpecifier *objectSpecifier = [self objectSpecifier];
-	graphicObjectSpecifier = [[[NSIndexSpecifier alloc] initWithContainerClassDescription:[objectSpecifier keyClassDescription] containerSpecifier:objectSpecifier key:@"graphics" index:graphicIndex] autorelease];
+	graphicObjectSpecifier = [[NSIndexSpecifier alloc] initWithContainerClassDescription:[objectSpecifier keyClassDescription] containerSpecifier:objectSpecifier key:@"graphics" index:graphicIndex];
     }
     return graphicObjectSpecifier;
 
@@ -617,25 +575,19 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 // These are methods that wouldn't be here if this class weren't scriptable for relationships like "circles," "rectangles," etc. The first two methods are redundant with the -insertGraphics:atIndexes: and -removeGraphicsAtIndexes: methods up above, except they're a little more convenient for invoking in all of the code down below. They don't have KVO-compliant names (-insertObject:inGraphicsAtIndex: and -removeObjectFromGraphicsAtIndex:) on purpose. If they did then extra, incorrect, KVO autonotification would be done.
 
 
-- (void)insertGraphic:(SKTGraphic *)graphic atIndex:(NSUInteger)index {
-
+- (void)insertGraphic:(SKTGraphic *)graphic atIndex:(NSUInteger)index
+{
     // Just invoke the regular method up above.
-    NSArray *graphics = [[NSArray alloc] initWithObjects:graphic, nil];
+    NSArray *graphics = @[graphic];
     NSIndexSet *indexes = [[NSIndexSet alloc] initWithIndex:index];
     [self insertGraphics:graphics atIndexes:indexes];
-    [indexes release];
-    [graphics release];
-
 }
 
 
 - (void)removeGraphicAtIndex:(NSUInteger)index {
-
     // Just invoke the regular method up above.
     NSIndexSet *indexes = [[NSIndexSet alloc] initWithIndex:index];
     [self removeGraphicsAtIndexes:indexes];
-    [indexes release];
-
 }
 
 
@@ -654,7 +606,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
     id curGraphic;
 
     for (i=0; i<c; i++) {
-        curGraphic = [graphics objectAtIndex:i];
+        curGraphic = graphics[i];
         if ([curGraphic isKindOfClass:theClass]) {
             [result addObject:curGraphic];
         }
@@ -689,7 +641,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
         [self addInGraphics:graphic];
     } else {
         NSArray *graphics = [self graphics];
-        NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[rects objectAtIndex:index]];
+        NSInteger newIndex = [graphics indexOfObjectIdenticalTo:rects[index]];
         if (newIndex != NSNotFound) {
             [self insertGraphic:graphic atIndex:newIndex];
         } else {
@@ -702,7 +654,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 - (void)removeObjectFromRectanglesAtIndex:(NSUInteger)index {
     NSArray *rects = [self rectangles];
     NSArray *graphics = [self graphics];
-    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[rects objectAtIndex:index]];
+    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:rects[index]];
     if (newIndex != NSNotFound) {
         [self removeGraphicAtIndex:newIndex];
     } else {
@@ -718,7 +670,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
         [self addInGraphics:graphic];
     } else {
         NSArray *graphics = [self graphics];
-        NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[circles objectAtIndex:index]];
+        NSInteger newIndex = [graphics indexOfObjectIdenticalTo:circles[index]];
         if (newIndex != NSNotFound) {
             [self insertGraphic:graphic atIndex:newIndex];
         } else {
@@ -731,7 +683,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 - (void)removeObjectFromCirclesAtIndex:(NSUInteger)index {
     NSArray *circles = [self circles];
     NSArray *graphics = [self graphics];
-    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[circles objectAtIndex:index]];
+    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:circles[index]];
     if (newIndex != NSNotFound) {
         [self removeGraphicAtIndex:newIndex];
     } else {
@@ -747,7 +699,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
         [self addInGraphics:graphic];
     } else {
         NSArray *graphics = [self graphics];
-        NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[lines objectAtIndex:index]];
+        NSInteger newIndex = [graphics indexOfObjectIdenticalTo:lines[index]];
         if (newIndex != NSNotFound) {
             [self insertGraphic:graphic atIndex:newIndex];
         } else {
@@ -760,7 +712,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 - (void)removeObjectFromLinesAtIndex:(NSUInteger)index {
     NSArray *lines = [self lines];
     NSArray *graphics = [self graphics];
-    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[lines objectAtIndex:index]];
+    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:lines[index]];
     if (newIndex != NSNotFound) {
         [self removeGraphicAtIndex:newIndex];
     } else {
@@ -776,7 +728,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
         [self addInGraphics:graphic];
     } else {
         NSArray *graphics = [self graphics];
-        NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[textAreas objectAtIndex:index]];
+        NSInteger newIndex = [graphics indexOfObjectIdenticalTo:textAreas[index]];
         if (newIndex != NSNotFound) {
             [self insertGraphic:graphic atIndex:newIndex];
         } else {
@@ -789,7 +741,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 - (void)removeObjectFromTextAreasAtIndex:(NSUInteger)index {
     NSArray *textAreas = [self textAreas];
     NSArray *graphics = [self graphics];
-    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[textAreas objectAtIndex:index]];
+    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:textAreas[index]];
     if (newIndex != NSNotFound) {
         [self removeGraphicAtIndex:newIndex];
     } else {
@@ -805,7 +757,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
         [self addInGraphics:graphic];
     } else {
         NSArray *graphics = [self graphics];
-        NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[images objectAtIndex:index]];
+        NSInteger newIndex = [graphics indexOfObjectIdenticalTo:images[index]];
         if (newIndex != NSNotFound) {
             [self insertGraphic:graphic atIndex:newIndex];
         } else {
@@ -818,7 +770,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 - (void)removeObjectFromImagesAtIndex:(NSUInteger)index {
     NSArray *images = [self images];
     NSArray *graphics = [self graphics];
-    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:[images objectAtIndex:index]];
+    NSInteger newIndex = [graphics indexOfObjectIdenticalTo:images[index]];
     if (newIndex != NSNotFound) {
         [self removeGraphicAtIndex:newIndex];
     } else {
@@ -846,7 +798,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
         }
         if ([graphics count] == 0) {
             // If there are no graphics, there can be no match.  Just return now.
-            return [NSArray array];
+            return @[];
         }
 
         if ((!startSpec || [startKey isEqual:@"graphics"] || [startKey isEqual:@"rectangles"] || [startKey isEqual:@"circles"] || [startKey isEqual:@"lines"] || [startKey isEqual:@"textAreas"] || [startKey isEqual:@"images"]) && (!endSpec || [endKey isEqual:@"graphics"] || [endKey isEqual:@"rectangles"] || [endKey isEqual:@"circles"] || [endKey isEqual:@"lines"] || [endKey isEqual:@"textAreas"] || [endKey isEqual:@"images"])) {
@@ -864,7 +816,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
                     if ([startObject count] == 0) {
                         startObject = nil;
                     } else {
-                        startObject = [startObject objectAtIndex:0];
+                        startObject = startObject[0];
                     }
                 }
                 if (!startObject) {
@@ -888,7 +840,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
                     if (endObjectsCount == 0) {
                         endObject = nil;
                     } else {
-                        endObject = [endObject objectAtIndex:(endObjectsCount-1)];
+                        endObject = endObject[(endObjectsCount-1)];
                     }
                 }
                 if (!endObject) {
@@ -923,12 +875,12 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 
                 for (i=startIndex; i<=endIndex; i++) {
                     if (keyIsGraphics) {
-                        [result addObject:[NSNumber numberWithInteger:i]];
+                        [result addObject:@(i)];
                     } else {
-                        curObj = [graphics objectAtIndex:i];
+                        curObj = graphics[i];
                         curKeyIndex = [rangeKeyObjects indexOfObjectIdenticalTo:curObj];
                         if (curKeyIndex != NSNotFound) {
-                            [result addObject:[NSNumber numberWithInteger:curKeyIndex]];
+                            [result addObject:@(curKeyIndex)];
                         }
                     }
                 }
@@ -955,7 +907,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
         }
         if ([graphics count] == 0) {
             // If there are no graphics, there can be no match.  Just return now.
-            return [NSArray array];
+            return @[];
         }
 
         if ([baseKey isEqual:@"graphics"] || [baseKey isEqual:@"rectangles"] || [baseKey isEqual:@"circles"] || [baseKey isEqual:@"lines"] || [baseKey isEqual:@"textAreas"] || [baseKey isEqual:@"images"]) {
@@ -974,9 +926,9 @@ static NSInteger SKTDocumentCurrentVersion = 2;
                     baseObject = nil;
                 } else {
                     if (relPos == NSRelativeBefore) {
-                        baseObject = [baseObject objectAtIndex:0];
+                        baseObject = baseObject[0];
                     } else {
-                        baseObject = [baseObject objectAtIndex:(baseCount-1)];
+                        baseObject = baseObject[(baseCount-1)];
                     }
                 }
             }
@@ -1008,13 +960,13 @@ static NSInteger SKTDocumentCurrentVersion = 2;
                 }
                 while ((baseIndex >= 0) && (baseIndex < graphicCount)) {
                     if (keyIsGraphics) {
-                        [result addObject:[NSNumber numberWithInteger:baseIndex]];
+                        [result addObject:@(baseIndex)];
                         break;
                     } else {
-                        curObj = [graphics objectAtIndex:baseIndex];
+                        curObj = graphics[baseIndex];
                         curKeyIndex = [relKeyObjects indexOfObjectIdenticalTo:curObj];
                         if (curKeyIndex != NSNotFound) {
-                            [result addObject:[NSNumber numberWithInteger:curKeyIndex]];
+                            [result addObject:@(curKeyIndex)];
                             break;
                         }
                     }

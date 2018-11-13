@@ -1,7 +1,7 @@
 /*
      File: SKTImage.h
  Abstract: A graphic object to represent an image.
-  Version: 1.7.3
+  Version: 1.8
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -75,6 +75,6 @@ In Sketch "flippedHorizontally" and "flippedVertically" are two more of the prop
 */
 
 // Initialize, given the image to be presented and the location on which it should be centered.
-- (id)initWithPosition:(NSPoint)position contents:(NSImage *)contents;
+- (instancetype)initWithPosition:(NSPoint)position contents:(NSImage *)contents;
 
 @end

@@ -1,7 +1,7 @@
 /*
      File: SKTZoomingScrollView.h
  Abstract: A controller to manage zooming of a Sketch graphics view.
-  Version: 1.7.3
+  Version: 1.8
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following

@@ -1,7 +1,7 @@
 /*
      File: SKTZoomingScrollView.m
  Abstract: A controller to manage zooming of a Sketch graphics view.
-  Version: 1.7.3
+  Version: 1.8
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -89,13 +89,12 @@ NSLocalizedStringFromTable(@"1600%", @"SKTZoomingScrollView", @"A level of zoomi
         // Populate it and size it to fit the just-added menu item cells.
         for (NSInteger index = 0; index<SKTZoomingScrollViewPopUpButtonItemCount; index++) {
             [_factorPopUpButton addItemWithTitle:NSLocalizedStringFromTable(SKTZoomingScrollViewLabels[index], @"SKTZoomingScrollView", nil)];
-            [[_factorPopUpButton itemAtIndex:index] setRepresentedObject:[NSNumber numberWithDouble:SKTZoomingScrollViewFactors[index]]];
+            [[_factorPopUpButton itemAtIndex:index] setRepresentedObject:@(SKTZoomingScrollViewFactors[index])];
         }
         [_factorPopUpButton sizeToFit];
 
 	// Make it appear, and then release it right away, which is safe because -addSubview: retains it.
         [self addSubview:_factorPopUpButton];
-	[_factorPopUpButton release];
 
     }
 

@@ -33,15 +33,15 @@
                     "Name" = "height";
                     "Description" = "The height of the graphic's bounding rectangle.";
                 };
-                "strokeColor" = {
+                "scriptingStrokeColor" = {
                     "Name" = "stroke color";
                     "Description" = "The stroke color.";
                 };
-                "fillColor" = {
+                "scriptingFillColor" = {
                     "Name" = "fill color";
                     "Description" = "The fill color.";
                 };
-		"strokeLineWidth" = {
+		"scriptingStrokeWidth" = {
                     "Name" = "stroke thickness";
                     "Description" = "The thickness of the stroke.";
 		};
@@ -62,7 +62,7 @@
             "PluralName" = "lines";
             "Description" = "A line graphic.";
 	};
-        "SKTTextArea" = {
+        "SKTText" = {
             "Name" = "text area";
             "PluralName" = "text areas";
             "Description" = "A text graphic.";
@@ -72,13 +72,13 @@
             "PluralName" = "images";
             "Description" = "an image";
             "Attributes" = {
-                "imageFile" = {
+                "filePath" = {
                     "Name" = "imagefile";
                     "Description" = "The graphic file to use for the contents of the image.  This attribute should only be used for setting.";
                 };
             };
 	};
-        "SKTDrawDocument" = {
+        "SKTDocument" = {
             "Name" = "document";
             "PluralName" = "documents";
             "Description" = "A Sketch document.";

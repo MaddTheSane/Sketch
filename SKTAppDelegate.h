@@ -1,7 +1,7 @@
 /*
      File: SKTAppDelegate.h
  Abstract: The application delegate: This object manages display of the preferences panel, graphics inspector, and tools palette.
-  Version: 1.7.3
+  Version: 1.8
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following

@@ -1,7 +1,7 @@
 /*
      File: SKTWindowController.h
  Abstract: A window controller to manage display of a Sketch window.
-  Version: 1.7.3
+  Version: 1.8
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following

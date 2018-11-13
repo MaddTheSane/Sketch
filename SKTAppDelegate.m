@@ -1,7 +1,7 @@
 /*
      File: SKTAppDelegate.m
  Abstract: The application delegate: This object manages display of the preferences panel, graphics inspector, and tools palette.
-  Version: 1.7.3
+  Version: 1.8
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -58,7 +58,7 @@ static NSString *SKTAppAutosavingDelayPreferenceKey = @"autosavingDelay";
 
 
 @interface NSWindowController(SKTConvenience)
-- (BOOL)isWindowShown;
+@property (getter=isWindowShown, readonly) BOOL windowShown;
 - (void)showOrHideWindow;
 @end
 @implementation NSWindowController(SKTConvenience)
@@ -111,7 +111,7 @@ static NSString *SKTAppAutosavingDelayPreferenceKey = @"autosavingDelay";
 
     // Set up the default values of our autosaving preferences very early, before there's any chance of a binding using them. The default is for autosaving to be off, but 60 seconds if the user turns it on.
     NSUserDefaultsController *userDefaultsController = [NSUserDefaultsController sharedUserDefaultsController];
-    [userDefaultsController setInitialValues:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:NO], SKTAppAutosavesPreferenceKey, [NSNumber numberWithDouble:60.0], SKTAppAutosavingDelayPreferenceKey, nil]];
+    [userDefaultsController setInitialValues:@{SKTAppAutosavesPreferenceKey: @NO, SKTAppAutosavingDelayPreferenceKey: @60.0}];
 
     // Bind this object's "autosaves" and "autosavingDelay" properties to the user defaults of the same name. We don't bother with ivars for these values. This is just the quick way to get our -setAutosaves: and -setAutosavingDelay: methods invoked.
     [self bind:SKTAppAutosavesPreferenceKey toObject:userDefaultsController withKeyPath:[@"values." stringByAppendingString:SKTAppAutosavesPreferenceKey] options:nil];

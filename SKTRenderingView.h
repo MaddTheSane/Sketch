@@ -1,7 +1,7 @@
 /*
      File: SKTRenderingView.h
  Abstract: A view to create TIFF and PDF representations of a collection of graphic objects.
-  Version: 1.7.3
+  Version: 1.8
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -63,6 +63,8 @@
 + (NSData *)tiffDataWithGraphics:(NSArray *)graphics error:(NSError **)outError;
 
 // This class' designated initializer. printJobTitle must be non-nil if the view is going to be used as the view of an NSPrintOperation.
-- (id)initWithFrame:(NSRect)frame graphics:(NSArray *)graphics printJobTitle:(NSString *)printJobTitle;
+- (instancetype)initWithFrame:(NSRect)frame graphics:(NSArray *)graphics printJobTitle:(NSString *)printJobTitle;
+
+- (instancetype)initWithFrame:(NSRect)frameRect NS_DESIGNATED_INITIALIZER;
 
 @end

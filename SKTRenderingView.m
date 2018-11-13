@@ -1,7 +1,7 @@
 /*
      File: SKTRenderingView.m
  Abstract: A view to create TIFF and PDF representations of a collection of graphic objects.
-  Version: 1.7.3
+  Version: 1.8
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -49,9 +49,13 @@
 #import "SKTError.h"
 #import "SKTGraphic.h"
 
+@interface SKTRenderingView ()
+- (instancetype)initWithCoder:(NSCoder *)coder NS_DESIGNATED_INITIALIZER;
+@property (readonly, strong) NSString *printJobTitle;
+@end
 
 @implementation SKTRenderingView
-
+@synthesize printJobTitle = _printJobTitle;
 
 + (NSData *)pdfDataWithGraphics:(NSArray *)graphics {
 
@@ -59,7 +63,6 @@
     NSRect bounds = [SKTGraphic drawingBoundsOfGraphics:graphics];
     SKTRenderingView *view = [[SKTRenderingView alloc] initWithFrame:bounds graphics:graphics printJobTitle:nil];
     NSData *pdfData = [view dataWithPDFInsideRect:bounds];
-    [view release];
     return pdfData;
 
 }
@@ -74,8 +77,7 @@
 	
 	// Create a new image and prepare to draw in it. Get the graphics context for it after we lock focus, not before.
 	NSImage *image = [[NSImage alloc] initWithSize:bounds.size];
-	[image setFlipped:YES];
-	[image lockFocus];
+	[image lockFocusFlipped:YES];
 	NSGraphicsContext *currentContext = [NSGraphicsContext currentContext];
 	
 	// We're not drawing a page image here, just the rectangle that contains the graphics being drawn, so make sure they get drawn in the right place.
@@ -86,7 +88,7 @@
 	// Draw the graphics back to front.
 	NSUInteger graphicIndex = [graphics count];
 	while (graphicIndex-->0) {
-	    SKTGraphic *graphic = [graphics objectAtIndex:graphicIndex];
+	    SKTGraphic *graphic = graphics[graphicIndex];
 	    [currentContext saveGraphicsState];
 	    [NSBezierPath clipRect:[graphic drawingBounds]];
 	    [graphic drawContentsInView:nil isBeingCreateOrEdited:NO];
@@ -96,7 +98,6 @@
 	// We're done drawing.
 	[image unlockFocus];
 	tiffData = [image TIFFRepresentation];
-	[image release];
 	
     } else if (outError) {
 	
@@ -108,12 +109,20 @@
     
 }
 
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+	return self = [super initWithCoder:coder];
+}
 
-- (id)initWithFrame:(NSRect)frame graphics:(NSArray *)graphics printJobTitle:(NSString *)printJobTitle {
+- (instancetype)initWithFrame:(NSRect)frameRect
+{
+	return self = [super initWithFrame:frameRect];
+}
+
+- (instancetype)initWithFrame:(NSRect)frame graphics:(NSArray *)graphics printJobTitle:(NSString *)printJobTitle {
 
     // Do the regular Cocoa thing.
-    self = [super initWithFrame:frame];
-    if (self) {
+    if (self = [self initWithFrame:frame]) {
 	_graphics = [graphics copy];
 	_printJobTitle = [printJobTitle copy];
     }
@@ -122,14 +131,6 @@
 }
 
 
-- (void)dealloc {
-
-    // Do the regular Cocoa thing.
-    [_printJobTitle release];
-    [_graphics release];
-    [super dealloc];
-
-}
 
 
 // An override of the NSView method.
@@ -143,7 +144,7 @@
     NSGraphicsContext *currentContext = [NSGraphicsContext currentContext];
     NSInteger graphicCount = [_graphics count];
     for (NSInteger index = graphicCount - 1; index>=0; index--) {
-        SKTGraphic *graphic = [_graphics objectAtIndex:index];
+        SKTGraphic *graphic = _graphics[index];
         NSRect graphicDrawingBounds = [graphic drawingBounds];
         if (NSIntersectsRect(rect, graphicDrawingBounds)) {
 
@@ -173,15 +174,6 @@
 
     // Our override of -drawRect: always draws a background.
     return YES;
-
-}
-
-
-// An override of the NSView method.
-- (NSString *)printJobTitle {
-    
-    // Do the regular Cocoa thing.
-    return [[_printJobTitle retain] autorelease];
 
 }
 

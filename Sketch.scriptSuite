@@ -11,7 +11,7 @@
             "Superclass" = "NSCoreSuite.NSApplication";
             "ToManyRelationships" = {
                 "orderedDocuments" = {
-                    "Type" = "SKTDrawDocument";
+                    "Type" = "SKTDocument";
                     "AppleEventCode" = "docu";
                 };
             };
@@ -37,15 +37,15 @@
                     "Type" = "NSNumber";
                     "AppleEventCode" = "heig";
                 };
-                "strokeColor" = {
+                "scriptingStrokeColor" = {
                     "Type" = "NSColor";
                     "AppleEventCode" = "sclr";
                 };
-                "fillColor" = {
+                "scriptingFillColor" = {
                     "Type" = "NSColor";
                     "AppleEventCode" = "fclr";
                 };
-		"strokeLineWidth" = {
+		"scriptingStrokeWidth" = {
                     "Type" = "NSNumber";
                     "AppleEventCode" = "slwd";
 		};
@@ -63,11 +63,11 @@
             "Superclass" = "SKTGraphic";
             "AppleEventCode" = "d2ln";
 	};
-        "SKTTextArea" = {
+        "SKTText" = {
             "Superclass" = "SKTGraphic";
             "AppleEventCode" = "d2ta";
             "ToOneRelationships" = {
-                "contents" = {
+                "scriptingContents" = {
                     "Type" = "NSTextStorage";
                     "AppleEventCode" = "tact";
                 };
@@ -77,13 +77,13 @@
             "Superclass" = "SKTGraphic";
             "AppleEventCode" = "d2im";
             "Attributes" = {
-                "imageFile" = {
+                "filePath" = {
                     "Type" = "NSString";
                     "AppleEventCode" = "imgf";
                 };
             };
 	};
-        "SKTDrawDocument" = {
+        "SKTDocument" = {
             "Superclass" = "NSCoreSuite.NSDocument";
             "AppleEventCode" = "docu";
             "ToManyRelationships" = {
@@ -104,7 +104,7 @@
                     "AppleEventCode" = "d2ln";
                 };
                 "textAreas" = {
-                    "Type" = "SKTTextArea";
+                    "Type" = "SKTText";
                     "AppleEventCode" = "d2ta";
                 };
                 "images" = {
