@@ -42,14 +42,6 @@
 		38D54A4B07D51A2A00514CB8 /* Inspector.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECEF3FE888A39C02AAC07 /* Inspector.nib */; };
 		38D54A4C07D51A2A00514CB8 /* ToolPalette.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECEF6FE888A39C02AAC07 /* ToolPalette.nib */; };
 		38D54A4D07D51A2A00514CB8 /* Draw2.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECEF9FE888A39C02AAC07 /* Draw2.nib */; };
-		38D54A5107D51A2A00514CB8 /* Line.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF00FE888A39C02AAC07 /* Line.tiff */; };
-		38D54A5207D51A2A00514CB8 /* Draw2App.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF01FE888A39C02AAC07 /* Draw2App.icns */; };
-		38D54A5407D51A2A00514CB8 /* Cross.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF03FE888A39C02AAC07 /* Cross.tiff */; };
-		38D54A5507D51A2A00514CB8 /* Arrow.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF04FE888A39C02AAC07 /* Arrow.tiff */; };
-		38D54A5607D51A2A00514CB8 /* TextGraphic.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF05FE888A39C02AAC07 /* TextGraphic.tiff */; };
-		38D54A5807D51A2A00514CB8 /* Circle.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF08FE888A39C02AAC07 /* Circle.tiff */; };
-		38D54A5907D51A2A00514CB8 /* Rectangle.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF0AFE888A39C02AAC07 /* Rectangle.tiff */; };
-		38D54A5A07D51A2A00514CB8 /* Draw2File.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF0BFE888A39C02AAC07 /* Draw2File.icns */; };
 		38D54A5C07D51A2A00514CB8 /* Sketch.scriptTerminology in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF0EFE888A39C02AAC07 /* Sketch.scriptTerminology */; };
 		38D54A5E07D51A2A00514CB8 /* Sketch.scriptSuite in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF12FE888A39C02AAC07 /* Sketch.scriptSuite */; };
 		38D54A5F07D51A2A00514CB8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF13FE888A39C02AAC07 /* InfoPlist.strings */; };
@@ -62,7 +54,46 @@
 		38FA46D10847B7AC002B08B0 /* SKTError.h in Headers */ = {isa = PBXBuildFile; fileRef = 38FA46CF0847B7AC002B08B0 /* SKTError.h */; };
 		38FA46D20847B7AC002B08B0 /* SKTError.m in Sources */ = {isa = PBXBuildFile; fileRef = 38FA46D00847B7AC002B08B0 /* SKTError.m */; };
 		55CA2852219A701F00D38BDB /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55CA2851219A701F00D38BDB /* Media.xcassets */; };
+		55CA285D219A721B00D38BDB /* GenerateThumbnailForURL.m in Sources */ = {isa = PBXBuildFile; fileRef = 55CA285C219A721B00D38BDB /* GenerateThumbnailForURL.m */; };
+		55CA285F219A721B00D38BDB /* GeneratePreviewForURL.m in Sources */ = {isa = PBXBuildFile; fileRef = 55CA285E219A721B00D38BDB /* GeneratePreviewForURL.m */; };
+		55CA2861219A721B00D38BDB /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 55CA2860219A721B00D38BDB /* main.c */; };
+		55CA2866219A723D00D38BDB /* QuickLookSketch.qlgenerator in Embed PlugIns */ = {isa = PBXBuildFile; fileRef = 55CA285A219A721B00D38BDB /* QuickLookSketch.qlgenerator */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		55CA286C219A73FA00D38BDB /* SKTDrawDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = 55CA286A219A73FA00D38BDB /* SKTDrawDocument.h */; };
+		55CA286D219A73FA00D38BDB /* SKTDrawDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 55CA286B219A73FA00D38BDB /* SKTDrawDocument.m */; };
+		55CA286E219A763300D38BDB /* SKTError.m in Sources */ = {isa = PBXBuildFile; fileRef = 38FA46D00847B7AC002B08B0 /* SKTError.m */; };
+		55CA286F219A764E00D38BDB /* SKTCircle.m in Sources */ = {isa = PBXBuildFile; fileRef = 386A7A4B0C2F434500217F5A /* SKTCircle.m */; };
+		55CA2870219A766800D38BDB /* SKTGraphic.m in Sources */ = {isa = PBXBuildFile; fileRef = 386A7A4E0C2F435100217F5A /* SKTGraphic.m */; };
+		55CA2871219A766F00D38BDB /* SKTRenderingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 386A7AAE0C2F47BC00217F5A /* SKTRenderingView.m */; };
+		55CA2872219A768000D38BDB /* SKTImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 386A7A540C2F436300217F5A /* SKTImage.m */; };
+		55CA2873219A768D00D38BDB /* SKTLine.m in Sources */ = {isa = PBXBuildFile; fileRef = 386A7A550C2F436300217F5A /* SKTLine.m */; };
+		55CA2874219A769B00D38BDB /* SKTRectangle.m in Sources */ = {isa = PBXBuildFile; fileRef = 386A7A530C2F436300217F5A /* SKTRectangle.m */; };
+		55CA2877219A76C700D38BDB /* SKTTextArea.h in Headers */ = {isa = PBXBuildFile; fileRef = 55CA2875219A76C700D38BDB /* SKTTextArea.h */; };
+		55CA2878219A76C700D38BDB /* SKTTextArea.m in Sources */ = {isa = PBXBuildFile; fileRef = 55CA2876219A76C700D38BDB /* SKTTextArea.m */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		55CA2867219A723D00D38BDB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0A3ECED7FE888A39C02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 55CA2859219A721B00D38BDB;
+			remoteInfo = QuickLookSketch;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		55CA2869219A723D00D38BDB /* Embed PlugIns */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				55CA2866219A723D00D38BDB /* QuickLookSketch.qlgenerator in Embed PlugIns */,
+			);
+			name = "Embed PlugIns";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		09B61A73FFA8B0EB11CA2CEA /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
@@ -80,13 +111,7 @@
 		0A3ECEF4FE888A39C02AAC07 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Inspector.nib; sourceTree = "<group>"; };
 		0A3ECEF7FE888A39C02AAC07 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/ToolPalette.nib; sourceTree = "<group>"; };
 		0A3ECEFBFE888A39C02AAC07 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Draw2.nib; sourceTree = "<group>"; };
-		0A3ECF00FE888A39C02AAC07 /* Line.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Line.tiff; sourceTree = "<group>"; };
 		0A3ECF01FE888A39C02AAC07 /* Draw2App.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Draw2App.icns; sourceTree = "<group>"; };
-		0A3ECF03FE888A39C02AAC07 /* Cross.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Cross.tiff; sourceTree = "<group>"; };
-		0A3ECF04FE888A39C02AAC07 /* Arrow.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Arrow.tiff; sourceTree = "<group>"; };
-		0A3ECF05FE888A39C02AAC07 /* TextGraphic.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = TextGraphic.tiff; sourceTree = "<group>"; };
-		0A3ECF08FE888A39C02AAC07 /* Circle.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Circle.tiff; sourceTree = "<group>"; };
-		0A3ECF0AFE888A39C02AAC07 /* Rectangle.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Rectangle.tiff; sourceTree = "<group>"; };
 		0A3ECF0BFE888A39C02AAC07 /* Draw2File.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Draw2File.icns; sourceTree = "<group>"; };
 		0A3ECF0FFE888A39C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = English; path = English.lproj/Sketch.scriptTerminology; sourceTree = "<group>"; };
 		0A3ECF12FE888A39C02AAC07 /* Sketch.scriptSuite */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Sketch.scriptSuite; sourceTree = "<group>"; };
@@ -126,6 +151,15 @@
 		38FA46CF0847B7AC002B08B0 /* SKTError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTError.h; sourceTree = "<group>"; };
 		38FA46D00847B7AC002B08B0 /* SKTError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTError.m; sourceTree = "<group>"; };
 		55CA2851219A701F00D38BDB /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
+		55CA285A219A721B00D38BDB /* QuickLookSketch.qlgenerator */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QuickLookSketch.qlgenerator; sourceTree = BUILT_PRODUCTS_DIR; };
+		55CA285C219A721B00D38BDB /* GenerateThumbnailForURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GenerateThumbnailForURL.m; sourceTree = "<group>"; };
+		55CA285E219A721B00D38BDB /* GeneratePreviewForURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratePreviewForURL.m; sourceTree = "<group>"; };
+		55CA2860219A721B00D38BDB /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		55CA2862219A721B00D38BDB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		55CA286A219A73FA00D38BDB /* SKTDrawDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTDrawDocument.h; sourceTree = "<group>"; };
+		55CA286B219A73FA00D38BDB /* SKTDrawDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTDrawDocument.m; sourceTree = "<group>"; };
+		55CA2875219A76C700D38BDB /* SKTTextArea.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTTextArea.h; sourceTree = "<group>"; };
+		55CA2876219A76C700D38BDB /* SKTTextArea.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTTextArea.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,6 +168,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				38D54A7307D51A2A00514CB8 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		55CA2857219A721B00D38BDB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -181,7 +222,8 @@
 				38C1482A0C3E2D03001085CE /* NSColor_SKTScripting.m */,
 				0A3ECF0DFE888A39C02AAC07 /* Resources */,
 				0A3ECF2DFE888A39C02AAC07 /* Notes */,
-				0A3ECF37FE888A39C02AAC07 /* External Frameworks */,
+				0A3ECF37FE888A39C02AAC07 /* Frameworks */,
+				55CA285B219A721B00D38BDB /* QuickLookSketch */,
 				20846A42FE943C2411CA2CEA /* Products */,
 			);
 			name = Sketch;
@@ -203,12 +245,6 @@
 				0A3ECF12FE888A39C02AAC07 /* Sketch.scriptSuite */,
 				0A3ECF0EFE888A39C02AAC07 /* Sketch.scriptTerminology */,
 				3848301F09FE857F00094A3A /* Sketch.sdef */,
-				0A3ECF04FE888A39C02AAC07 /* Arrow.tiff */,
-				0A3ECF08FE888A39C02AAC07 /* Circle.tiff */,
-				0A3ECF03FE888A39C02AAC07 /* Cross.tiff */,
-				0A3ECF00FE888A39C02AAC07 /* Line.tiff */,
-				0A3ECF0AFE888A39C02AAC07 /* Rectangle.tiff */,
-				0A3ECF05FE888A39C02AAC07 /* TextGraphic.tiff */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -222,23 +258,41 @@
 			name = Notes;
 			sourceTree = "<group>";
 		};
-		0A3ECF37FE888A39C02AAC07 /* External Frameworks */ = {
+		0A3ECF37FE888A39C02AAC07 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				09B61A73FFA8B0EB11CA2CEA /* Cocoa.framework */,
 				0A3ECF3AFE888A39C02AAC07 /* Foundation.framework */,
 				0A3ECF39FE888A39C02AAC07 /* AppKit.framework */,
 			);
-			name = "External Frameworks";
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		20846A42FE943C2411CA2CEA /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				38D54A7607D51A2A00514CB8 /* Sketch.app */,
+				55CA285A219A721B00D38BDB /* QuickLookSketch.qlgenerator */,
 			);
 			name = Products;
 			sourceTree = "<group>";
+		};
+		55CA285B219A721B00D38BDB /* QuickLookSketch */ = {
+			isa = PBXGroup;
+			children = (
+				55CA2875219A76C700D38BDB /* SKTTextArea.h */,
+				55CA2876219A76C700D38BDB /* SKTTextArea.m */,
+				55CA286A219A73FA00D38BDB /* SKTDrawDocument.h */,
+				55CA286B219A73FA00D38BDB /* SKTDrawDocument.m */,
+				55CA285C219A721B00D38BDB /* GenerateThumbnailForURL.m */,
+				55CA285E219A721B00D38BDB /* GeneratePreviewForURL.m */,
+				55CA2860219A721B00D38BDB /* main.c */,
+				55CA2862219A721B00D38BDB /* Info.plist */,
+			);
+			name = QuickLookSketch;
+			path = QuickLook;
+			sourceTree = "<group>";
+			usesTabs = 0;
 		};
 /* End PBXGroup section */
 
@@ -266,6 +320,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		55CA2855219A721B00D38BDB /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				55CA286C219A73FA00D38BDB /* SKTDrawDocument.h in Headers */,
+				55CA2877219A76C700D38BDB /* SKTTextArea.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
@@ -278,15 +341,35 @@
 				38D54A6007D51A2A00514CB8 /* Sources */,
 				38D54A7207D51A2A00514CB8 /* Frameworks */,
 				38D54A7407D51A2A00514CB8 /* ShellScript */,
+				55CA2869219A723D00D38BDB /* Embed PlugIns */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				55CA2868219A723D00D38BDB /* PBXTargetDependency */,
 			);
 			name = Sketch;
 			productName = Sketch;
 			productReference = 38D54A7607D51A2A00514CB8 /* Sketch.app */;
 			productType = "com.apple.product-type.application";
+		};
+		55CA2859219A721B00D38BDB /* QuickLookSketch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 55CA2863219A721B00D38BDB /* Build configuration list for PBXNativeTarget "QuickLookSketch" */;
+			buildPhases = (
+				55CA2855219A721B00D38BDB /* Headers */,
+				55CA2856219A721B00D38BDB /* Sources */,
+				55CA2857219A721B00D38BDB /* Frameworks */,
+				55CA2858219A721B00D38BDB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = QuickLookSketch;
+			productName = QuickLookSketch;
+			productReference = 55CA285A219A721B00D38BDB /* QuickLookSketch.qlgenerator */;
+			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
 
@@ -295,6 +378,12 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 1010;
+				TargetAttributes = {
+					55CA2859219A721B00D38BDB = {
+						CreatedOnToolsVersion = 10.1;
+						ProvisioningStyle = Automatic;
+					};
+				};
 			};
 			buildConfigurationList = 3833E1A30889EBD20049736A /* Build configuration list for PBXProject "Sketch" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -308,6 +397,7 @@
 			projectRoot = "";
 			targets = (
 				38D54A3507D51A2A00514CB8 /* Sketch */,
+				55CA2859219A721B00D38BDB /* QuickLookSketch */,
 			);
 		};
 /* End PBXProject section */
@@ -317,27 +407,26 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				38D54A5507D51A2A00514CB8 /* Arrow.tiff in Resources */,
-				38D54A5807D51A2A00514CB8 /* Circle.tiff in Resources */,
-				38D54A5407D51A2A00514CB8 /* Cross.tiff in Resources */,
 				38D54A4D07D51A2A00514CB8 /* Draw2.nib in Resources */,
-				38D54A5207D51A2A00514CB8 /* Draw2App.icns in Resources */,
-				38D54A5A07D51A2A00514CB8 /* Draw2File.icns in Resources */,
 				38D54A4907D51A2A00514CB8 /* DrawWindow.nib in Resources */,
 				38D54A4A07D51A2A00514CB8 /* GridPanel.nib in Resources */,
 				38D54A5F07D51A2A00514CB8 /* InfoPlist.strings in Resources */,
 				38D54A4B07D51A2A00514CB8 /* Inspector.nib in Resources */,
-				38D54A5107D51A2A00514CB8 /* Line.tiff in Resources */,
 				3805D473084D7840003B3AAC /* Preferences.nib in Resources */,
-				38D54A5907D51A2A00514CB8 /* Rectangle.tiff in Resources */,
 				38D54A5E07D51A2A00514CB8 /* Sketch.scriptSuite in Resources */,
 				38D54A5C07D51A2A00514CB8 /* Sketch.scriptTerminology in Resources */,
 				3848302009FE857F00094A3A /* Sketch.sdef in Resources */,
 				55CA2852219A701F00D38BDB /* Media.xcassets in Resources */,
 				38AFB5760C2F908200AEF7A8 /* SKTError.strings in Resources */,
-				38D54A5607D51A2A00514CB8 /* TextGraphic.tiff in Resources */,
 				38D54A4C07D51A2A00514CB8 /* ToolPalette.nib in Resources */,
 				2811962914C8F3B2004103CE /* ReadMe.rtf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		55CA2858219A721B00D38BDB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -380,7 +469,34 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		55CA2856219A721B00D38BDB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				55CA2878219A76C700D38BDB /* SKTTextArea.m in Sources */,
+				55CA2873219A768D00D38BDB /* SKTLine.m in Sources */,
+				55CA2871219A766F00D38BDB /* SKTRenderingView.m in Sources */,
+				55CA2872219A768000D38BDB /* SKTImage.m in Sources */,
+				55CA2870219A766800D38BDB /* SKTGraphic.m in Sources */,
+				55CA2874219A769B00D38BDB /* SKTRectangle.m in Sources */,
+				55CA285D219A721B00D38BDB /* GenerateThumbnailForURL.m in Sources */,
+				55CA285F219A721B00D38BDB /* GeneratePreviewForURL.m in Sources */,
+				55CA2861219A721B00D38BDB /* main.c in Sources */,
+				55CA286D219A73FA00D38BDB /* SKTDrawDocument.m in Sources */,
+				55CA286F219A764E00D38BDB /* SKTCircle.m in Sources */,
+				55CA286E219A763300D38BDB /* SKTError.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		55CA2868219A723D00D38BDB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 55CA2859219A721B00D38BDB /* QuickLookSketch */;
+			targetProxy = 55CA2867219A723D00D38BDB /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		0A3ECEEEFE888A39C02AAC07 /* DrawWindow.nib */ = {
@@ -461,7 +577,9 @@
 		3833E1980889EBD20049736A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = Draw2App;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "-";
 				CURRENT_PROJECT_VERSION = 51;
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -482,7 +600,9 @@
 		3833E1990889EBD20049736A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = Draw2App;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "-";
 				CURRENT_PROJECT_VERSION = 51;
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -571,6 +691,77 @@
 			};
 			name = Release;
 		};
+		55CA2864219A721B00D38BDB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = QuickLook/Info.plist;
+				INSTALL_PATH = /Library/QuickLook;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.apple.sketch.quicklookgenerator;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = qlgenerator;
+			};
+			name = Debug;
+		};
+		55CA2865219A721B00D38BDB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = QuickLook/Info.plist;
+				INSTALL_PATH = /Library/QuickLook;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.apple.sketch.quicklookgenerator;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = qlgenerator;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -588,6 +779,15 @@
 			buildConfigurations = (
 				3833E1A40889EBD20049736A /* Debug */,
 				3833E1A50889EBD20049736A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		55CA2863219A721B00D38BDB /* Build configuration list for PBXNativeTarget "QuickLookSketch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				55CA2864219A721B00D38BDB /* Debug */,
+				55CA2865219A721B00D38BDB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -67,8 +67,6 @@ NSString *SKTTextAreaContentsKey = @"contents";
 
     // Do the regular Cocoa thing.
     [_contents setDelegate:nil];
-    [_contents release];
-    [super dealloc];
 
 }
 
@@ -102,7 +100,6 @@ NSString *SKTTextAreaContentsKey = @"contents";
 		[textContainer setWidthTracksTextView:NO];
         [textContainer setHeightTracksTextView:NO];
         [layoutManager addTextContainer:textContainer];
-        [textContainer release];
     }
     return layoutManager;
 	
@@ -130,15 +127,15 @@ NSString *SKTTextAreaContentsKey = @"contents";
     /* Update the bounds of this graphic to match the height of the text. Make sure that doesn't result in the registration of a spurious undo action.
        There might be a noticeable performance win to be had during editing by making this object a delegate of the text views it creates, implementing -[NSObject(NSTextDelegate) textDidChange:], and using information that's already calculated by the editing text view instead of invoking -makeNaturalSize like this. */
 	
-    [self willChangeValueForKey:SKTGraphicKeysForValuesToObserveForUndo];
+    [self willChangeValueForKey:SKTGraphicKeysForValuesToObserveForUndoKey];
     _boundsBeingChangedToMatchContents = YES;
-    [self didChangeValueForKey:SKTGraphicKeysForValuesToObserveForUndo];
+    [self didChangeValueForKey:SKTGraphicKeysForValuesToObserveForUndoKey];
     NSRect bounds = [self bounds];
     NSSize naturalSize = [self naturalSize];
     [self setBounds:NSMakeRect(bounds.origin.x, bounds.origin.y, bounds.size.width, naturalSize.height)];
-    [self willChangeValueForKey:SKTGraphicKeysForValuesToObserveForUndo];
+    [self willChangeValueForKey:SKTGraphicKeysForValuesToObserveForUndoKey];
     _boundsBeingChangedToMatchContents = NO;
-    [self didChangeValueForKey:SKTGraphicKeysForValuesToObserveForUndo];
+    [self didChangeValueForKey:SKTGraphicKeysForValuesToObserveForUndoKey];
 
 }
 
@@ -159,9 +156,9 @@ NSString *SKTTextAreaContentsKey = @"contents";
 - (void)willChangeScriptingContents {
 
     // Tell any object that would observe this one to record undo operations to start observing. In Sketch, each SKTDrawDocument is observing all of its graphics' "keysForValuesToObserveForUndo" values.
-    [self willChangeValueForKey:SKTGraphicKeysForValuesToObserveForUndo];
+    [self willChangeValueForKey:SKTGraphicKeysForValuesToObserveForUndoKey];
     _contentsBeingChangedByScripting = YES;
-    [self didChangeValueForKey:SKTGraphicKeysForValuesToObserveForUndo];
+    [self didChangeValueForKey:SKTGraphicKeysForValuesToObserveForUndoKey];
 
     /* Do the first part of notifying observers. It's OK if no changes are actually done by scripting before the matching invocation of -didChangeValueForKey:. Key-value observers aren't allowed to assume that every observer notification is about a real change (that's why the KVO notification method's name starts with -observeValueForKeyPath:, not -observeChangeOfValueForKeyPath:). */
     [self willChangeValueForKey:SKTTextAreaUndoContentsKey];
@@ -177,9 +174,9 @@ NSString *SKTTextAreaContentsKey = @"contents";
     /* Tell observers to stop observing to record undo operations.
        This isn't strictly necessary in Sketch: we could just let the SKTDrawDocument keep observing, because we know that no other objects are observing "undoContents." Partial KVO-compliance like this that only works some of the time is a dangerous game though, and it's a good idea to be very explicit about it. This class is very explictily only KVO-compliant for "undoContents" while -keysForValuesToObserveForUndo is returning a set that contains "undoContents." */
 	
-    [self willChangeValueForKey:SKTGraphicKeysForValuesToObserveForUndo];
+    [self willChangeValueForKey:SKTGraphicKeysForValuesToObserveForUndoKey];
     _contentsBeingChangedByScripting = NO;
-    [self didChangeValueForKey:SKTGraphicKeysForValuesToObserveForUndo];
+    [self didChangeValueForKey:SKTGraphicKeysForValuesToObserveForUndoKey];
 
 }
 
@@ -232,7 +229,7 @@ NSString *SKTTextAreaContentsKey = @"contents";
 
     /* Never return an object whose value will change after it's been returned. This is generally good behavior for any getter method that returns the value of an attribute or a to-many relationship. (For to-one relationships just returning the related object is the right thing to do, as in this class' -contents method.) However, this particular implementation of this good behavior might not be fast enough for all situations. If the copying here causes a performance problem, an alternative might be to return [[contents retain] autorelease], set a bit that indicates that the contents should be lazily replaced with a copy before any mutation, and then heed that bit in other methods of this class. */
 	
-    return [[[self contents] copy] autorelease];
+    return [[self contents] copy];
 
 }
 
@@ -260,7 +257,7 @@ NSString *SKTTextAreaContentsKey = @"contents";
 		if ([contentsData isKindOfClass:[NSData class]]) {
 			NSTextStorage *contents = [NSUnarchiver unarchiveObjectWithData:contentsData];
 			if ([contents isKindOfClass:[NSTextStorage class]]) {
-				_contents = [contents retain];
+				_contents = contents;
 				
 				// We need to be notified whenever the text storage changes.
 				[_contents setDelegate:self];
@@ -366,8 +363,8 @@ NSString *SKTTextAreaContentsKey = @"contents";
     [super setBounds:bounds];
     if (!_boundsBeingChangedToMatchContents) {
 		NSArray *layoutManagers = [[self contents] layoutManagers];
-		unsigned int layoutManagerCount = [layoutManagers count];
-		for (unsigned int index = 0; index<layoutManagerCount; index++) {
+		NSUInteger layoutManagerCount = [layoutManagers count];
+		for (NSUInteger index = 0; index<layoutManagerCount; index++) {
 			NSLayoutManager *layoutManager = [layoutManagers objectAtIndex:index];
 			
 			// We didn't set up any multiple-text-view layout managers in -newEditingViewWithSuperviewBounds:, so we're not expecting to have to deal with any here.
@@ -391,10 +388,8 @@ NSString *SKTTextAreaContentsKey = @"contents";
     // Create a layout manager that will manage the communication between our text storage and the text container, and hook it up.
     NSLayoutManager *layoutManager = [[NSLayoutManager alloc] init];
     [layoutManager addTextContainer:textContainer];
-    [textContainer release];
-    NSTextStorage *contents = [self contents]; 
+    NSTextStorage *contents = [self contents];
     [contents addLayoutManager:layoutManager];
-    [layoutManager release];
 	
     // Of course text editing should be as undoable as anything else.
     [textView setAllowsUndo:YES];
@@ -417,7 +412,7 @@ NSString *SKTTextAreaContentsKey = @"contents";
     [textView setVerticallyResizable:YES];
 	
     // The invoker doesn't have to release this object.
-    return [textView autorelease];
+    return textView;
 	
 }
 
@@ -443,7 +438,7 @@ NSString *SKTTextAreaContentsKey = @"contents";
 		if (_boundsBeingChangedToMatchContents) {
 			[keys removeObject:SKTGraphicBoundsKey];
 		}
-		keysToReturn = [keys autorelease];
+		keysToReturn = keys;
     }
     return keysToReturn;
 	

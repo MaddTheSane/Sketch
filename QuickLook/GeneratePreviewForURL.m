@@ -61,14 +61,12 @@
 
 OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options)
 {
-	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-    
+	@autoreleasepool {
+		
     // Create and read the document file
     SKTDrawDocument* document = [[SKTDrawDocument alloc] init];
     
-    if(![document readFromURL:(NSURL *)url ofType:(NSString *)contentTypeUTI]) {
-        [document release];
-        [pool release];
+    if(![document readFromURL:(__bridge NSURL *)url ofType:(__bridge NSString *)contentTypeUTI error:NULL]) {
         return noErr;
     }
     
@@ -96,8 +94,8 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
         CFRelease(cgContext);
     }
     
-    [pool release];
     return noErr;
+	}
 }
 
 void CancelPreviewGeneration(void* thisInterface, QLPreviewRequestRef preview)

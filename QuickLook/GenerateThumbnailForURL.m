@@ -60,14 +60,12 @@
 
 OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thumbnail, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options, CGSize maxSize)
 {
-    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    @autoreleasepool {
     
     // Create and read the document file
     SKTDrawDocument* document = [[SKTDrawDocument alloc] init];
     
-    if(![document readFromURL:(NSURL *)url ofType:(NSString *)contentTypeUTI]) {
-        [document release];
-        [pool release];
+    if(![document readFromURL:(__bridge NSURL *)url ofType:(__bridge NSString *)contentTypeUTI error:NULL]) {
         return noErr;
     }
     
@@ -98,8 +96,8 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
         CFRelease(cgContext);
     }
     
-    [pool release];
     return noErr;
+    }
 }
 
 void CancelThumbnailGeneration(void* thisInterface, QLThumbnailRequestRef thumbnail)

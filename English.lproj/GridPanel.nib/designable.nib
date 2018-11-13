@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="NSWindowController">
+            <connections>
+                <outlet property="window" destination="5" id="8"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application"/>
+        <window title="Grid" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="5" userLabel="Panel" customClass="NSPanel">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES" nonactivatingPanel="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" topStrut="YES"/>
+            <rect key="contentRect" x="540" y="512" width="306" height="168"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="1002"/>
+            <view key="contentView" id="6">
+                <rect key="frame" x="0.0" y="0.0" width="306" height="168"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <box title="Title" titlePosition="noTitle" id="20">
+                        <rect key="frame" x="152" y="90" width="137" height="60"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <view key="contentView" id="2OY-4E-Wkc">
+                            <rect key="frame" x="3" y="3" width="131" height="54"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <colorWell id="13">
+                                    <rect key="frame" x="64" y="15" width="53" height="30"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <color key="color" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <connections>
+                                        <binding destination="32" name="enabled" keyPath="mainWindow.windowController.grid.canSetColor" id="63"/>
+                                        <binding destination="32" name="value" keyPath="mainWindow.windowController.grid.color" id="64"/>
+                                    </connections>
+                                </colorWell>
+                                <textField verticalHuggingPriority="750" id="14">
+                                    <rect key="frame" x="13" y="22" width="46" height="16"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Color:" id="76">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                    <connections>
+                                        <binding destination="32" name="enabled" keyPath="mainWindow.windowController.grid.canSetColor" id="62"/>
+                                    </connections>
+                                </textField>
+                            </subviews>
+                        </view>
+                        <font key="titleFont" metaFont="system"/>
+                    </box>
+                    <box title="Spacing" id="16">
+                        <rect key="frame" x="17" y="22" width="272" height="64"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <view key="contentView" id="X3R-XR-xAG">
+                            <rect key="frame" x="3" y="3" width="266" height="43"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <slider verticalHuggingPriority="750" id="10">
+                                    <rect key="frame" x="14" y="8" width="240" height="25"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <sliderCell key="cell" continuous="YES" alignment="left" maxValue="72" doubleValue="9" tickMarkPosition="below" numberOfTickMarks="17" sliderType="linear" id="73">
+                                        <font key="font" metaFont="system"/>
+                                    </sliderCell>
+                                    <connections>
+                                        <binding destination="32" name="enabled" keyPath="mainWindow.windowController.grid.canSetSpacing" id="66"/>
+                                        <binding destination="32" name="value" keyPath="mainWindow.windowController.grid.spacing" id="65"/>
+                                    </connections>
+                                </slider>
+                            </subviews>
+                        </view>
+                        <font key="titleFont" metaFont="system"/>
+                    </box>
+                    <box title="Title" titlePosition="noTitle" id="18">
+                        <rect key="frame" x="17" y="90" width="133" height="60"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <view key="contentView" id="rbb-VD-USZ">
+                            <rect key="frame" x="3" y="3" width="127" height="54"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <button imageHugsTitle="YES" id="11">
+                                    <rect key="frame" x="14" y="29" width="86" height="18"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <buttonCell key="cell" type="check" title="Show Grid" imagePosition="leading" alignment="left" inset="2" id="74">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="32" name="enabled" keyPath="mainWindow.windowController.grid.usable" id="68"/>
+                                        <binding destination="32" name="value" keyPath="mainWindow.windowController.grid.alwaysShown" id="67"/>
+                                    </connections>
+                                </button>
+                                <button imageHugsTitle="YES" id="12">
+                                    <rect key="frame" x="14" y="9" width="101" height="18"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <buttonCell key="cell" type="check" title="Snap to Grid" imagePosition="leading" alignment="left" inset="2" id="75">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="32" name="enabled" keyPath="mainWindow.windowController.grid.usable" id="70"/>
+                                        <binding destination="32" name="value" keyPath="mainWindow.windowController.grid.constraining" id="71"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                        </view>
+                        <font key="titleFont" metaFont="system"/>
+                    </box>
+                </subviews>
+            </view>
+            <connections>
+                <outlet property="delegate" destination="-2" id="30"/>
+            </connections>
+        </window>
+        <customObject id="32" userLabel="Shared App" customClass="NSApplication"/>
+    </objects>
+</document>
