@@ -70,7 +70,7 @@
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" id="32">
-                                    <rect key="frame" x="117" y="23" width="54" height="16"/>
+                                    <rect key="frame" x="117" y="23" width="54" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" alignment="right" title="Height:" id="100032">
                                         <font key="font" metaFont="system"/>
