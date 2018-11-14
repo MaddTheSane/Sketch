@@ -50,7 +50,7 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreServices/CoreServices.h>
 #include <QuickLook/QuickLook.h>
-#import "SKTDrawDocument.h"
+#import "SKTDocument.h"
 
 
 /* -----------------------------------------------------------------------------
@@ -64,7 +64,7 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 	@autoreleasepool {
 		
     // Create and read the document file
-    SKTDrawDocument* document = [[SKTDrawDocument alloc] init];
+    SKTDocument* document = [[SKTDocument alloc] init];
     
     if(![document readFromURL:(__bridge NSURL *)url ofType:(__bridge NSString *)contentTypeUTI error:NULL]) {
         return noErr;

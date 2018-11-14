@@ -87,7 +87,7 @@ extern NSString *SKTGridAnyKey;
 }
 
 // Simple accessors.
-@property (getter=isAlwaysShown) BOOL alwaysShown;
+@property (nonatomic, getter=isAlwaysShown) BOOL alwaysShown;
 @property (getter=isConstraining) BOOL constraining;
 @property (getter=isUsable, readonly) BOOL usable;
 

@@ -56,14 +56,14 @@
  
  This function's job is to create thumbnail for designated file (as fast as possible!)
  ----------------------------------------------------------------------------- */
-#import "SKTDrawDocument.h"
+#import "SKTDocument.h"
 
 OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thumbnail, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options, CGSize maxSize)
 {
     @autoreleasepool {
     
     // Create and read the document file
-    SKTDrawDocument* document = [[SKTDrawDocument alloc] init];
+    SKTDocument* document = [[SKTDocument alloc] init];
     
     if(![document readFromURL:(__bridge NSURL *)url ofType:(__bridge NSString *)contentTypeUTI error:NULL]) {
         return noErr;

@@ -211,6 +211,24 @@ static NSInteger SKTDocumentCurrentVersion = 2;
     
 }
 
+// Added for Quick Look generator
+- (void)drawDocumentInContext:(NSGraphicsContext *)context
+{
+	NSSize documentSize = [self canvasSize];
+	NSRect theRect = NSMakeRect(0.0, 0.0, documentSize.width, documentSize.height);
+	SKTRenderingView *renderingView = [[SKTRenderingView alloc] initWithFrame:theRect graphics:[self graphics] printJobTitle:nil];
+	
+	[NSGraphicsContext saveGraphicsState];
+	[NSGraphicsContext setCurrentContext:context];
+	
+	[context saveGraphicsState];
+	
+	[renderingView displayRectIgnoringOpacity:theRect inContext:context];
+	
+	[context restoreGraphicsState];
+	
+	[NSGraphicsContext restoreGraphicsState];
+}
 
 #pragma mark *** Overrides of NSDocument Methods ***
 

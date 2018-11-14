@@ -81,5 +81,8 @@ In Sketch the graphics property of each SKTGraphicView is bound to the graphics 
 // Return the current value of the property.
 @property (readonly) NSSize canvasSize;
 
+// Added for Quick Look generator
+- (void)drawDocumentInContext:(NSGraphicsContext *)context;
+
 @end
 

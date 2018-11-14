@@ -66,6 +66,7 @@
 		53D61C560FD15E42004A1A2F /* SKTGraphicAccessibilityProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D61C540FD15E42004A1A2F /* SKTGraphicAccessibilityProxy.m */; };
 		53ED74600FD6F65E000D4D64 /* SKTPixelSliderCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53ED745E0FD6F65E000D4D64 /* SKTPixelSliderCell.h */; };
 		53ED74610FD6F65E000D4D64 /* SKTPixelSliderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53ED745F0FD6F65E000D4D64 /* SKTPixelSliderCell.m */; };
+		553C3F34219C974100405A36 /* SKTDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 386A7A460C2F433100217F5A /* SKTDocument.m */; };
 		5544F8F5219BDAC600B61516 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5544F8F3219BDAC600B61516 /* InfoPlist.strings */; };
 		5544F8F9219BDC1600B61516 /* SKTText.m in Sources */ = {isa = PBXBuildFile; fileRef = 386A7A560C2F436300217F5A /* SKTText.m */; };
 		55CA2852219A701F00D38BDB /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55CA2851219A701F00D38BDB /* Media.xcassets */; };
@@ -73,8 +74,6 @@
 		55CA285F219A721B00D38BDB /* GeneratePreviewForURL.m in Sources */ = {isa = PBXBuildFile; fileRef = 55CA285E219A721B00D38BDB /* GeneratePreviewForURL.m */; };
 		55CA2861219A721B00D38BDB /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 55CA2860219A721B00D38BDB /* main.c */; };
 		55CA2866219A723D00D38BDB /* QuickLookSketch.qlgenerator in Embed Spotlight */ = {isa = PBXBuildFile; fileRef = 55CA285A219A721B00D38BDB /* QuickLookSketch.qlgenerator */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		55CA286C219A73FA00D38BDB /* SKTDrawDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = 55CA286A219A73FA00D38BDB /* SKTDrawDocument.h */; };
-		55CA286D219A73FA00D38BDB /* SKTDrawDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 55CA286B219A73FA00D38BDB /* SKTDrawDocument.m */; };
 		55CA286E219A763300D38BDB /* SKTError.m in Sources */ = {isa = PBXBuildFile; fileRef = 38FA46D00847B7AC002B08B0 /* SKTError.m */; };
 		55CA286F219A764E00D38BDB /* SKTCircle.m in Sources */ = {isa = PBXBuildFile; fileRef = 386A7A4B0C2F434500217F5A /* SKTCircle.m */; };
 		55CA2870219A766800D38BDB /* SKTGraphic.m in Sources */ = {isa = PBXBuildFile; fileRef = 386A7A4E0C2F435100217F5A /* SKTGraphic.m */; };
@@ -185,8 +184,6 @@
 		55CA285E219A721B00D38BDB /* GeneratePreviewForURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratePreviewForURL.m; sourceTree = "<group>"; };
 		55CA2860219A721B00D38BDB /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		55CA2862219A721B00D38BDB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; usesTabs = 1; };
-		55CA286A219A73FA00D38BDB /* SKTDrawDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTDrawDocument.h; sourceTree = "<group>"; };
-		55CA286B219A73FA00D38BDB /* SKTDrawDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTDrawDocument.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -282,8 +279,6 @@
 			isa = PBXGroup;
 			children = (
 				5544F8F3219BDAC600B61516 /* InfoPlist.strings */,
-				55CA286A219A73FA00D38BDB /* SKTDrawDocument.h */,
-				55CA286B219A73FA00D38BDB /* SKTDrawDocument.m */,
 				55CA285C219A721B00D38BDB /* GenerateThumbnailForURL.m */,
 				55CA285E219A721B00D38BDB /* GeneratePreviewForURL.m */,
 				55CA2860219A721B00D38BDB /* main.c */,
@@ -382,7 +377,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				55CA286C219A73FA00D38BDB /* SKTDrawDocument.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -533,11 +527,11 @@
 				55CA2872219A768000D38BDB /* SKTImage.m in Sources */,
 				5544F8F9219BDC1600B61516 /* SKTText.m in Sources */,
 				55CA2870219A766800D38BDB /* SKTGraphic.m in Sources */,
+				553C3F34219C974100405A36 /* SKTDocument.m in Sources */,
 				55CA2874219A769B00D38BDB /* SKTRectangle.m in Sources */,
 				55CA285D219A721B00D38BDB /* GenerateThumbnailForURL.m in Sources */,
 				55CA285F219A721B00D38BDB /* GeneratePreviewForURL.m in Sources */,
 				55CA2861219A721B00D38BDB /* main.c in Sources */,
-				55CA286D219A73FA00D38BDB /* SKTDrawDocument.m in Sources */,
 				55CA286F219A764E00D38BDB /* SKTCircle.m in Sources */,
 				55CA286E219A763300D38BDB /* SKTError.m in Sources */,
 			);

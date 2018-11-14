@@ -187,10 +187,6 @@ static NSTimeInterval SKTGridTemporaryShowingTime = 1.0;
 @synthesize constraining = _isConstraining;
 
 // Boilerplate.
-- (BOOL)isAlwaysShown {
-    return _isAlwaysShown;
-}
-
 + (NSSet *)keyPathsForValuesAffectingUsable {
     return [NSSet setWithObject:@"spacing"];
 }
