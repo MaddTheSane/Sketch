@@ -172,26 +172,26 @@
     if ([attribute isEqualToString:NSAccessibilityLayoutPointForScreenPointParameterizedAttribute]) {
 		NSPoint point = [parameter pointValue];
 		NSPoint windowPoint = [[self window] convertScreenToBase:point];
-		NSPoint localPoint = [self convertPointFromBase:windowPoint];
+		NSPoint localPoint = [self convertPointToBacking:windowPoint];
 		return [NSValue valueWithPoint:localPoint];
     }
     
     else if ([attribute isEqualToString:NSAccessibilityLayoutSizeForScreenSizeParameterizedAttribute]) {
 		NSSize size = [parameter sizeValue];
-		NSSize localSize = [self convertSizeFromBase:size];
+		NSSize localSize = [self convertSizeToBacking:size];
 		return [NSValue valueWithSize:localSize];
     }
 	
     else if ([attribute isEqualToString:NSAccessibilityScreenPointForLayoutPointParameterizedAttribute]) {
 		NSPoint point = [parameter pointValue];
-		NSPoint windowPoint = [self convertPointToBase:point];
+		NSPoint windowPoint = [self convertPointFromBacking:point];
 		NSPoint screenPoint = [[self window] convertBaseToScreen:windowPoint];
 		return [NSValue valueWithPoint:screenPoint];
     }
 	
     else if ([attribute isEqualToString:NSAccessibilityScreenSizeForLayoutSizeParameterizedAttribute]) {
 		NSSize size = [parameter sizeValue];
-		NSSize screenSize = [self convertSizeToBase:size];
+		NSSize screenSize = [self convertSizeFromBacking:size];
 		return [NSValue valueWithSize:screenSize];
     }
 	
@@ -212,7 +212,7 @@
     NSPoint windowPoint = [[self window] convertScreenToBase:point];
 	
     // Convert window point to local point
-    NSPoint localPoint = [self convertPointFromBase:windowPoint];
+    NSPoint localPoint = [self convertPointToBacking:windowPoint];
 	
     // Use existing method to hit test graphics
     SKTGraphic *hitGraphic = [self graphicUnderPoint:localPoint index:0 isSelected:0 handle:0];

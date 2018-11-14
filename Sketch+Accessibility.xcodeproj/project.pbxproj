@@ -67,6 +67,7 @@
 		53ED74600FD6F65E000D4D64 /* SKTPixelSliderCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53ED745E0FD6F65E000D4D64 /* SKTPixelSliderCell.h */; };
 		53ED74610FD6F65E000D4D64 /* SKTPixelSliderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53ED745F0FD6F65E000D4D64 /* SKTPixelSliderCell.m */; };
 		5544F8F5219BDAC600B61516 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5544F8F3219BDAC600B61516 /* InfoPlist.strings */; };
+		5544F8F9219BDC1600B61516 /* SKTText.m in Sources */ = {isa = PBXBuildFile; fileRef = 386A7A560C2F436300217F5A /* SKTText.m */; };
 		55CA2852219A701F00D38BDB /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55CA2851219A701F00D38BDB /* Media.xcassets */; };
 		55CA285D219A721B00D38BDB /* GenerateThumbnailForURL.m in Sources */ = {isa = PBXBuildFile; fileRef = 55CA285C219A721B00D38BDB /* GenerateThumbnailForURL.m */; };
 		55CA285F219A721B00D38BDB /* GeneratePreviewForURL.m in Sources */ = {isa = PBXBuildFile; fileRef = 55CA285E219A721B00D38BDB /* GeneratePreviewForURL.m */; };
@@ -81,8 +82,6 @@
 		55CA2872219A768000D38BDB /* SKTImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 386A7A540C2F436300217F5A /* SKTImage.m */; };
 		55CA2873219A768D00D38BDB /* SKTLine.m in Sources */ = {isa = PBXBuildFile; fileRef = 386A7A550C2F436300217F5A /* SKTLine.m */; };
 		55CA2874219A769B00D38BDB /* SKTRectangle.m in Sources */ = {isa = PBXBuildFile; fileRef = 386A7A530C2F436300217F5A /* SKTRectangle.m */; };
-		55CA2877219A76C700D38BDB /* SKTTextArea.h in Headers */ = {isa = PBXBuildFile; fileRef = 55CA2875219A76C700D38BDB /* SKTTextArea.h */; };
-		55CA2878219A76C700D38BDB /* SKTTextArea.m in Sources */ = {isa = PBXBuildFile; fileRef = 55CA2876219A76C700D38BDB /* SKTTextArea.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -184,8 +183,6 @@
 		55CA2862219A721B00D38BDB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; usesTabs = 1; };
 		55CA286A219A73FA00D38BDB /* SKTDrawDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTDrawDocument.h; sourceTree = "<group>"; };
 		55CA286B219A73FA00D38BDB /* SKTDrawDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTDrawDocument.m; sourceTree = "<group>"; };
-		55CA2875219A76C700D38BDB /* SKTTextArea.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTTextArea.h; sourceTree = "<group>"; };
-		55CA2876219A76C700D38BDB /* SKTTextArea.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTTextArea.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -281,8 +278,6 @@
 			isa = PBXGroup;
 			children = (
 				5544F8F3219BDAC600B61516 /* InfoPlist.strings */,
-				55CA2875219A76C700D38BDB /* SKTTextArea.h */,
-				55CA2876219A76C700D38BDB /* SKTTextArea.m */,
 				55CA286A219A73FA00D38BDB /* SKTDrawDocument.h */,
 				55CA286B219A73FA00D38BDB /* SKTDrawDocument.m */,
 				55CA285C219A721B00D38BDB /* GenerateThumbnailForURL.m */,
@@ -384,7 +379,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				55CA286C219A73FA00D38BDB /* SKTDrawDocument.h in Headers */,
-				55CA2877219A76C700D38BDB /* SKTTextArea.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -528,10 +522,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				55CA2878219A76C700D38BDB /* SKTTextArea.m in Sources */,
 				55CA2873219A768D00D38BDB /* SKTLine.m in Sources */,
 				55CA2871219A766F00D38BDB /* SKTRenderingView.m in Sources */,
 				55CA2872219A768000D38BDB /* SKTImage.m in Sources */,
+				5544F8F9219BDC1600B61516 /* SKTText.m in Sources */,
 				55CA2870219A766800D38BDB /* SKTGraphic.m in Sources */,
 				55CA2874219A769B00D38BDB /* SKTRectangle.m in Sources */,
 				55CA285D219A721B00D38BDB /* GenerateThumbnailForURL.m in Sources */,

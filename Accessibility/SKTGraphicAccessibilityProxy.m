@@ -176,7 +176,7 @@
 		}
 		
 		// Convert from local coordinates to window coordinates
-		NSPoint windowPoint = [containingGraphicView convertPointToBase:localPoint];
+		NSPoint windowPoint = [containingGraphicView convertPointFromBacking:localPoint];
 		
 		// Convert from window coordinates to screen coordinates
 		NSPoint screenPoint = [[containingGraphicView window] convertBaseToScreen:windowPoint];
@@ -194,7 +194,7 @@
 		
 		// Convert from local to window/screen coordinates.
 		// Note that the scale of the window and screen coordinate systems are always the same
-		NSSize screenSize = [containingGraphicView convertSizeToBase:localSize];
+		NSSize screenSize = [containingGraphicView convertSizeFromBacking:localSize];
 		
 		// Return an NSValue of the size
 		return [NSValue valueWithSize:screenSize];
@@ -245,7 +245,7 @@
     if ([attribute isEqualToString:NSAccessibilitySizeAttribute]) {
 		NSView *containingGraphicView = [self containingGraphicView];
 		NSSize screenSize = [value sizeValue];
-		NSSize localSize = [containingGraphicView convertSizeFromBase:screenSize];
+		NSSize localSize = [containingGraphicView convertSizeToBacking:screenSize];
 		NSRect bounds = [graphic bounds];
 		bounds.size = localSize;
 		[graphic setBounds:bounds];
@@ -253,7 +253,7 @@
 		NSView *containingGraphicView = [self containingGraphicView];
 		NSPoint screenPoint = [value pointValue];
 		NSPoint windowPoint = [[containingGraphicView window] convertScreenToBase:screenPoint];
-		NSPoint localPoint = [containingGraphicView convertPointFromBase:windowPoint];
+		NSPoint localPoint = [containingGraphicView convertPointToBacking:windowPoint];
 		NSRect bounds = [graphic bounds];
 		if ([containingGraphicView isFlipped]) {
 			localPoint.y -= bounds.size.height;
@@ -385,7 +385,7 @@
 	
     NSPoint windowPoint = [[graphicView window] convertScreenToBase:point];
 	
-    NSPoint localPoint = [graphicView convertPointFromBase:windowPoint];
+    NSPoint localPoint = [graphicView convertPointToBacking:windowPoint];
 	
     NSInteger hitHandle = [graphic handleUnderPoint:localPoint];
 	
@@ -413,7 +413,7 @@
     if ([graphicView isFlipped]) {
 		localPoint.y += bounds.size.height;
     }
-    NSPoint windowPoint = [graphicView convertPointToBase:localPoint];
+    NSPoint windowPoint = [graphicView convertPointFromBacking:localPoint];
     NSPoint screenPoint = [[graphicView window] convertBaseToScreen:windowPoint];
     return screenPoint;
 }
@@ -424,7 +424,7 @@
     NSInteger handleCode = [handleUIElement handleCode];
     NSRect bounds = [graphic rectangleForHandleCode:handleCode];
     NSSize localSize = bounds.size;
-    NSSize windowSize = [graphicView convertSizeToBase:localSize];
+    NSSize windowSize = [graphicView convertSizeFromBacking:localSize];
     return windowSize;
 }
 
@@ -441,7 +441,7 @@
     SKTGraphicView *graphicView = [self containingGraphicView];
 	
     NSPoint windowPoint = [[graphicView window] convertScreenToBase:point];
-    NSPoint localPoint = [graphicView convertPointFromBase:windowPoint];
+    NSPoint localPoint = [graphicView convertPointToBacking:windowPoint];
     
     // Use existing SKTGraphic method to do the move of the handle
     [graphic resizeByMovingHandle:[handleUIElement handleCode] toPoint:localPoint];

@@ -59,7 +59,7 @@
 #import "SKTImage.h"
 #import "SKTLine.h"
 #import "SKTRectangle.h"
-#import "SKTTextArea.h"
+#import "SKTText.h"
 #import <objc/objc-runtime.h>
 
 
@@ -667,7 +667,7 @@ static int SKTDrawDocumentCurrentVersion = 2;
 }
 
 - (NSArray *)textAreas {
-    return [self graphicsWithClass:[SKTTextArea class]];
+    return [self graphicsWithClass:[SKTText class]];
 }
 
 - (NSArray *)images {
