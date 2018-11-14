@@ -48,7 +48,7 @@
  */
 
 
-/* SKTUnknownFileReadError */
+/* SKTErrorUnknownFileRead */
 
 /* In Sketch this particular localized description won't be presented to the user, but it's always a good idea to provide a decent description that's a full sentence, just in case the error gets reused in a new way. */
 "description1" = "Sketch document data could not be read because it is corrupted.";
@@ -56,7 +56,7 @@
 /* In Sketch this localized failure reason will be presented to the user if we're trying to open a document. When -[SKTDocument readFromData:ofType:error:] returns an error NSDocumentController will take the failure reason and tack it onto the end of a "The document "so-and-so" could not be opened." message and use the whole thing as an error description. Full sentence! */
 "failureReason1" = "It appears to be corrupted.";
 
-/* SKTUnknownPasteboardReadError */
+/* SKTErrorUnknownPasteboardRead */
 
 /* In Sketch this localized description will be presented to the user by -[SKTGraphicView paste:]. */
 "description2" = "Sketch pasteboard data could not be read for an unknown reason.";
@@ -64,7 +64,7 @@
 /* In Sketch this particular localized failure reason won't be presented to the user, but it's always a good idea to provide a decent failure reason that's a full sentence, just in case the error gets reused in a new way. */
 "failureReason2" = "An unknown error occured.";
 
-/* SKTWriteCouldntMakeTIFFError */
+/* SKTErrorWriteCouldntMakeTIFF */
 
 /* In Sketch this particular localized description won't be presented to the user, but it's always a good idea to provide a decent description that's a full sentence, just in case the error gets reused in a new way. */
 "description3" = "A TIFF image could not be made because it would be empty.";

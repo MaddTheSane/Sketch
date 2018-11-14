@@ -296,7 +296,7 @@ CGFloat SKTGraphicHandleHalfWidth = 6.0f / 2.0f;
     } else if (outError) {
 
 	// If property list parsing fails we have no choice but to admit that we don't know what went wrong. The error description returned by +[NSPropertyListSerialization propertyListFromData:mutabilityOption:format:errorDescription:] would be pretty technical, and not the sort of thing that we should show to a user.
-	*outError = SKTErrorWithCode(SKTUnknownPasteboardReadError);
+	*outError = SKTErrorWithCode(SKTErrorUnknownPasteboardRead);
 
     }
     return graphics;

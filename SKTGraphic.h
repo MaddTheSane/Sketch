@@ -141,37 +141,37 @@ extern CGFloat SKTGraphicHandleHalfWidth;
 /* You can override these class methods in your subclass of SKTGraphic, but it would be a waste of time, because no one invokes these on any class other than SKTGraphic itself. Really these could just be functions if we didn't have such a syntactic sweet tooth. */
 
 // Move each graphic in the array by the same amount.
-+ (void)translateGraphics:(NSArray *)graphics byX:(CGFloat)deltaX y:(CGFloat)deltaY;
++ (void)translateGraphics:(NSArray<__kindof SKTGraphic*> *)graphics byX:(CGFloat)deltaX y:(CGFloat)deltaY;
 
 // Return the total "bounds" of all of the graphics in the array.
-+ (NSRect)boundsOfGraphics:(NSArray *)graphics;
++ (NSRect)boundsOfGraphics:(NSArray<__kindof SKTGraphic*> *)graphics;
 
 // Return the total drawing bounds of all of the graphics in the array.
-+ (NSRect)drawingBoundsOfGraphics:(NSArray *)graphics;
++ (NSRect)drawingBoundsOfGraphics:(NSArray<__kindof SKTGraphic*> *)graphics;
 
 #pragma mark *** Persistence ***
 
 /* You can override these class methods in your subclass of SKTGraphic, but it would be a waste of time, because no one invokes these on any class other than SKTGraphic itself. Really these could just be functions if we didn't have such a syntactic sweet tooth. */
 
 // Return an array of graphics created from flattened data of the sort returned by +pasteboardDataWithGraphics: or, if that's not possible, return nil and set *outError to an NSError that can be presented to the user to explain what went wrong.
-+ (NSArray *)graphicsWithPasteboardData:(NSData *)data error:(NSError **)outError;
++ (NSArray<__kindof SKTGraphic*> *)graphicsWithPasteboardData:(NSData *)data error:(NSError **)outError;
 
 // Given an array of property list dictionaries whose validity has not been determined, return an array of graphics.
-+ (NSArray *)graphicsWithProperties:(NSArray *)propertiesArray;
++ (NSArray<__kindof SKTGraphic*> *)graphicsWithProperties:(NSArray<NSDictionary<NSString*,id>*> *)propertiesArray;
 
 // Return the array of graphics as flattened data that is appropriate for passing to +graphicsWithPasteboardData:error:.
-+ (NSData *)pasteboardDataWithGraphics:(NSArray *)graphics;
++ (NSData *)pasteboardDataWithGraphics:(NSArray<__kindof SKTGraphic*> *)graphics;
 
 // Given an array of graphics, return an array of property list dictionaries.
-+ (NSArray *)propertiesWithGraphics:(NSArray *)graphics;
++ (NSArray<NSDictionary<NSString*,id>*> *)propertiesWithGraphics:(NSArray<__kindof SKTGraphic*> *)graphics;
 
 /* Subclasses of SKTGraphic might have reason to override any of the rest of this class' methods, starting here. */
 
 // Given a dictionary having the sort of entries that would be in a dictionary returned by -properties, but whose validity has not been determined, initialize, setting the values of as many properties as possible from it. Ignore unrecognized dictionary entries. Use default values for missing dictionary entries. This is not the designated initializer for this class (-init is).
-- (instancetype)initWithProperties:(NSDictionary *)properties;
+- (instancetype)initWithProperties:(NSDictionary<NSString*,id> *)properties;
 
 // Return a dictionary that can be used as property list object and contains enough information to recreate the graphic (except for its class, which is handled by +propertiesWithGraphics:). The returned dictionary must be mutable so that it can be added to efficiently, but the receiver must ignore any mutations made to it after it's been returned.
-@property (readonly, copy) NSMutableDictionary *properties;
+@property (readonly, copy) NSMutableDictionary<NSString*,id> *properties;
 
 #pragma mark *** Simple Property Getting ***
 
@@ -186,8 +186,8 @@ extern CGFloat SKTGraphicHandleHalfWidth;
 #pragma mark *** Drawing ***
 
 // Return the keys of all of the properties whose values affect the appearance of an instance of the receiving subclass of SKTGraphic (even properties declared in a superclass). The first method should return the keys for such properties that affect the drawing bounds of graphics. The second method should return the keys for such properties that do not. Most subclasses of SKTGraphic should override one or both of these, and be KVO-compliant for the properties identified by keys in the returned set. Implementations of these methods don't have to be fast, at least not in the context of Sketch, because their results are cached. In Mac OS 10.5 and later these methods are invoked automatically by KVO because their names match the result of applying to "drawingBounds" and "drawingContents" the naming pattern used by the default implementation of +[NSObject(NSKeyValueObservingCustomization) keyPathsForValuesAffectingValueForKey:].
-+ (NSSet *)keyPathsForValuesAffectingDrawingBounds;
-+ (NSSet *)keyPathsForValuesAffectingDrawingContents;
++ (NSSet<NSString*> *)keyPathsForValuesAffectingDrawingBounds;
++ (NSSet<NSString*> *)keyPathsForValuesAffectingDrawingContents;
 
 // Return the bounding box of everything the receiver might draw when sent a -draw...InView: message. The default implementation of this method returns a bounds that assumes the default implementations of -drawContentsInView: and -drawHandlesInView:. Subclasses that override this probably have to override +keyPathsForValuesAffectingDrawingBounds too.
 @property (readonly) NSRect drawingBounds;
@@ -253,7 +253,7 @@ extern CGFloat SKTGraphicHandleHalfWidth;
 #pragma mark *** Undo ***
 
 // Return the keys of all of the properties for which value changes are undoable. In Sketch SKTDocument observes the value for each key in the set returned by invoking this method on each graphic in the document, and registers undo operations when the values change. It also observes this "keysForValuesToObserveForUndo" property itself and reacts accordingly, because the value can change dynamically. For example, SKTText overrides this (and KVO-notifies about changes to what the override would return) for a couple of reasons.
-@property (readonly, copy) NSSet *keysForValuesToObserveForUndo;
+@property (readonly, copy) NSSet<NSString*> *keysForValuesToObserveForUndo;
 
 // Given a key from the set returned by a previous invocation of -keysForValuesToObserveForUndo, return the human-readable, title-capitalized, localized, name of the property identified by the key, or nil for invalid keys (invokers should throw exceptions if nil is returned, because nil indicates a programming mistake). In Sketch SKTDocument uses this to create an undo action name when the user has changed the value of the property.
 + (NSString *)presentablePropertyNameForKey:(NSString *)key;

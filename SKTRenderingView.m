@@ -103,7 +103,7 @@
     } else if (outError) {
 	
 	// In Sketch there are lots of places to catch this situation earlier. For example, we could have overridden -writableTypesForSaveOperation: and made it not return NSTIFFPboardType, but then the user would have no idea why TIFF isn't showing up in the save panel's File Format popup. This way we can present a nice descriptive errror message.
-	*outError = SKTErrorWithCode(SKTWriteCouldntMakeTIFFError);
+	*outError = SKTErrorWithCode(SKTErrorWriteCouldntMakeTIFF);
 	
     }
     return tiffData;
