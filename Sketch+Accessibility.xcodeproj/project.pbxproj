@@ -66,6 +66,7 @@
 		53D61C560FD15E42004A1A2F /* SKTGraphicAccessibilityProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D61C540FD15E42004A1A2F /* SKTGraphicAccessibilityProxy.m */; };
 		53ED74600FD6F65E000D4D64 /* SKTPixelSliderCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53ED745E0FD6F65E000D4D64 /* SKTPixelSliderCell.h */; };
 		53ED74610FD6F65E000D4D64 /* SKTPixelSliderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53ED745F0FD6F65E000D4D64 /* SKTPixelSliderCell.m */; };
+		5544F8F5219BDAC600B61516 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5544F8F3219BDAC600B61516 /* InfoPlist.strings */; };
 		55CA2852219A701F00D38BDB /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55CA2851219A701F00D38BDB /* Media.xcassets */; };
 		55CA285D219A721B00D38BDB /* GenerateThumbnailForURL.m in Sources */ = {isa = PBXBuildFile; fileRef = 55CA285C219A721B00D38BDB /* GenerateThumbnailForURL.m */; };
 		55CA285F219A721B00D38BDB /* GeneratePreviewForURL.m in Sources */ = {isa = PBXBuildFile; fileRef = 55CA285E219A721B00D38BDB /* GeneratePreviewForURL.m */; };
@@ -174,6 +175,7 @@
 		53D61C540FD15E42004A1A2F /* SKTGraphicAccessibilityProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTGraphicAccessibilityProxy.m; sourceTree = "<group>"; };
 		53ED745E0FD6F65E000D4D64 /* SKTPixelSliderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTPixelSliderCell.h; sourceTree = "<group>"; };
 		53ED745F0FD6F65E000D4D64 /* SKTPixelSliderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTPixelSliderCell.m; sourceTree = "<group>"; };
+		5544F8F4219BDAC600B61516 /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		55CA2851219A701F00D38BDB /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		55CA285A219A721B00D38BDB /* QuickLookSketch.qlgenerator */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QuickLookSketch.qlgenerator; sourceTree = BUILT_PRODUCTS_DIR; };
 		55CA285C219A721B00D38BDB /* GenerateThumbnailForURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GenerateThumbnailForURL.m; sourceTree = "<group>"; };
@@ -233,6 +235,7 @@
 				0A3ECF0EFE888A39C02AAC07 /* Sketch.scriptTerminology */,
 				531F36BD0FC35389006BF705 /* Accessibility.strings */,
 				531F36420FC335E7006BF705 /* AccessibilityImageDescriptions.strings */,
+				38AFB5740C2F908200AEF7A8 /* SKTError.strings */,
 				3848301F09FE857F00094A3A /* Sketch.sdef */,
 			);
 			name = Resources;
@@ -277,6 +280,7 @@
 		55CA285B219A721B00D38BDB /* QuickLookSketch */ = {
 			isa = PBXGroup;
 			children = (
+				5544F8F3219BDAC600B61516 /* InfoPlist.strings */,
 				55CA2875219A76C700D38BDB /* SKTTextArea.h */,
 				55CA2876219A76C700D38BDB /* SKTTextArea.m */,
 				55CA286A219A73FA00D38BDB /* SKTDrawDocument.h */,
@@ -338,7 +342,6 @@
 			isa = PBXGroup;
 			children = (
 				55CA2879219A783200D38BDB /* Classes */,
-				38AFB5740C2F908200AEF7A8 /* SKTError.strings */,
 				38D54A7507D51A2A00514CB8 /* SKTInfo.plist */,
 				0A3ECF0DFE888A39C02AAC07 /* Resources */,
 			);
@@ -483,6 +486,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5544F8F5219BDAC600B61516 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -636,6 +640,14 @@
 				531F36BB0FC35380006BF705 /* en */,
 			);
 			name = Accessibility.strings;
+			sourceTree = "<group>";
+		};
+		5544F8F3219BDAC600B61516 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5544F8F4219BDAC600B61516 /* en */,
+			);
+			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
