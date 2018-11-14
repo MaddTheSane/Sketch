@@ -23,7 +23,8 @@
                                     <action selector="orderFrontStandardAboutPanel:" target="-2" id="328"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Preferences..." id="316">
+                            <menuItem isSeparatorItem="YES" id="4HK-ma-rWL"/>
+                            <menuItem title="Preferences..." keyEquivalent="," id="316">
                                 <connections>
                                     <action selector="showPreferencesPanel:" target="204" id="349"/>
                                 </connections>

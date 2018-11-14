@@ -119,11 +119,6 @@
 		0A3ECEE5FE888A39C02AAC07 /* SKTGraphicView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTGraphicView.h; sourceTree = "<group>"; };
 		0A3ECEE8FE888A39C02AAC07 /* SKTToolPaletteController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTToolPaletteController.h; sourceTree = "<group>"; };
 		0A3ECEECFE888A39C02AAC07 /* SKTMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTMain.m; sourceTree = "<group>"; };
-		0A3ECEEFFE888A39C02AAC07 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/DrawWindow.xib; sourceTree = "<group>"; };
-		0A3ECEF1FE888A39C02AAC07 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/GridPanel.xib; sourceTree = "<group>"; };
-		0A3ECEF4FE888A39C02AAC07 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/Inspector.xib; sourceTree = "<group>"; };
-		0A3ECEF7FE888A39C02AAC07 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ToolPalette.xib; sourceTree = "<group>"; };
-		0A3ECEFBFE888A39C02AAC07 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/Draw2.xib; sourceTree = "<group>"; };
 		0A3ECF01FE888A39C02AAC07 /* Draw2App.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Draw2App.icns; sourceTree = "<group>"; };
 		0A3ECF0BFE888A39C02AAC07 /* Draw2File.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Draw2File.icns; sourceTree = "<group>"; };
 		0A3ECF0FFE888A39C02AAC07 /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = en; path = en.lproj/Sketch.scriptTerminology; sourceTree = "<group>"; };
@@ -132,7 +127,6 @@
 		0A3ECF39FE888A39C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		0A3ECF3AFE888A39C02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		26D1BC9902E4B4D608C917DD /* SKTPrefix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTPrefix.h; sourceTree = "<group>"; };
-		3805D472084D7840003B3AAC /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/Preferences.xib; sourceTree = "<group>"; };
 		381996CA083EBC270087C524 /* SKTGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTGrid.h; sourceTree = "<group>"; };
 		381996CB083EBC270087C524 /* SKTGrid.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTGrid.m; sourceTree = "<group>"; };
 		3848301F09FE857F00094A3A /* Sketch.sdef */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Sketch.sdef; sourceTree = "<group>"; tabWidth = 4; };
@@ -174,6 +168,16 @@
 		53D61C540FD15E42004A1A2F /* SKTGraphicAccessibilityProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTGraphicAccessibilityProxy.m; sourceTree = "<group>"; };
 		53ED745E0FD6F65E000D4D64 /* SKTPixelSliderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTPixelSliderCell.h; sourceTree = "<group>"; };
 		53ED745F0FD6F65E000D4D64 /* SKTPixelSliderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTPixelSliderCell.m; sourceTree = "<group>"; };
+		553C3F25219C910200405A36 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/Draw2.xib; sourceTree = "<group>"; };
+		553C3F26219C910200405A36 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/DrawWindow.xib; sourceTree = "<group>"; };
+		553C3F27219C910200405A36 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/Inspector.xib; sourceTree = "<group>"; };
+		553C3F28219C910200405A36 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/GridPanel.xib; sourceTree = "<group>"; };
+		553C3F29219C910300405A36 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/Preferences.xib; sourceTree = "<group>"; };
+		553C3F2A219C910300405A36 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/ToolPalette.xib; sourceTree = "<group>"; };
+		553C3F2C219C911B00405A36 /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Draw2.strings; sourceTree = "<group>"; };
+		553C3F2F219C919B00405A36 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/GridPanel.strings; sourceTree = "<group>"; };
+		553C3F31219C91A400405A36 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Inspector.strings; sourceTree = "<group>"; };
+		553C3F33219C91A800405A36 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Preferences.strings; sourceTree = "<group>"; };
 		5544F8F4219BDAC600B61516 /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		55CA2851219A701F00D38BDB /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		55CA285A219A721B00D38BDB /* QuickLookSketch.qlgenerator */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QuickLookSketch.qlgenerator; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -429,6 +433,7 @@
 		0A3ECED7FE888A39C02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				CLASSPREFIX = SKT;
 				LastUpgradeCheck = 1010;
 				TargetAttributes = {
 					55CA2859219A721B00D38BDB = {
@@ -443,6 +448,7 @@
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 0A3ECED8FE888A39C02AAC07 /* Sketch */;
 			projectDirPath = "";
@@ -551,7 +557,7 @@
 		0A3ECEEEFE888A39C02AAC07 /* DrawWindow.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				0A3ECEEFFE888A39C02AAC07 /* en */,
+				553C3F26219C910200405A36 /* Base */,
 			);
 			name = DrawWindow.xib;
 			sourceTree = "<group>";
@@ -559,7 +565,8 @@
 		0A3ECEF0FE888A39C02AAC07 /* GridPanel.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				0A3ECEF1FE888A39C02AAC07 /* en */,
+				553C3F28219C910200405A36 /* Base */,
+				553C3F2F219C919B00405A36 /* en */,
 			);
 			name = GridPanel.xib;
 			sourceTree = "<group>";
@@ -567,7 +574,8 @@
 		0A3ECEF3FE888A39C02AAC07 /* Inspector.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				0A3ECEF4FE888A39C02AAC07 /* en */,
+				553C3F27219C910200405A36 /* Base */,
+				553C3F31219C91A400405A36 /* en */,
 			);
 			name = Inspector.xib;
 			sourceTree = "<group>";
@@ -575,7 +583,7 @@
 		0A3ECEF6FE888A39C02AAC07 /* ToolPalette.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				0A3ECEF7FE888A39C02AAC07 /* en */,
+				553C3F2A219C910300405A36 /* Base */,
 			);
 			name = ToolPalette.xib;
 			sourceTree = "<group>";
@@ -583,7 +591,8 @@
 		0A3ECEF9FE888A39C02AAC07 /* Draw2.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				0A3ECEFBFE888A39C02AAC07 /* en */,
+				553C3F25219C910200405A36 /* Base */,
+				553C3F2C219C911B00405A36 /* en */,
 			);
 			name = Draw2.xib;
 			sourceTree = "<group>";
@@ -607,7 +616,8 @@
 		3805D471084D7840003B3AAC /* Preferences.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				3805D472084D7840003B3AAC /* en */,
+				553C3F29219C910300405A36 /* Base */,
+				553C3F33219C91A800405A36 /* en */,
 			);
 			name = Preferences.xib;
 			sourceTree = "<group>";

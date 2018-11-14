@@ -1,0 +1,21 @@
+
+/* Class = "NSWindow"; title = "Grid"; ObjectID = "5"; */
+"5.title" = "Grid";
+
+/* Class = "NSBox"; title = "Spacing"; ObjectID = "16"; */
+"16.title" = "Spacing";
+
+/* Class = "NSBox"; title = "Title"; ObjectID = "18"; */
+"18.title" = "Title";
+
+/* Class = "NSBox"; title = "Title"; ObjectID = "20"; */
+"20.title" = "Title";
+
+/* Class = "NSButtonCell"; title = "Show Grid"; ObjectID = "74"; */
+"74.title" = "Show Grid";
+
+/* Class = "NSButtonCell"; title = "Snap to Grid"; ObjectID = "75"; */
+"75.title" = "Snap to Grid";
+
+/* Class = "NSTextFieldCell"; title = "Color:"; ObjectID = "76"; */
+"76.title" = "Color:";

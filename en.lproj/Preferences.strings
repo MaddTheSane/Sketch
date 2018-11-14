@@ -1,0 +1,12 @@
+
+/* Class = "NSWindow"; title = "Sketch Preferences"; ObjectID = "25"; */
+"25.title" = "Sketch Preferences";
+
+/* Class = "NSButtonCell"; title = "Autosave documents"; ObjectID = "50"; */
+"50.title" = "Autosave documents";
+
+/* Class = "NSTextFieldCell"; title = "every"; ObjectID = "52"; */
+"52.title" = "every";
+
+/* Class = "NSTextFieldCell"; title = "seconds"; ObjectID = "53"; */
+"53.title" = "seconds";

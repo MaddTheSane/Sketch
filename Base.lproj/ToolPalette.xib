@@ -28,29 +28,29 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         <size key="cellSize" width="42" height="42"/>
-                        <buttonCell key="prototype" type="bevel" title="Button" bezelStyle="regularSquare" image="Arrow" imagePosition="only" alignment="center" borderStyle="border" tag="-1" inset="2" id="18">
+                        <buttonCell key="prototype" type="bevel" title="Button" bezelStyle="regularSquare" image="Arrow" imagePosition="only" alignment="center" borderStyle="border" tag="-1" imageScaling="proportionallyDown" inset="2" id="18">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system" size="14"/>
                         </buttonCell>
                         <cells>
                             <column>
-                                <buttonCell type="bevel" title="Button" bezelStyle="regularSquare" image="Arrow" imagePosition="only" alignment="center" state="on" borderStyle="border" inset="2" id="11">
+                                <buttonCell type="bevel" title="Button" bezelStyle="regularSquare" image="Arrow" imagePosition="only" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="11">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
                                     <font key="font" metaFont="system" size="14"/>
                                 </buttonCell>
-                                <buttonCell type="bevel" title="Button" bezelStyle="regularSquare" image="Rectangle" imagePosition="only" alignment="center" borderStyle="border" tag="1" inset="2" id="13">
+                                <buttonCell type="bevel" title="Button" bezelStyle="regularSquare" image="Rectangle" imagePosition="only" alignment="center" borderStyle="border" tag="1" imageScaling="proportionallyDown" inset="2" id="13">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
                                     <font key="font" metaFont="system" size="14"/>
                                 </buttonCell>
-                                <buttonCell type="bevel" title="Button" bezelStyle="regularSquare" image="Circle" imagePosition="only" alignment="center" borderStyle="border" tag="2" inset="2" id="12">
+                                <buttonCell type="bevel" title="Button" bezelStyle="regularSquare" image="Circle" imagePosition="only" alignment="center" borderStyle="border" tag="2" imageScaling="proportionallyDown" inset="2" id="12">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
                                     <font key="font" metaFont="system" size="14"/>
                                 </buttonCell>
-                                <buttonCell type="bevel" title="Button" bezelStyle="regularSquare" image="Line" imagePosition="only" alignment="center" borderStyle="border" tag="3" inset="2" id="10">
+                                <buttonCell type="bevel" title="Button" bezelStyle="regularSquare" image="Line" imagePosition="only" alignment="center" borderStyle="border" tag="3" imageScaling="proportionallyDown" inset="2" id="10">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
                                     <font key="font" metaFont="system" size="14"/>
                                 </buttonCell>
-                                <buttonCell type="bevel" title="Button" bezelStyle="regularSquare" image="TextGraphic" imagePosition="only" alignment="center" borderStyle="border" tag="4" inset="2" id="14">
+                                <buttonCell type="bevel" title="Button" bezelStyle="regularSquare" image="TextGraphic" imagePosition="only" alignment="center" borderStyle="border" tag="4" imageScaling="proportionallyDown" inset="2" id="14">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
                                     <font key="font" metaFont="system" size="14"/>
                                 </buttonCell>

@@ -1,0 +1,27 @@
+
+/* Class = "NSWindow"; title = "Graphics"; ObjectID = "5"; */
+"5.title" = "Graphics";
+
+/* Class = "NSBox"; title = "Dimensions"; ObjectID = "11"; */
+"11.title" = "Dimensions";
+
+/* Class = "NSBox"; title = "Line Width"; ObjectID = "15"; */
+"15.title" = "Line Width";
+
+/* Class = "NSTextFieldCell"; title = "Width:"; ObjectID = "100029"; */
+"100029.title" = "Width:";
+
+/* Class = "NSTextFieldCell"; title = "Height:"; ObjectID = "100032"; */
+"100032.title" = "Height:";
+
+/* Class = "NSTextFieldCell"; title = "X:"; ObjectID = "100034"; */
+"100034.title" = "X:";
+
+/* Class = "NSTextFieldCell"; title = "Y:"; ObjectID = "100036"; */
+"100036.title" = "Y:";
+
+/* Class = "NSButtonCell"; title = "Fill"; ObjectID = "100038"; */
+"100038.title" = "Fill";
+
+/* Class = "NSButtonCell"; title = "Line"; ObjectID = "100039"; */
+"100039.title" = "Line";
