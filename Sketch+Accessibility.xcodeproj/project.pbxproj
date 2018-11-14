@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3805D473084D7840003B3AAC /* Preferences.nib in Resources */ = {isa = PBXBuildFile; fileRef = 3805D471084D7840003B3AAC /* Preferences.nib */; };
+		3805D473084D7840003B3AAC /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3805D471084D7840003B3AAC /* Preferences.xib */; };
 		381996CC083EBC270087C524 /* SKTGrid.h in Headers */ = {isa = PBXBuildFile; fileRef = 381996CA083EBC270087C524 /* SKTGrid.h */; };
 		381996CD083EBC270087C524 /* SKTGrid.m in Sources */ = {isa = PBXBuildFile; fileRef = 381996CB083EBC270087C524 /* SKTGrid.m */; };
 		3848302009FE857F00094A3A /* Sketch.sdef in Resources */ = {isa = PBXBuildFile; fileRef = 3848301F09FE857F00094A3A /* Sketch.sdef */; };
@@ -36,11 +36,11 @@
 		38D54A3907D51A2A00514CB8 /* SKTGraphicView.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A3ECEE5FE888A39C02AAC07 /* SKTGraphicView.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		38D54A3C07D51A2A00514CB8 /* SKTToolPaletteController.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A3ECEE8FE888A39C02AAC07 /* SKTToolPaletteController.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		38D54A4707D51A2A00514CB8 /* SKTPrefix.h in Headers */ = {isa = PBXBuildFile; fileRef = 26D1BC9902E4B4D608C917DD /* SKTPrefix.h */; };
-		38D54A4907D51A2A00514CB8 /* DrawWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECEEEFE888A39C02AAC07 /* DrawWindow.nib */; };
-		38D54A4A07D51A2A00514CB8 /* GridPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECEF0FE888A39C02AAC07 /* GridPanel.nib */; };
-		38D54A4B07D51A2A00514CB8 /* Inspector.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECEF3FE888A39C02AAC07 /* Inspector.nib */; };
-		38D54A4C07D51A2A00514CB8 /* ToolPalette.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECEF6FE888A39C02AAC07 /* ToolPalette.nib */; };
-		38D54A4D07D51A2A00514CB8 /* Draw2.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECEF9FE888A39C02AAC07 /* Draw2.nib */; };
+		38D54A4907D51A2A00514CB8 /* DrawWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECEEEFE888A39C02AAC07 /* DrawWindow.xib */; };
+		38D54A4A07D51A2A00514CB8 /* GridPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECEF0FE888A39C02AAC07 /* GridPanel.xib */; };
+		38D54A4B07D51A2A00514CB8 /* Inspector.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECEF3FE888A39C02AAC07 /* Inspector.xib */; };
+		38D54A4C07D51A2A00514CB8 /* ToolPalette.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECEF6FE888A39C02AAC07 /* ToolPalette.xib */; };
+		38D54A4D07D51A2A00514CB8 /* Draw2.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECEF9FE888A39C02AAC07 /* Draw2.xib */; };
 		38D54A5C07D51A2A00514CB8 /* Sketch.scriptTerminology in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF0EFE888A39C02AAC07 /* Sketch.scriptTerminology */; };
 		38D54A5E07D51A2A00514CB8 /* Sketch.scriptSuite in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF12FE888A39C02AAC07 /* Sketch.scriptSuite */; };
 		38D54A5F07D51A2A00514CB8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF13FE888A39C02AAC07 /* InfoPlist.strings */; };
@@ -119,20 +119,20 @@
 		0A3ECEE5FE888A39C02AAC07 /* SKTGraphicView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTGraphicView.h; sourceTree = "<group>"; };
 		0A3ECEE8FE888A39C02AAC07 /* SKTToolPaletteController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTToolPaletteController.h; sourceTree = "<group>"; };
 		0A3ECEECFE888A39C02AAC07 /* SKTMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTMain.m; sourceTree = "<group>"; };
-		0A3ECEEFFE888A39C02AAC07 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/DrawWindow.nib; sourceTree = "<group>"; };
-		0A3ECEF1FE888A39C02AAC07 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/GridPanel.nib; sourceTree = "<group>"; };
-		0A3ECEF4FE888A39C02AAC07 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Inspector.nib; sourceTree = "<group>"; };
-		0A3ECEF7FE888A39C02AAC07 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/ToolPalette.nib; sourceTree = "<group>"; };
-		0A3ECEFBFE888A39C02AAC07 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Draw2.nib; sourceTree = "<group>"; };
+		0A3ECEEFFE888A39C02AAC07 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/DrawWindow.xib; sourceTree = "<group>"; };
+		0A3ECEF1FE888A39C02AAC07 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/GridPanel.xib; sourceTree = "<group>"; };
+		0A3ECEF4FE888A39C02AAC07 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/Inspector.xib; sourceTree = "<group>"; };
+		0A3ECEF7FE888A39C02AAC07 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ToolPalette.xib; sourceTree = "<group>"; };
+		0A3ECEFBFE888A39C02AAC07 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/Draw2.xib; sourceTree = "<group>"; };
 		0A3ECF01FE888A39C02AAC07 /* Draw2App.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Draw2App.icns; sourceTree = "<group>"; };
 		0A3ECF0BFE888A39C02AAC07 /* Draw2File.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Draw2File.icns; sourceTree = "<group>"; };
-		0A3ECF0FFE888A39C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = English; path = English.lproj/Sketch.scriptTerminology; sourceTree = "<group>"; };
+		0A3ECF0FFE888A39C02AAC07 /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = en; path = en.lproj/Sketch.scriptTerminology; sourceTree = "<group>"; };
 		0A3ECF12FE888A39C02AAC07 /* Sketch.scriptSuite */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Sketch.scriptSuite; sourceTree = "<group>"; };
-		0A3ECF14FE888A39C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		0A3ECF14FE888A39C02AAC07 /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		0A3ECF39FE888A39C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		0A3ECF3AFE888A39C02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		26D1BC9902E4B4D608C917DD /* SKTPrefix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTPrefix.h; sourceTree = "<group>"; };
-		3805D472084D7840003B3AAC /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Preferences.nib; sourceTree = "<group>"; };
+		3805D472084D7840003B3AAC /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/Preferences.xib; sourceTree = "<group>"; };
 		381996CA083EBC270087C524 /* SKTGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTGrid.h; sourceTree = "<group>"; };
 		381996CB083EBC270087C524 /* SKTGrid.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTGrid.m; sourceTree = "<group>"; };
 		3848301F09FE857F00094A3A /* Sketch.sdef */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Sketch.sdef; sourceTree = "<group>"; tabWidth = 4; };
@@ -154,21 +154,21 @@
 		386A7A590C2F436300217F5A /* SKTRectangle.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKTRectangle.h; sourceTree = "<group>"; };
 		386A7AAE0C2F47BC00217F5A /* SKTRenderingView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKTRenderingView.m; sourceTree = "<group>"; };
 		386A7AAF0C2F47BC00217F5A /* SKTRenderingView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKTRenderingView.h; sourceTree = "<group>"; };
-		38AFB5750C2F908200AEF7A8 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/SKTError.strings; sourceTree = "<group>"; };
+		38AFB5750C2F908200AEF7A8 /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/SKTError.strings; sourceTree = "<group>"; };
 		38C1482A0C3E2D03001085CE /* NSColor_SKTScripting.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NSColor_SKTScripting.m; sourceTree = "<group>"; };
 		38D54A7507D51A2A00514CB8 /* SKTInfo.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = SKTInfo.plist; sourceTree = "<group>"; tabWidth = 4; };
 		38D54A7607D51A2A00514CB8 /* Sketch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sketch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		38FA46CF0847B7AC002B08B0 /* SKTError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTError.h; sourceTree = "<group>"; };
 		38FA46D00847B7AC002B08B0 /* SKTError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTError.m; sourceTree = "<group>"; };
 		53193D800FD834CC0062C62E /* SKTLine+Accessibility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SKTLine+Accessibility.m"; sourceTree = "<group>"; };
-		531F36400FC335A1006BF705 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/AccessibilityImageDescriptions.strings; sourceTree = "<group>"; };
+		531F36400FC335A1006BF705 /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/AccessibilityImageDescriptions.strings; sourceTree = "<group>"; };
 		531F365A0FC34A85006BF705 /* FauxUIElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FauxUIElement.h; sourceTree = "<group>"; };
 		531F365B0FC34A85006BF705 /* FauxUIElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FauxUIElement.m; sourceTree = "<group>"; };
 		531F365C0FC34A85006BF705 /* SKTHandleUIElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTHandleUIElement.h; sourceTree = "<group>"; };
 		531F365D0FC34A85006BF705 /* SKTHandleUIElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTHandleUIElement.m; sourceTree = "<group>"; };
 		531F365E0FC34A85006BF705 /* SKTGraphic+Accessibility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SKTGraphic+Accessibility.m"; sourceTree = "<group>"; };
 		531F365F0FC34A85006BF705 /* SKTGraphicView+Accessibility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SKTGraphicView+Accessibility.m"; sourceTree = "<group>"; };
-		531F36BB0FC35380006BF705 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Accessibility.strings; sourceTree = "<group>"; };
+		531F36BB0FC35380006BF705 /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Accessibility.strings; sourceTree = "<group>"; };
 		535FB5410FD7210700DAE76C /* SKTGraphic+Accessibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SKTGraphic+Accessibility.h"; sourceTree = "<group>"; };
 		53D61C530FD15E42004A1A2F /* SKTGraphicAccessibilityProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTGraphicAccessibilityProxy.h; sourceTree = "<group>"; };
 		53D61C540FD15E42004A1A2F /* SKTGraphicAccessibilityProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTGraphicAccessibilityProxy.m; sourceTree = "<group>"; };
@@ -223,12 +223,12 @@
 				0A3ECF01FE888A39C02AAC07 /* Draw2App.icns */,
 				0A3ECF0BFE888A39C02AAC07 /* Draw2File.icns */,
 				0A3ECF13FE888A39C02AAC07 /* InfoPlist.strings */,
-				0A3ECEF9FE888A39C02AAC07 /* Draw2.nib */,
-				0A3ECEEEFE888A39C02AAC07 /* DrawWindow.nib */,
-				0A3ECEF3FE888A39C02AAC07 /* Inspector.nib */,
-				0A3ECEF0FE888A39C02AAC07 /* GridPanel.nib */,
-				3805D471084D7840003B3AAC /* Preferences.nib */,
-				0A3ECEF6FE888A39C02AAC07 /* ToolPalette.nib */,
+				0A3ECEF9FE888A39C02AAC07 /* Draw2.xib */,
+				0A3ECEEEFE888A39C02AAC07 /* DrawWindow.xib */,
+				0A3ECEF3FE888A39C02AAC07 /* Inspector.xib */,
+				0A3ECEF0FE888A39C02AAC07 /* GridPanel.xib */,
+				3805D471084D7840003B3AAC /* Preferences.xib */,
+				0A3ECEF6FE888A39C02AAC07 /* ToolPalette.xib */,
 				0A3ECF12FE888A39C02AAC07 /* Sketch.scriptSuite */,
 				0A3ECF0EFE888A39C02AAC07 /* Sketch.scriptTerminology */,
 				531F36BD0FC35389006BF705 /* Accessibility.strings */,
@@ -442,7 +442,7 @@
 			};
 			buildConfigurationList = 3833E1A30889EBD20049736A /* Build configuration list for PBXProject "Sketch+Accessibility" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				en,
@@ -462,18 +462,18 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				38D54A4D07D51A2A00514CB8 /* Draw2.nib in Resources */,
-				38D54A4907D51A2A00514CB8 /* DrawWindow.nib in Resources */,
-				38D54A4A07D51A2A00514CB8 /* GridPanel.nib in Resources */,
+				38D54A4D07D51A2A00514CB8 /* Draw2.xib in Resources */,
+				38D54A4907D51A2A00514CB8 /* DrawWindow.xib in Resources */,
+				38D54A4A07D51A2A00514CB8 /* GridPanel.xib in Resources */,
 				38D54A5F07D51A2A00514CB8 /* InfoPlist.strings in Resources */,
-				38D54A4B07D51A2A00514CB8 /* Inspector.nib in Resources */,
-				3805D473084D7840003B3AAC /* Preferences.nib in Resources */,
+				38D54A4B07D51A2A00514CB8 /* Inspector.xib in Resources */,
+				3805D473084D7840003B3AAC /* Preferences.xib in Resources */,
 				38D54A5E07D51A2A00514CB8 /* Sketch.scriptSuite in Resources */,
 				38D54A5C07D51A2A00514CB8 /* Sketch.scriptTerminology in Resources */,
 				3848302009FE857F00094A3A /* Sketch.sdef in Resources */,
 				55CA2852219A701F00D38BDB /* Media.xcassets in Resources */,
 				38AFB5760C2F908200AEF7A8 /* SKTError.strings in Resources */,
-				38D54A4C07D51A2A00514CB8 /* ToolPalette.nib in Resources */,
+				38D54A4C07D51A2A00514CB8 /* ToolPalette.xib in Resources */,
 				531F36430FC335E7006BF705 /* AccessibilityImageDescriptions.strings in Resources */,
 				531F36BE0FC35389006BF705 /* Accessibility.strings in Resources */,
 			);
@@ -550,50 +550,50 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		0A3ECEEEFE888A39C02AAC07 /* DrawWindow.nib */ = {
+		0A3ECEEEFE888A39C02AAC07 /* DrawWindow.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				0A3ECEEFFE888A39C02AAC07 /* English */,
+				0A3ECEEFFE888A39C02AAC07 /* en */,
 			);
-			name = DrawWindow.nib;
+			name = DrawWindow.xib;
 			sourceTree = "<group>";
 		};
-		0A3ECEF0FE888A39C02AAC07 /* GridPanel.nib */ = {
+		0A3ECEF0FE888A39C02AAC07 /* GridPanel.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				0A3ECEF1FE888A39C02AAC07 /* English */,
+				0A3ECEF1FE888A39C02AAC07 /* en */,
 			);
-			name = GridPanel.nib;
+			name = GridPanel.xib;
 			sourceTree = "<group>";
 		};
-		0A3ECEF3FE888A39C02AAC07 /* Inspector.nib */ = {
+		0A3ECEF3FE888A39C02AAC07 /* Inspector.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				0A3ECEF4FE888A39C02AAC07 /* English */,
+				0A3ECEF4FE888A39C02AAC07 /* en */,
 			);
-			name = Inspector.nib;
+			name = Inspector.xib;
 			sourceTree = "<group>";
 		};
-		0A3ECEF6FE888A39C02AAC07 /* ToolPalette.nib */ = {
+		0A3ECEF6FE888A39C02AAC07 /* ToolPalette.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				0A3ECEF7FE888A39C02AAC07 /* English */,
+				0A3ECEF7FE888A39C02AAC07 /* en */,
 			);
-			name = ToolPalette.nib;
+			name = ToolPalette.xib;
 			sourceTree = "<group>";
 		};
-		0A3ECEF9FE888A39C02AAC07 /* Draw2.nib */ = {
+		0A3ECEF9FE888A39C02AAC07 /* Draw2.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				0A3ECEFBFE888A39C02AAC07 /* English */,
+				0A3ECEFBFE888A39C02AAC07 /* en */,
 			);
-			name = Draw2.nib;
+			name = Draw2.xib;
 			sourceTree = "<group>";
 		};
 		0A3ECF0EFE888A39C02AAC07 /* Sketch.scriptTerminology */ = {
 			isa = PBXVariantGroup;
 			children = (
-				0A3ECF0FFE888A39C02AAC07 /* English */,
+				0A3ECF0FFE888A39C02AAC07 /* en */,
 			);
 			name = Sketch.scriptTerminology;
 			sourceTree = "<group>";
@@ -601,23 +601,23 @@
 		0A3ECF13FE888A39C02AAC07 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				0A3ECF14FE888A39C02AAC07 /* English */,
+				0A3ECF14FE888A39C02AAC07 /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		3805D471084D7840003B3AAC /* Preferences.nib */ = {
+		3805D471084D7840003B3AAC /* Preferences.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				3805D472084D7840003B3AAC /* English */,
+				3805D472084D7840003B3AAC /* en */,
 			);
-			name = Preferences.nib;
+			name = Preferences.xib;
 			sourceTree = "<group>";
 		};
 		38AFB5740C2F908200AEF7A8 /* SKTError.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				38AFB5750C2F908200AEF7A8 /* English */,
+				38AFB5750C2F908200AEF7A8 /* en */,
 			);
 			name = SKTError.strings;
 			sourceTree = "<group>";
@@ -625,7 +625,7 @@
 		531F36420FC335E7006BF705 /* AccessibilityImageDescriptions.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				531F36400FC335A1006BF705 /* English */,
+				531F36400FC335A1006BF705 /* en */,
 			);
 			name = AccessibilityImageDescriptions.strings;
 			sourceTree = "<group>";
@@ -633,7 +633,7 @@
 		531F36BD0FC35389006BF705 /* Accessibility.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				531F36BB0FC35380006BF705 /* English */,
+				531F36BB0FC35380006BF705 /* en */,
 			);
 			name = Accessibility.strings;
 			sourceTree = "<group>";
