@@ -96,8 +96,8 @@ private let presentablePropertyNamesByKey: [String: String] = [SKTLineBeginPoint
 		let pointsDown = beginPoint.y < endPoint.y
 		let xPosition = pointsRight ? beginPoint.x : endPoint.x
 		let yPosition = pointsDown ? beginPoint.y : endPoint.y
-		let width = fabs(endPoint.x - beginPoint.x)
-		let height = fabs(endPoint.y - beginPoint.y)
+		let width = abs(endPoint.x - beginPoint.x)
+		let height = abs(endPoint.y - beginPoint.y)
 		outPointsRight = pointsRight
 		outPointsDown = pointsDown
 		
@@ -192,12 +192,12 @@ private let presentablePropertyNamesByKey: [String: String] = [SKTLineBeginPoint
 			let beginPoint = self.beginPoint
 			let endPoint = self.endPoint
 			let xDelta = endPoint.x - beginPoint.x
-			if xDelta == 0 && fabs(point.x - beginPoint.x) <= acceptableDistance {
+			if xDelta == 0 && abs(point.x - beginPoint.x) <= acceptableDistance {
 				isUnder = true
 			} else {
 				// Do a weak approximation of distance to the line segment.
 				let slope = (endPoint.y - beginPoint.y) / xDelta
-				if fabs(((point.x - beginPoint.x) * slope) - (point.y - beginPoint.y)) <= acceptableDistance {
+				if abs(((point.x - beginPoint.x) * slope) - (point.y - beginPoint.y)) <= acceptableDistance {
 					isUnder = true
 				}
 			}

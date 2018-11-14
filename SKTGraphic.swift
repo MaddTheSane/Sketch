@@ -385,13 +385,13 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 		handleBounds = view.centerScanRect(handleBounds)
 		
 		// Draw the shadow of the handle.
-		let handleShadowBounds = NSOffsetRect(handleBounds, 1.0, 1.0)
+		let handleShadowBounds = handleBounds.offsetBy(dx: 1.0, dy: 1.0)
 		NSColor.controlDarkShadowColor.set()
-		NSRectFill(handleShadowBounds);
+		handleShadowBounds.fill()
 		
 		// Draw the handle itself.
 		NSColor.knobColor.set()
-		NSRectFill(handleBounds);
+		handleBounds.fill()
 	}
 	
 	// MARK: *** Editing ***

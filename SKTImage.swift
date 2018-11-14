@@ -137,7 +137,7 @@ set {
 		let bounds = self.bounds
 		if self.drawingFill {
 			fillColor?.set()
-			NSRectFill(bounds)
+			bounds.fill()
 		}
 		
 		// Surprisingly, NSImage's -draw... methods don't take into account whether or not the view is flipped. In Sketch, SKTGraphicViews are flipped (and this model class is not supposed to have dependencies on the oddities of any particular view class anyway). So, just do our own transformation matrix manipulation.
@@ -161,10 +161,10 @@ set {
 		}
 		
 		// Do the actual drawing, saving and restoring the graphics state so as not to interfere with the drawing of selection handles or anything else in the same view.
-		NSGraphicsContext.current()?.saveGraphicsState()
+		NSGraphicsContext.current?.saveGraphicsState()
 		(transform as NSAffineTransform).concat()
 		contents.draw(at: .zero, from: NSRect(origin: .zero, size: contentsSize), operation: .sourceOver, fraction: 1)
-		NSGraphicsContext.current()?.restoreGraphicsState()
+		NSGraphicsContext.current?.restoreGraphicsState()
 		
 	}
 

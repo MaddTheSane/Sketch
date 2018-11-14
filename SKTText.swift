@@ -211,7 +211,7 @@ private var layoutManager: NSLayoutManager = {
 		let bounds = self.bounds;
 		if (self.drawingFill) {
 			self.fillColor?.set()
-			NSRectFill(bounds);
+			bounds.fill()
 		}
 		
 		// If this graphic is being created it has no text. If it is being edited then the editor returned by -newEditingViewWithSuperviewBounds: will draw the text.
@@ -219,7 +219,7 @@ private var layoutManager: NSLayoutManager = {
 			
 			// Just draw a focus ring.
 			NSColor.knobColor.set()
-			NSFrameRect(NSInsetRect(bounds, -1.0, -1.0));
+			bounds.insetBy(dx: -1.0, dy: -1.0).frame()
 			
 		} else {
 			

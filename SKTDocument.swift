@@ -173,7 +173,7 @@ private class MapTableOwner {
 		throw NSError(domain: NSOSStatusErrorDomain, code: unimpErr, userInfo: nil)
     }
 
-    override class func autosavesInPlace() -> Bool {
+    override class var autosavesInPlace: Bool {
         return true
     }
 
@@ -190,31 +190,31 @@ private class MapTableOwner {
 	}
 	
 	var rectangles: [SKTRectangle] {
-		return graphics.flatMap({
+		return graphics.compactMap({
 				return $0 as? SKTRectangle
 				})
 	}
 
 	var circles: [SKTCircle] {
-		return graphics.flatMap({
+		return graphics.compactMap({
 				return $0 as? SKTCircle
 				})
 	}
 
 	var lines: [SKTLine] {
-		return graphics.flatMap({
+		return graphics.compactMap({
 				return $0 as? SKTLine
 				})
 	}
 
 	var textAreas: [SKTText] {
-		return graphics.flatMap({
+		return graphics.compactMap({
 				return $0 as? SKTText
 				})
 	}
 
 	var images: [SKTImage] {
-		return graphics.flatMap({
+		return graphics.compactMap({
 				return $0 as? SKTImage
 				})
 	}

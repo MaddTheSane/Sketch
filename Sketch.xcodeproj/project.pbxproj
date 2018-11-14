@@ -256,6 +256,11 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0610;
+				TargetAttributes = {
+					38D54A3507D51A2A00514CB8 = {
+						LastSwiftMigration = 1010;
+					};
+				};
 			};
 			buildConfigurationList = 3833E1A30889EBD20049736A /* Build configuration list for PBXProject "Sketch" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -432,7 +437,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "Sketch-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.2;
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = "-Wmost";
 				WRAPPER_EXTENSION = app;
@@ -455,7 +460,7 @@
 				RC_PROJECT_NAME = Draw2;
 				SWIFT_OBJC_BRIDGING_HEADER = "Sketch-Bridging-Header.h";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.2;
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = "-Wmost";
 				WRAPPER_EXTENSION = app;
