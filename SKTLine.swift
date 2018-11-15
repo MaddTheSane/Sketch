@@ -22,11 +22,11 @@ private let presentablePropertyNamesByKey: [String: String] = [SKTLineBeginPoint
 	private var pointsRight = false
 	private var pointsDown = false
 	
-	class var keyPathsForValuesAffectingEndPoint: Set<String> {
+	@objc class var keyPathsForValuesAffectingEndPoint: Set<String> {
 		return Set([SKTGraphicBoundsKey])
 	}
 	
-	private(set) var beginPoint: NSPoint {
+	@objc private(set) var beginPoint: NSPoint {
 		get {
 			// Convert from our odd storage format to something natural.
 			var beginPoint = NSPoint.zero
@@ -41,16 +41,16 @@ private let presentablePropertyNamesByKey: [String: String] = [SKTLineBeginPoint
 		}
 	}
 	
-	class var keyPathsForValuesAffectingEndPont: Set<String> {
+	@objc class var keyPathsForValuesAffectingEndPont: Set<String> {
 		return Set([SKTGraphicBoundsKey])
 	}
 	
-	private(set) var endPoint: NSPoint {
+	@objc private(set) var endPoint: NSPoint {
 		get {
 			var anEndPoint = NSZeroPoint
 			let bounds = self.bounds
-			anEndPoint.x = pointsRight ? NSMaxX(bounds) : NSMinX(bounds)
-			anEndPoint.y = pointsDown ? NSMaxY(bounds) : NSMinY(bounds)
+			anEndPoint.x = pointsRight ? bounds.maxX : bounds.minX
+			anEndPoint.y = pointsDown ? bounds.maxY : bounds.minY
 			
 			return anEndPoint
 		}

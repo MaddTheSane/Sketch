@@ -20,6 +20,14 @@ private let SKTGraphicLowerLeftHandle = 6
 private let SKTGraphicLowerMiddleHandle = 7
 private let SKTGraphicLowerRightHandle = 8
 
+private let presentablePropertyNamesByKey = [SKTGraphicIsDrawingFillKey: NSLocalizedString("Filling", tableName: "UndoStrings", comment: "Action name part for SKTGraphicIsDrawingFillKey."),
+									 SKTGraphicFillColorKey: NSLocalizedString("Fill Color", tableName: "UndoStrings", comment: "Action name part for SKTGraphicFillColorKey."),
+									 SKTGraphicIsDrawingStrokeKey: NSLocalizedString("Stroking", tableName: "UndoStrings", comment: "Action name part for SKTGraphicIsDrawingStrokeKey."),
+									 SKTGraphicFillColorKey: NSLocalizedString("Stroke Color", tableName: "UndoStrings", comment: "Action name part for SKTGraphicStrokeColorKey."),
+									 SKTGraphicFillColorKey: NSLocalizedString("Stroke Width", tableName: "UndoStrings", comment: "Action name part for SKTGraphicStrokeWidthKey."),
+									 SKTGraphicFillColorKey: NSLocalizedString("Bounds", tableName: "UndoStrings", comment: "Action name part for SKTGraphicBoundsKey.")]
+
+
 private var crosshairsCursor: NSCursor = {
 	let crosshairsImage = NSImage(named: "Cross")!
 	let crosshairsImageSize = crosshairsImage.size
@@ -141,7 +149,7 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 
 
 @objc(SKTGraphic) class SKTGraphic: NSObject, NSCopying {
-	@objc var bounds = NSZeroRect
+	@objc dynamic var bounds = NSZeroRect
 	@objc var drawingFill = false
 	@objc var fillColor: NSColor? = NSColor.white
 	@objc var drawingStroke = true
@@ -218,45 +226,45 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 	/* You can override these class methods in your subclass of SKTGraphic, but it would be a waste of time, because no one invokes these on any class other than SKTGraphic itself. Really these could just be functions if we didn't have such a syntactic sweet tooth. */
 	
 	@objc(drawingBoundsOfGraphics:)
-	class func drawingBounds(of graphics: [SKTGraphic]) -> NSRect {
+	static func drawingBounds(of graphics: [SKTGraphic]) -> NSRect {
 		return DrawingBoundsOfGraphics(graphics)
 	}
 	
 	@objc(graphicsWithProperties:)
-	class func graphicsWithProperties(propertiesArray: [[String: Any]]) -> [SKTGraphic]? {
+	static func graphicsWithProperties(propertiesArray: [[String: Any]]) -> [SKTGraphic]? {
 		return GraphicsWithProperties(propertiesArray)
 	}
 
 	@objc(translateGraphics:byX:y:)
-	class func translate(graphics: [SKTGraphic], byX deltaX: CGFloat, y deltaY: CGFloat) {
+	static func translate(graphics: [SKTGraphic], byX deltaX: CGFloat, y deltaY: CGFloat) {
 		return TranslateGraphics(graphics, byX: deltaX, y: deltaY)
 	}
 	
 	@objc(boundsOfGraphics:)
-	class func bounds(of graphics: [SKTGraphic]) -> NSRect {
+	static func bounds(of graphics: [SKTGraphic]) -> NSRect {
 		return BoundsOfGraphics(graphics)
 	}
 	
 	@objc(pasteboardDataWithGraphics:)
-	class func pasteboardData(with graphics: [SKTGraphic]) -> Data? {
+	static func pasteboardData(with graphics: [SKTGraphic]) -> Data? {
 		return PasteboardData(with: graphics)
 	}
 	
 	/// Given an array of graphics, return an array of property list dictionaries.
 	@objc(propertiesWithGraphics:)
-	class func propertiesWithGraphics(graphics: [SKTGraphic]) -> [[String: Any]]? {
+	static func propertiesWithGraphics(graphics: [SKTGraphic]) -> [[String: Any]]? {
 		return PropertiesWithGraphics(graphics)
 	}
 
 	@objc(graphicsWithPasteboardData:error:)
-	class func graphicsWithPasteboardData(data: Data) throws -> [SKTGraphic] {
+	static func graphicsWithPasteboardData(data: Data) throws -> [SKTGraphic] {
 		return try GraphicsWithPasteboardData(data)
 	}
 	
 	/* Subclasses of SKTGraphic might have reason to override any of the rest of this class' methods, starting here. */
 	
 	// Given a dictionary having the sort of entries that would be in a dictionary returned by -properties, but whose validity has not been determined, initialize, setting the values of as many properties as possible from it. Ignore unrecognized dictionary entries. Use default values for missing dictionary entries. This is not the designated initializer for this class (-init is).
-	@objc dynamic required init(properties: [String : Any]) {
+	@objc required init(properties: [String : Any]) {
 		super.init()
 		
 		// The dictionary entries are all instances of the classes that can be written in property lists. Don't trust the type of something you get out of a property list unless you know your process created it or it was read from your application or framework's resources. We don't have to worry about KVO-compliance in initializers like this by the way; no one should be observing an unitialized object.
@@ -264,8 +272,8 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 			bounds = NSRectFromString(boundsString)
 		}
 		
-		if let isDrawingFillNumber = properties[SKTGraphicIsDrawingFillKey] as? NSNumber {
-			drawingFill = isDrawingFillNumber.boolValue
+		if let isDrawingFillNumber = properties[SKTGraphicIsDrawingFillKey] as? Bool {
+			drawingFill = isDrawingFillNumber
 		}
 		
 		if let fillColorData = properties[SKTGraphicFillColorKey] as? Data {
@@ -280,8 +288,8 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 			strokeColor = (NSUnarchiver.unarchiveObject(with: strokeColorData) as? NSColor)
 		}
 
-		if let strokeWidthNumber = properties[SKTGraphicStrokeWidthKey] as? NSNumber {
-			strokeWidth = CGFloat(strokeWidthNumber.doubleValue)
+		if let strokeWidthNumber = properties[SKTGraphicStrokeWidthKey] as? CGFloat {
+			strokeWidth = strokeWidthNumber
 		}
 	}
 	
@@ -310,12 +318,12 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 	
 	// Return the keys of all of the properties whose values affect the appearance of an instance of the receiving subclass of SKTGraphic (even properties declared in a superclass). The first method should return the keys for such properties that affect the drawing bounds of graphics. The second method should return the keys for such properties that do not. Most subclasses of SKTGraphic should override one or both of these, and be KVO-compliant for the properties identified by keys in the returned set. Implementations of these methods don't have to be fast, at least not in the context of Sketch, because their results are cached. In Mac OS 10.5 and later these methods are invoked automatically by KVO because their names match the result of applying to "drawingBounds" and "drawingContents" the naming pattern used by the default implementation of +[NSObject(NSKeyValueObservingCustomization) keyPathsForValuesAffectingValueForKey:].
 	
-	@objc dynamic class var keyPathsForValuesAffectingDrawingBounds: Set<String> {
+	@objc class var keyPathsForValuesAffectingDrawingBounds: Set<String> {
     // The only properties managed by SKTGraphic that affect the drawing bounds are the bounds and the the stroke width.
 		return Set([SKTGraphicBoundsKey, SKTGraphicStrokeWidthKey])
 	}
 	
-	@objc dynamic class var keyPathsforValuesAffectingDrawingContents: Set<String> {
+	@objc class var keyPathsforValuesAffectingDrawingContents: Set<String> {
 		// The only properties managed by SKTGraphic that affect drawing but not the drawing bounds are the fill and stroke parameters.
 		return Set([SKTGraphicIsDrawingFillKey, SKTGraphicFillColorKey, SKTGraphicIsDrawingStrokeKey, SKTGraphicStrokeColorKey])
 	}
@@ -331,7 +339,7 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 			}
 		}
 		let inset: CGFloat = 0.0 - outset
-		var drawingBounds = NSInsetRect(bounds, inset, inset)
+		var drawingBounds = bounds.insetBy(dx: inset, dy: inset)
 		
 		// -drawHandleInView:atPoint: draws a one-unit drop shadow too.
 		drawingBounds.size.width += 1.0
@@ -341,7 +349,7 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 	
 	// Draw the contents the receiver in a specific view. Use isBeingCreatedOrEditing if the graphic draws differently during its creation or while it's being edited. The default implementation of this method just draws the result of invoking -bezierPathForDrawing using the current fill and stroke parameters. Subclasses have to override either this method or -bezierPathForDrawing. Subclasses that override this may have to override +keyPathsForValuesAffectingDrawingBounds, +keyPathsForValuesAffectingDrawingContents, and -drawingBounds too.
 	@objc(drawContentsInView:isBeingCreateOrEdited:)
-	dynamic func drawContents(in view: NSView?, isBeingCreateOrEdited: Bool) {
+	func drawContents(in view: NSView?, isBeingCreateOrEdited: Bool) {
 		// If the graphic is so so simple that it can be boiled down to a bezier path then just draw a bezier path. It's -bezierPathForDrawing's responsibility to return a path with the current stroke width.
 		if let path = bezierPathForDrawing {
 			if self.drawingFill {
@@ -364,7 +372,7 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 	
 	// Draw the handles of the receiver in a specific view. The default implementation of this method just invokes -drawHandleInView:atPoint: for each point at the corners and on the sides of the rectangle returned by -bounds. Subclasses that override this probably have to override -handleUnderPoint: too.
 	@objc(drawHandlesInView:)
-	dynamic func drawHandles(in view: NSView) {
+	func drawHandles(in view: NSView) {
     // Draw handles at the corners and on the sides.
 		let bounds = self.bounds
 		drawHandle(in: view, at: NSMakePoint(NSMinX(bounds), NSMinY(bounds)))
@@ -624,12 +632,6 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 	// Given a key from the set returned by a previous invocation of -keysForValuesToObserveForUndo, return the human-readable, title-capitalized, localized, name of the property identified by the key, or nil for invalid keys (invokers should throw exceptions if nil is returned, because nil indicates a programming mistake). In Sketch SKTDocument uses this to create an undo action name when the user has changed the value of the property.
 	class func presentablePropertyName(for key: String) -> String? {
 		// Pretty simple. Don't be surprised if you never see "Bounds" appear in an undo action name in Sketch. SKTGraphicView invokes -[NSUndoManager setActionName:] for things like moving, resizing, and aligning, thereby overwriting whatever SKTDocument sets with something more specific.
-		let presentablePropertyNamesByKey = [SKTGraphicIsDrawingFillKey: NSLocalizedString("Filling", tableName: "UndoStrings", comment: "Action name part for SKTGraphicIsDrawingFillKey."),
-			SKTGraphicFillColorKey: NSLocalizedString("Fill Color", tableName: "UndoStrings", comment: "Action name part for SKTGraphicFillColorKey."),
-			SKTGraphicIsDrawingStrokeKey: NSLocalizedString("Stroking", tableName: "UndoStrings", comment: "Action name part for SKTGraphicIsDrawingStrokeKey."),
-			SKTGraphicFillColorKey: NSLocalizedString("Stroke Color", tableName: "UndoStrings", comment: "Action name part for SKTGraphicStrokeColorKey."),
-			SKTGraphicFillColorKey: NSLocalizedString("Stroke Width", tableName: "UndoStrings", comment: "Action name part for SKTGraphicStrokeWidthKey."),
-			SKTGraphicFillColorKey: NSLocalizedString("Bounds", tableName: "UndoStrings", comment: "Action name part for SKTGraphicBoundsKey.")]
 		return presentablePropertyNamesByKey[key];
 	}
 	

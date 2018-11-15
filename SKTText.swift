@@ -102,7 +102,7 @@ private var layoutManager: NSLayoutManager = {
 	
 	// MARK: Private KVC-Compliance for Public Properties
 	
-	func willChangeScriptingContents() {
+	@objc func willChangeScriptingContents() {
 		// Tell any object that would observe this one to record undo operations to start observing. In Sketch, each SKTDocument is observing all of its graphics' "keysForValuesToObserveForUndo" values.
 		self.willChangeValue(forKey: SKTGraphicKeysForValuesToObserveForUndoKey)
 		contentsBeingChangedByScripting = true
@@ -112,7 +112,7 @@ private var layoutManager: NSLayoutManager = {
 		self.willChangeValue(forKey: SKTTextUndoContentsKey)
 	}
 	
-	func didChangeScriptingContents() {
+	@objc func didChangeScriptingContents() {
 		// Any changes that might have been done by the scripting command are done.
 		self.didChangeValue(forKey: SKTTextUndoContentsKey)
 		
@@ -123,15 +123,15 @@ private var layoutManager: NSLayoutManager = {
 		self.didChangeValue(forKey: SKTGraphicKeysForValuesToObserveForUndoKey)
 	}
 	
-	var scriptingContents: AnyObject {
+	@objc var scriptingContents: AnyObject {
 		get {
-		// Before returning an NSTextStorage that Cocoa's scripting support can work with, do the first part of notifying observers, and then schedule the second part of notifying observers for after all potential scripted changes caused by the current scripting command have been done.
-		// An alternative to the way we notify key-value observers here would be to return an NSTextStorage that's a proxy to the one held by this object, and make it send this object the -willChangeValueForKey:/-didChangeValueForKey: messages around forwarding of mutation messages (sort of like what the collection proxy objects returned by KVC for sets and arrays do), but that wouldn't gain us anything as far as we know right now, and might even lead to performance problems (because one scripting command could result in potentially many KVO notifications).
-		willChangeScriptingContents()
+			// Before returning an NSTextStorage that Cocoa's scripting support can work with, do the first part of notifying observers, and then schedule the second part of notifying observers for after all potential scripted changes caused by the current scripting command have been done.
+			// An alternative to the way we notify key-value observers here would be to return an NSTextStorage that's a proxy to the one held by this object, and make it send this object the -willChangeValueForKey:/-didChangeValueForKey: messages around forwarding of mutation messages (sort of like what the collection proxy objects returned by KVC for sets and arrays do), but that wouldn't gain us anything as far as we know right now, and might even lead to performance problems (because one scripting command could result in potentially many KVO notifications).
+			willChangeScriptingContents()
 			DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()) {
 				self.didChangeScriptingContents()
 			}
-		return self.contents
+			return self.contents
 		}
 		set {
 			// If an attributed string is passed then then do a simple replacement. If a string is passed in then reuse the character style that's already there. Either way, we must notify observers of "undoContents" that its value is changing here.
@@ -201,7 +201,7 @@ private var layoutManager: NSLayoutManager = {
 	override var drawingBounds: NSRect {
 		get {
 		// The drawing bounds must take into account the focus ring that might be drawn by this class' override of -drawContentsInView:isBeingCreatedOrEdited:. It can't forget to take into account drawing done by -drawHandleInView:atPoint: though. Because this class doesn't override -drawHandleInView:atPoint:, it should invoke super to let SKTGraphic take care of that, and then alter the results.
-		return NSUnionRect(super.drawingBounds, NSInsetRect(self.bounds, -1.0, -1.0))
+		return super.drawingBounds.union(self.bounds.insetBy(dx: -1.0, dy: -1.0))
 		}
 		set {}
 	}

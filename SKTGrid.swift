@@ -12,7 +12,7 @@ let SKTGridAnyKey = "any";
 private let SKTGridTemporaryShowingTime: TimeInterval = 1.0;
 
 class SKTGrid: NSObject {
-	var color = NSColor.lightGray
+	@objc var color = NSColor.lightGray
 	var _spacing: CGFloat = 9.0
 	//BOOL _isAlwaysShown;
 	//BOOL _isConstraining;
@@ -26,19 +26,19 @@ class SKTGrid: NSObject {
 		super.init()
 	}
 	
-	class var keyPathsForValuesAffectingCanSetSpacing: Set<String> {
+	@objc class var keyPathsForValuesAffectingCanSetSpacing: Set<String> {
 		return Set(["alwaysShown", "constraining"])
 	}
 	
-	class var keyPathsForValuesAffectingCanSetColor: Set<String> {
+	@objc class var keyPathsForValuesAffectingCanSetColor: Set<String> {
 		return Set(["alwaysShown", "usable"])
 	}
 	
-	class var keyPathsForValuesAffectingUsable: Set<String> {
+	@objc class var keyPathsForValuesAffectingUsable: Set<String> {
 		return Set(["spacing"])
 	}
 	
-	class var keyPathsForValuesAffectingAny: Set<String> {
+	@objc class var keyPathsForValuesAffectingAny: Set<String> {
 		
 		// Specify that a KVO-compliant change for any of this class' non-derived properties should result in a KVO change notification for the "any" virtual property. Views that want to use this grid can observe "any" for notification of the need to redraw the grid.
 		return Set(["color", "spacing", "alwaysShown", "constraining"])
@@ -59,7 +59,7 @@ class SKTGrid: NSObject {
 		}
 	}
 	
-	var spacing: CGFloat {
+	@objc var spacing: CGFloat {
 		get {
 			return _spacing
 		}
@@ -84,11 +84,8 @@ class SKTGrid: NSObject {
 						// Don't bother with a separate _showsGridTemporarily instance variable. -drawRect: can just check to see if _hidingTimer is non-nil.
 						
 					}
-					
 				}
-				
 			}
-			
 		}
 	}
 	
@@ -116,7 +113,7 @@ class SKTGrid: NSObject {
 	func alignedRect(_ arect: NSRect) -> NSRect {
 		var rect = arect
 		// Aligning is done even when constraining is not.
-		var upperRight = NSPoint(x: NSMaxX(rect), y: NSMaxY(rect));
+		var upperRight = NSPoint(x: rect.maxX, y: rect.maxY)
 		rect.origin.x = floor((rect.origin.x / _spacing) + 0.5) * _spacing;
 		rect.origin.y = floor((rect.origin.y / _spacing) + 0.5) * _spacing;
 		upperRight.x = floor((upperRight.x / _spacing) + 0.5) * _spacing;
@@ -127,7 +124,7 @@ class SKTGrid: NSObject {
 	}
 	
 	@objc(drawRect:inView:)
-	func draw(rect: NSRect, in view: NSView) {
+	func draw(_ rect: NSRect, in view: NSView) {
 		// The grid might not be usable right now. It might be shown, but only temporarily.
 		if self.isUsable && (alwaysShown || (hidingTimer != nil)) {
 			
