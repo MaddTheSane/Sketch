@@ -142,6 +142,27 @@ private class MapTableOwner {
 		}
 	}
 	
+	@objc(insertGraphic:atIndex:)
+	func insert(_ graphic: SKTGraphic, at index: Int) {
+		// Just invoke the regular method up above.
+		let graphics = [graphic]
+		let indexes = IndexSet(integer: index)
+		insert(graphics, at: indexes)
+	}
+	
+	@objc(removeGraphicAtIndex:)
+	func removeGraphic(at index: Int) {
+		// Just invoke the regular method up above.
+		let indexes = IndexSet(integer: index)
+		removeGraphics(at: indexes)
+	}
+	
+	@objc(addInGraphics:)
+	func addIn(_ graphic: SKTGraphic) {
+		// Just a convenience for invoking by some of the methods down below.
+		insert(graphic, at: graphics.count)
+	}
+	
 	func stopObservingGraphics(_ agraph: [SKTGraphic]) {
 	}
 	
@@ -177,6 +198,17 @@ private class MapTableOwner {
         return true
     }
 
+	// MARK: scripting
+	
+	override func newScriptingObject(of objectClass2: AnyClass, forValueForKey key: String, withContentsValue contentsValue: Any?, properties: [String : Any]) -> Any? {
+		var objectClass: AnyClass = objectClass2
+		// "make new graphic" makes no sense because it's an abstract class. Use a default concrete class instead.
+		if objectClass == SKTGraphic.self {
+			objectClass = SKTCircle.self
+		}
+		return super.newScriptingObject(of: objectClass, forValueForKey: key, withContentsValue: contentsValue, properties: properties)
+	}
+	
 	func objectSpecifier(for graphic: SKTGraphic) -> NSScriptObjectSpecifier? {
 		var graphicObjectSpecifier: NSScriptObjectSpecifier? = nil
 		
@@ -218,5 +250,4 @@ private class MapTableOwner {
 				return $0 as? SKTImage
 				})
 	}
-
 }

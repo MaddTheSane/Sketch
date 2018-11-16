@@ -73,7 +73,7 @@ private var layoutManager: NSLayoutManager = {
 		didSet {
 			if !boundsBeingChangedToMatchContents {
 				let layoutManagers = self.contents.layoutManagers
-				for layoutManager in layoutManagers as [NSLayoutManager] {
+				for layoutManager in layoutManagers {
 					layoutManager.firstTextView?.frame = self.bounds
 				}
 			}
@@ -161,8 +161,8 @@ private var layoutManager: NSLayoutManager = {
 	
 	var undoContents: NSAttributedString {
 		get {
-		// Never return an object whose value will change after it's been returned. This is generally good behavior for any getter method that returns the value of an attribute or a to-many relationship. (For to-one relationships just returning the related object is the right thing to do, as in this class' -contents method.) However, this particular implementation of this good behavior might not be fast enough for all situations. If the copying here causes a performance problem, an alternative might be to return [[contents retain] autorelease], set a bit that indicates that the contents should be lazily replaced with a copy before any mutation, and then heed that bit in other methods of this class.
-		return self.contents.copy() as! NSAttributedString
+			// Never return an object whose value will change after it's been returned. This is generally good behavior for any getter method that returns the value of an attribute or a to-many relationship. (For to-one relationships just returning the related object is the right thing to do, as in this class' -contents method.) However, this particular implementation of this good behavior might not be fast enough for all situations. If the copying here causes a performance problem, an alternative might be to return [[contents retain] autorelease], set a bit that indicates that the contents should be lazily replaced with a copy before any mutation, and then heed that bit in other methods of this class.
+			return self.contents.copy() as! NSAttributedString
 		}
 		set {
 			// When undoing a change that could have only been done by scripting, behave exactly if scripting is doing another change, for the benefit of redo.
@@ -200,8 +200,8 @@ private var layoutManager: NSLayoutManager = {
 	
 	override var drawingBounds: NSRect {
 		get {
-		// The drawing bounds must take into account the focus ring that might be drawn by this class' override of -drawContentsInView:isBeingCreatedOrEdited:. It can't forget to take into account drawing done by -drawHandleInView:atPoint: though. Because this class doesn't override -drawHandleInView:atPoint:, it should invoke super to let SKTGraphic take care of that, and then alter the results.
-		return super.drawingBounds.union(self.bounds.insetBy(dx: -1.0, dy: -1.0))
+			// The drawing bounds must take into account the focus ring that might be drawn by this class' override of -drawContentsInView:isBeingCreatedOrEdited:. It can't forget to take into account drawing done by -drawHandleInView:atPoint: though. Because this class doesn't override -drawHandleInView:atPoint:, it should invoke super to let SKTGraphic take care of that, and then alter the results.
+			return super.drawingBounds.union(self.bounds.insetBy(dx: -1.0, dy: -1.0))
 		}
 		set {}
 	}

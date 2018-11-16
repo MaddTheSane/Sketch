@@ -132,8 +132,8 @@ class SKTGrid: NSObject {
 			let gridPath = NSBezierPath()
 			let lastVerticalLineNumber = Int(floor(rect.maxX / _spacing))
 			for lineNumber in Int(ceil(rect.minX / _spacing)) ... lastVerticalLineNumber  {
-				gridPath.move(to: NSPoint(x: CGFloat(lineNumber) * _spacing, y: NSMinY(rect)))
-				gridPath.line(to: NSPoint(x: CGFloat(lineNumber) * _spacing, y: NSMaxY(rect)))
+				gridPath.move(to: NSPoint(x: CGFloat(lineNumber) * _spacing, y: rect.minY))
+				gridPath.line(to: NSPoint(x: CGFloat(lineNumber) * _spacing, y: rect.maxY))
 			}
 			let lastHorizontalLineNumber = Int(floor(rect.maxY / _spacing))
 			for lineNumber in Int(ceil(NSMinY(rect) / _spacing)) ... lastHorizontalLineNumber {

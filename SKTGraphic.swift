@@ -150,11 +150,11 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 
 @objc(SKTGraphic) class SKTGraphic: NSObject, NSCopying {
 	@objc dynamic var bounds = NSZeroRect
-	@objc var drawingFill = false
-	@objc var fillColor: NSColor? = NSColor.white
-	@objc var drawingStroke = true
-	@objc var strokeColor: NSColor? = NSColor.black
-	@objc var strokeWidth: CGFloat = 1.0
+	@objc dynamic var drawingFill = false
+	@objc dynamic var fillColor: NSColor? = NSColor.white
+	@objc dynamic var drawingStroke = true
+	@objc dynamic var strokeColor: NSColor? = NSColor.black
+	@objc dynamic var strokeWidth: CGFloat = 1.0
 	
 	func copy(with zone: NSZone?) -> Any {
 		let copy = type(of: self).init()
@@ -293,7 +293,7 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 		}
 	}
 	
-	// Return a dictionary that can be used as property list object and contains enough information to recreate the graphic (except for its class, which is handled by +propertiesWithGraphics:). The returned dictionary must be mutable so that it can be added to efficiently, but the receiver must ignore any mutations made to it after it's been returned.
+	/// Return a dictionary that can be used as property list object and contains enough information to recreate the graphic (except for its class, which is handled by `+propertiesWithGraphics:`).
 	@objc var properties: [String: Any] {
 		var aProp = [String: Any]()
 		aProp[SKTGraphicBoundsKey] = NSStringFromRect(bounds)
@@ -316,8 +316,7 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 	
 	// MARK: *** Drawing ***
 	
-	// Return the keys of all of the properties whose values affect the appearance of an instance of the receiving subclass of SKTGraphic (even properties declared in a superclass). The first method should return the keys for such properties that affect the drawing bounds of graphics. The second method should return the keys for such properties that do not. Most subclasses of SKTGraphic should override one or both of these, and be KVO-compliant for the properties identified by keys in the returned set. Implementations of these methods don't have to be fast, at least not in the context of Sketch, because their results are cached. In Mac OS 10.5 and later these methods are invoked automatically by KVO because their names match the result of applying to "drawingBounds" and "drawingContents" the naming pattern used by the default implementation of +[NSObject(NSKeyValueObservingCustomization) keyPathsForValuesAffectingValueForKey:].
-	
+	/// Return the keys of all of the properties whose values affect the appearance of an instance of the receiving subclass of SKTGraphic (even properties declared in a superclass). The first method should return the keys for such properties that affect the drawing bounds of graphics. The second method should return the keys for such properties that do not. Most subclasses of SKTGraphic should override one or both of these, and be KVO-compliant for the properties identified by keys in the returned set. Implementations of these methods don't have to be fast, at least not in the context of Sketch, because their results are cached. In Mac OS 10.5 and later these methods are invoked automatically by KVO because their names match the result of applying to "drawingBounds" and "drawingContents" the naming pattern used by the default implementation of +[NSObject(NSKeyValueObservingCustomization) keyPathsForValuesAffectingValueForKey:].
 	@objc class var keyPathsForValuesAffectingDrawingBounds: Set<String> {
     // The only properties managed by SKTGraphic that affect the drawing bounds are the bounds and the the stroke width.
 		return Set([SKTGraphicBoundsKey, SKTGraphicStrokeWidthKey])
@@ -328,7 +327,7 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 		return Set([SKTGraphicIsDrawingFillKey, SKTGraphicFillColorKey, SKTGraphicIsDrawingStrokeKey, SKTGraphicStrokeColorKey])
 	}
 	
-	// Return the bounding box of everything the receiver might draw when sent a -draw...InView: message. The default implementation of this method returns a bounds that assumes the default implementations of -drawContentsInView: and -drawHandlesInView:. Subclasses that override this probably have to override +keyPathsForValuesAffectingDrawingBounds too.*/
+	/// Return the bounding box of everything the receiver might draw when sent a -draw...InView: message. The default implementation of this method returns a bounds that assumes the default implementations of -drawContentsInView: and -drawHandlesInView:. Subclasses that override this probably have to override +keyPathsForValuesAffectingDrawingBounds too.*/
 	@objc var drawingBounds: NSRect {
 		// Assume that -[SKTGraphic drawContentsInView:] and -[SKTGraphic drawHandlesInView:] will be doing the drawing. Start with the plain bounds of the graphic, then take drawing of handles at the corners of the bounds into account, then optional stroke drawing.
 		var outset = SKTGraphicHandleHalfWidth
@@ -418,12 +417,12 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 	}
 	
 	// Return YES if it's useful to let the user toggle drawing of the fill or stroke, NO otherwise. The default implementations of these methods return YES.
-	var canSetDrawingFill: Bool {
+	@objc var canSetDrawingFill: Bool {
 		// The default implementation of -drawContentsInView: can draw fills.
 		return true
 	}
 	
-	var canSetDrawingStroke: Bool {
+	@objc var canSetDrawingStroke: Bool {
 		// The default implementation of -drawContentsInView: can draw strokes.
 		return true
 	}
@@ -470,7 +469,7 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 		return handle
 	}
 	
-	// Return YES if the handle at a point is under another point. Subclasses that override -handleUnderPoint: can invoke this to hit-test the sort of handles that would be drawn by -drawHandleInView:atPoint:.
+	/// Return YES if the handle at a point is under another point. Subclasses that override -handleUnderPoint: can invoke this to hit-test the sort of handles that would be drawn by -drawHandleInView:atPoint:.
 	func isHandle(at handlePoint: NSPoint, under point: NSPoint) -> Bool {
 		// Check a handle-sized rectangle that's centered on the handle point.
 		var handleBounds = NSZeroRect
@@ -481,7 +480,7 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 		return NSPointInRect(point, handleBounds);
 	}
 	
-	// Given that one of the receiver's handles has been dragged by the user, resize to match, and return the handle number that should be passed into subsequent invocations of this same method. The default implementation of this method assumes that the passed-in handle number was returned by a previous invocation of +creationSizingHandle or -handleUnderPoint:, so subclasses that override this should probably override +creationSizingHandle and -handleUnderPoint: too. It also invokes -flipHorizontally and -flipVertically when the user flips the graphic.
+	/// Given that one of the receiver's handles has been dragged by the user, resize to match, and return the handle number that should be passed into subsequent invocations of this same method. The default implementation of this method assumes that the passed-in handle number was returned by a previous invocation of `+creationSizingHandle` or `-handleUnderPoint:`, so subclasses that override this should probably override `+creationSizingHandle` and `-handleUnderPoint:` too. It also invokes `-flipHorizontally` and `-flipVertically` when the user flips the graphic.
 	@objc(resizeByMovingHandle:toPoint:)
 	func resizeByMovingHandle(_ shandle: Int, to point: NSPoint) -> Int {
 		var handle = shandle
@@ -570,7 +569,7 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 		return handle
 	}
 	
-	// Given that -resizeByMovingHandle:toPoint: is being invoked and sensed that the user has flipped the graphic one way or the other, change the graphic to accomodate, whatever that means. Subclasses that represent asymmetrical graphics can override these to accomodate the user's dragging of handles without having to override and mostly reimplement -resizeByMovingHandle:toPoint:.
+	/// Given that -resizeByMovingHandle:toPoint: is being invoked and sensed that the user has flipped the graphic one way or the other, change the graphic to accomodate, whatever that means. Subclasses that represent asymmetrical graphics can override these to accomodate the user's dragging of handles without having to override and mostly reimplement -resizeByMovingHandle:toPoint:.
 	func flipHorizontally() {
 		// Live to be overridden.
 	}
@@ -579,7 +578,7 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 		// Live to be overridden.
 	}
 	
-	// Given that [[self class] canMakeNaturalSize] would return YES, set the the bounds of the receiver to whatever is "natural" for its particular subclass of SKTGraphic. The default implementation of this method just squares the bounds.
+	/// Given that [[self class] canMakeNaturalSize] would return YES, set the the bounds of the receiver to whatever is "natural" for its particular subclass of SKTGraphic. The default implementation of this method just squares the bounds.
 	func makeNaturalSize() {
 		// Just make the graphic square.
 		var bounds = self.bounds;
@@ -594,7 +593,7 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 	
 	// Set the bounds of the graphic, doing whatever scaling and translation is necessary.
 	
-	// Set the color of the graphic, whatever that means. The default implementation of this method just sets isDrawingFill to YES and fillColor to the passed-in color. In Sketch this method is invoked when the user drops a color chip on the graphic or uses the color panel to change the color of all of the selected graphics.
+	/// Set the color of the graphic, whatever that means. The default implementation of this method just sets isDrawingFill to YES and fillColor to the passed-in color. In Sketch this method is invoked when the user drops a color chip on the graphic or uses the color panel to change the color of all of the selected graphics.
 	@objc
 	func setColor(_ color: NSColor) {
 		// This method demonstrates something interesting: we haven't bothered to provide setter methods for the properties we want to change, but we can still change them using KVC. KVO autonotification will make sure observers hear about the change (it works with -setValue:forKey: as well as -set<Key>:). Of course, if we found ourselvings doing this a little more often we would go ahead and just add the setter methods. The point is that KVC direct instance variable access very often makes boilerplate accessors unnecessary but if you want to just put them in right away, eh, go ahead.
@@ -609,14 +608,14 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 		}
 	}
 	
-	// Given that the receiver has just been created or double-clicked on or something, create and return a view that can present its editing interface to the user, or return nil. The returned view should be suitable for becoming a subview of a view whose bounds is passed in. Its frame should match the bounds of the receiver. The receiver should not assume anything about the lifetime of the returned editing view; it may remain in use even after subsequent invocations of this method, which should, again, create a new editing view each time. In other words, overrides of this method should be prepared for a graphic to have more than editing view outstanding. The default implementation of this method returns nil. In Sketch SKTText overrides it.
+	/// Given that the receiver has just been created or double-clicked on or something, create and return a view that can present its editing interface to the user, or return nil. The returned view should be suitable for becoming a subview of a view whose bounds is passed in. Its frame should match the bounds of the receiver. The receiver should not assume anything about the lifetime of the returned editing view; it may remain in use even after subsequent invocations of this method, which should, again, create a new editing view each time. In other words, overrides of this method should be prepared for a graphic to have more than editing view outstanding. The default implementation of this method returns nil. In Sketch SKTText overrides it.
 	@objc
 	func newEditingViewWithSuperviewBounds(_ superviewBounds: NSRect) -> NSView? {
 		// Live to be overridden.
 		return nil;
 	}
 	
-	// Given an editing view that was returned by a previous invocation of -newEditingViewWithSuperviewBounds:, tear down whatever connections exist between it and the receiver.
+	/// Given an editing view that was returned by a previous invocation of -newEditingViewWithSuperviewBounds:, tear down whatever connections exist between it and the receiver.
 	@objc(finalizeEditingView:)
 	func finalize(editingView: NSView) {
 		// Live to be overridden.
@@ -624,20 +623,20 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 	
 	// MARK: *** Undo ***
 	
-	// Return the keys of all of the properties for which value changes are undoable. In Sketch SKTDocument observes the value for each key in the set returned by invoking this method on each graphic in the document, and registers undo operations when the values change. It also observes this "keysForValuesToObserveForUndo" property itself and reacts accordingly, because the value can change dynamically. For example, SKTText overrides this (and KVO-notifies about changes to what the override would return) for a couple of reasons.
+	/// Return the keys of all of the properties for which value changes are undoable. In Sketch SKTDocument observes the value for each key in the set returned by invoking this method on each graphic in the document, and registers undo operations when the values change. It also observes this "keysForValuesToObserveForUndo" property itself and reacts accordingly, because the value can change dynamically. For example, SKTText overrides this (and KVO-notifies about changes to what the override would return) for a couple of reasons.
 	@objc var keysForValuesToObserveForUndo: Set<String> {
 		return Set([SKTGraphicIsDrawingFillKey, SKTGraphicFillColorKey, SKTGraphicIsDrawingStrokeKey, SKTGraphicStrokeColorKey, SKTGraphicStrokeWidthKey, SKTGraphicBoundsKey])
 	}
 	
-	// Given a key from the set returned by a previous invocation of -keysForValuesToObserveForUndo, return the human-readable, title-capitalized, localized, name of the property identified by the key, or nil for invalid keys (invokers should throw exceptions if nil is returned, because nil indicates a programming mistake). In Sketch SKTDocument uses this to create an undo action name when the user has changed the value of the property.
+	/// Given a key from the set returned by a previous invocation of -keysForValuesToObserveForUndo, return the human-readable, title-capitalized, localized, name of the property identified by the key, or nil for invalid keys (invokers should throw exceptions if nil is returned, because nil indicates a programming mistake). In Sketch SKTDocument uses this to create an undo action name when the user has changed the value of the property.
 	class func presentablePropertyName(for key: String) -> String? {
 		// Pretty simple. Don't be surprised if you never see "Bounds" appear in an undo action name in Sketch. SKTGraphicView invokes -[NSUndoManager setActionName:] for things like moving, resizing, and aligning, thereby overwriting whatever SKTDocument sets with something more specific.
-		return presentablePropertyNamesByKey[key];
+		return presentablePropertyNamesByKey[key]
 	}
 	
 	// MARK: *** Scripting ***
 	
-	// Given that the receiver is now contained by some other object, or is no longer contained by another, take a pointer to its container, but do not retain it.
+	/// Given that the receiver is now contained by some other object, or is no longer contained by another, take a pointer to its container, but do not retain it.
 	weak var scriptingContainer: SKTGraphicScriptingContainer? = nil
 	
 	override var objectSpecifier: NSScriptObjectSpecifier? {
@@ -646,6 +645,5 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 			NSException(name: .internalInconsistencyException, reason: "A scriptable graphic has no scriptable container, or one that doesn't implement -objectSpecifierForGraphic: correctly.", userInfo: nil).raise()
 		}
 		return objectSpecifier;
-
 	}
 }

@@ -16,6 +16,8 @@ let SKTImageFilePathKey = "filePath";
 // Another key, which is just used in persistent property dictionaries.
 private let SKTImageContentsKey = "contents";
 
+private let presentablePropertyNamesByKey = [SKTImageIsFlippedHorizontallyKey: NSLocalizedString("Horizontal Flipping", tableName: "UndoStrings", comment: "Action name part for SKTImageIsFlippedHorizontallyKey."),
+											 SKTImageIsFlippedVerticallyKey: NSLocalizedString("Vertical Flipping", tableName: "UndoStrings", comment: "Action name part for SKTImageIsFlippedVerticallyKey.")]
 
 @objc(SKTImage) final class SKTImage: SKTGraphic {
 	private var flippedHorizontally = false
@@ -23,21 +25,21 @@ private let SKTImageContentsKey = "contents";
 	private(set) var contents: NSImage
 	
 	override var drawingFill: Bool {
-	get {
-		return false
+		get {
+			return false
+		}
+		set {
+			
+		}
 	}
-set {
-
-}
-}
 	
 	override var drawingStroke: Bool {
-	get {
-		return false
-	}
-set {
-
-}
+		get {
+			return false
+		}
+		set {
+			
+		}
 	}
 	
 	func setFilePath(filePath: String) {
@@ -48,14 +50,14 @@ set {
 	}
 	
 	override var canSetDrawingFill: Bool {
-	// Don't let the user think we would even try to fill an image with color.
+		// Don't let the user think we would even try to fill an image with color.
 		return false
 	}
 	
 	
 	override var canSetDrawingStroke: Bool {
-	// Don't let the user think we would even try to draw a stroke on image.
-	return false;
+		// Don't let the user think we would even try to draw a stroke on image.
+		return false;
 	}
 
 	@objc
@@ -124,8 +126,6 @@ set {
 	}
 	
 	override class func presentablePropertyName(for key: String) -> String? {
-		let presentablePropertyNamesByKey = [SKTImageIsFlippedHorizontallyKey: NSLocalizedString("Horizontal Flipping", tableName: "UndoStrings", comment: "Action name part for SKTImageIsFlippedHorizontallyKey."),
-			SKTImageIsFlippedVerticallyKey: NSLocalizedString("Vertical Flipping", tableName: "UndoStrings", comment: "Action name part for SKTImageIsFlippedVerticallyKey.")]
 		var presentablePropertyName = presentablePropertyNamesByKey[key]
 		if presentablePropertyName == nil {
 			presentablePropertyName = super.presentablePropertyName(for: key)
@@ -154,16 +154,10 @@ set {
 		let contentsSize = self.contents.size
 		transform.scale(x: bounds.size.width / contentsSize.width, y: bounds.size.height / contentsSize.height)
 		
-		// Flipping to accomodate -[NSImage drawAtPoint:fromRect:operation:fraction:]'s odd behavior.
-		if view?.isFlipped ?? false {
-			transform.translate(x: 0, y: contentsSize.height)
-			transform.scale(x: 1, y: -1)
-		}
-		
 		// Do the actual drawing, saving and restoring the graphics state so as not to interfere with the drawing of selection handles or anything else in the same view.
 		NSGraphicsContext.current?.saveGraphicsState()
 		(transform as NSAffineTransform).concat()
-		contents.draw(at: .zero, from: NSRect(origin: .zero, size: contentsSize), operation: .sourceOver, fraction: 1)
+		contents.draw(in: NSRect(origin: .zero, size: contentsSize), from: NSRect(origin: .zero, size: contentsSize), operation: .sourceOver, fraction: 1, respectFlipped: true, hints: nil)
 		NSGraphicsContext.current?.restoreGraphicsState()
 		
 	}
