@@ -9,8 +9,8 @@
 import Cocoa
 
 // Values that are used as contexts by this class' invocation of KVO observer registration methods. See the comment near the top of SKTGraphicView.m for a discussion of this.
-private let SKTDocumentUndoKeysObservationContext = "com.apple.SKTDocument.undoKeys";
-private let SKTDocumentUndoObservationContext = "com.apple.SKTDocument.undo";
+private var SKTDocumentUndoKeysObservationContext: NSString = "com.apple.SKTDocument.undoKeys";
+private var SKTDocumentUndoObservationContext: NSString = "com.apple.SKTDocument.undo";
 
 // The document type names that must also be used in the application's Info.plist file. We'll take out all uses of SKTDocumentOldTypeName and SKTDocumentOldVersion1TypeName (and NSPDFPboardType and NSTIFFPboardType) someday when we drop 10.4 compatibility and we can just use UTIs everywhere.
 private let SKTDocumentOldTypeName = "Apple Sketch document";
@@ -50,7 +50,7 @@ private class MapTableOwner {
 	*/
 	
 	// Return the current value of the property.
-	@objc var canvasSize: NSSize {
+	@objc dynamic var canvasSize: NSSize {
 		// A Sketch's canvas size is the size of the piece of paper that the user selects in the Page Setup panel for it, minus the document margins that are set.
 		let printInfo = self.printInfo
 		var tmpCanvasSize = printInfo.paperSize
@@ -167,6 +167,17 @@ private class MapTableOwner {
 	}
 	
 	func startObservingGraphics(_ agraph: [SKTGraphic]) {
+		// Each graphic can have a different set of properties that need to be observed.
+		for graphic in agraph {
+			let keys = graphic.keysForValuesToObserveForUndo
+			for key in keys {
+				// We use NSKeyValueObservingOptionOld because when something changes we want to record the old value, which is what has to be set in the undo operation. We use NSKeyValueObservingOptionNew because we compare the new value against the old value in an attempt to ignore changes that aren't really changes.
+				graphic.addObserver(self, forKeyPath: key, options: [.new, .old], context: &SKTDocumentUndoObservationContext)
+			}
+			
+			// The set of properties to be observed can itself change.
+			graphic.addObserver(self, forKeyPath: SKTGraphicKeysForValuesToObserveForUndoKey, options: [.new, .old], context: &SKTDocumentUndoKeysObservationContext)
+		}
 	}
     /*
     override var windowNibName: String? {
@@ -182,9 +193,31 @@ private class MapTableOwner {
     }
 
 	override func data(ofType typeName: String) throws -> Data {
-        // Insert code here to write your document to data of the specified type. If outError != NULL, ensure that you create and set an appropriate error when returning nil.
-        // You can also choose to override -fileWrapperOfType:error:, -writeToURL:ofType:error:, or -writeToURL:ofType:forSaveOperation:originalContentsURL:error: instead.
-        throw NSError(domain: NSOSStatusErrorDomain, code: unimpErr, userInfo: nil)
+		// This method must be prepared for typeName to be any value that might be in the array returned by any invocation of -writableTypesForSaveOperation:. Because this class:
+		// doesn't - override -writableTypesForSaveOperation:, and
+		// doesn't - override +writableTypes or +isNativeType: (which the default implementation of -writableTypesForSaveOperation: invokes),
+		// and because:
+		// - Sketch has a "Save a Copy As..." file menu item that results in NSSaveToOperations,
+		// we know that that the type names we have to handle here include:
+		// - SKTDocumentOldTypeName (on Mac OS 10.4) or SKTDocumentNewTypeName (on 10.5), because this application's Info.plist file declares that instances of this class can play the "editor" role for it, and
+		// - NSPDFPboardType (on 10.4) or kUTTypePDF (on 10.5) and NSTIFFPboardType (on 10.4) or kUTTypeTIFF (on 10.5), because according to the Info.plist a Sketch document is exportable as them.
+		// We use -[NSWorkspace type:conformsToType:] (new in 10.5), which is nearly always the correct thing to do with UTIs, but the arguments are reversed here compared to what's typical. Think about it: this method doesn't know how to write any particular subtype of the supported types, so it should assert if it's asked to. It does however effectively know how to write all of the supertypes of the supported types (like public.data), and there's no reason for it to refuse to do so. Not particularly useful in the context of an app like Sketch, but correct.
+		// If we had reason to believe that +[SKTRenderingView pdfDataWithGraphics:] or +[SKTGraphic propertiesWithGraphics:] could return nil we would have to arrange for *outError to be set to a real value when that happens. If you signal failure in a method that takes an error: parameter and outError!=NULL you must set *outError to something decent.
+		let printInfo = self.printInfo
+		let workspace = NSWorkspace.shared
+		if workspace.type(SKTDocumentNewTypeName, conformsToType: typeName) || typeName == SKTDocumentOldTypeName {
+			var properties = [String: Any]()
+			properties[SKTDocumentVersionKey] = SKTDocumentCurrentVersion
+			properties[SKTDocumentGraphicsKey] = SKTGraphic.propertiesWithGraphics(graphics: graphics)
+			properties[SKTDocumentPrintInfoKey] = NSArchiver.archivedData(withRootObject: printInfo)
+			return try PropertyListSerialization.data(fromPropertyList: properties, format: .binary, options: 0)
+		} else if workspace.type(kUTTypePDF as String, conformsToType: typeName) || typeName == NSPasteboard.PasteboardType.pdf.rawValue {
+			return SKTRenderingView.pdfData(with: graphics)
+		} else if workspace.type(kUTTypeTIFF as String, conformsToType: typeName) || typeName == NSPasteboard.PasteboardType.tiff.rawValue {
+			return try SKTRenderingView.tiffData(with: graphics)
+		}
+		
+		throw NSError(domain: NSOSStatusErrorDomain, code: unimpErr, userInfo: nil)
     }
 	
 	override func read(from data: Data, ofType typeName: String) throws {
@@ -197,6 +230,15 @@ private class MapTableOwner {
     override class var autosavesInPlace: Bool {
         return true
     }
+	
+	override var printInfo: NSPrintInfo {
+		willSet {
+			willChangeValue(forKey: SKTDocumentCanvasSizeKey)
+		}
+		didSet {
+			didChangeValue(forKey: SKTDocumentCanvasSizeKey)
+		}
+	}
 
 	// MARK: scripting
 	

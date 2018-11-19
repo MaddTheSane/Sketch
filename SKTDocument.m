@@ -302,7 +302,7 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 		properties[SKTDocumentPrintInfoKey] = [NSArchiver archivedDataWithRootObject:printInfo];
 		data = [NSPropertyListSerialization dataFromPropertyList:properties format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL];
 		
-	} else if ((useTypeConformance && [workspace type:(NSString *)kUTTypePDF conformsToType:typeName]) || [typeName isEqualToString:NSPDFPboardType]) {
+	} else if ((useTypeConformance && [workspace type:(NSString *)kUTTypePDF conformsToType:typeName]) || [typeName isEqualToString:NSPasteboardTypePDF]) {
 		data = [SKTRenderingView pdfDataWithGraphics:graphics];
 	} else {
 		NSParameterAssert((useTypeConformance && [workspace type:(NSString *)kUTTypeTIFF conformsToType:typeName]) || [typeName isEqualToString:NSTIFFPboardType]);

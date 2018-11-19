@@ -1153,9 +1153,9 @@ A person who assumes that a -set... method always succeeds, and always sets the 
 - (IBAction)copy:(id)sender {
     NSArray *selectedGraphics = [self selectedGraphics];
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
-    [pasteboard declareTypes:@[SKTGraphicViewPasteboardType, NSPDFPboardType, NSPasteboardTypeTIFF] owner:nil];
+    [pasteboard declareTypes:@[SKTGraphicViewPasteboardType, NSPasteboardTypePDF, NSPasteboardTypeTIFF] owner:nil];
     [pasteboard setData:[[SKTGraphic class] pasteboardDataWithGraphics:selectedGraphics] forType:SKTGraphicViewPasteboardType];
-    [pasteboard setData:[[SKTRenderingView class] pdfDataWithGraphics:selectedGraphics] forType:NSPDFPboardType];
+    [pasteboard setData:[[SKTRenderingView class] pdfDataWithGraphics:selectedGraphics] forType:NSPasteboardTypePDF];
     [pasteboard setData:[[SKTRenderingView class] tiffDataWithGraphics:selectedGraphics error:NULL] forType:NSPasteboardTypeTIFF];
     _pasteboardChangeCount = [pasteboard changeCount];
     _pasteCascadeNumber = 1;
