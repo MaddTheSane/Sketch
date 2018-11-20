@@ -79,12 +79,18 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 
 
 // Some methods are invoked by methods above them in this file.
-@interface SKTDocument(SKTForwardDeclarations)
+@interface SKTDocument()
 @property (readonly, copy) NSArray *graphics;
 - (void)startObservingGraphics:(NSArray *)graphics;
 - (void)stopObservingGraphics:(NSArray *)graphics;
 @end
 
+@interface SKTDocument(OldImporting)
+- (NSArray<SKTGraphic*> *)graphicsFromOldDrawDocumentDictionary:(NSDictionary<NSString*,id> *)doc;
+- (NSDictionary<NSString*,id> *)oldDrawDocumentDictionaryFromData:(NSData *)data;
+@end
+static NSString *const SKTOldGraphicsListKey = @"GraphicsList";
+static NSString *const SKTOldPrintInfoKey = @"PrintInfo";
 
 // A class we use to add reference counting to NSMapTable, which was not an object in Mac OS 10.4 and earlier. Why bother with a -mapTable accessor instead of a public instance variable for such a trivial case? Because Foundation's zombie debugging feature kicks in for method invocations but not public instance variable access.
 @interface SKTMapTableOwner : NSObject
@@ -273,14 +279,36 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 		}
 		readSuccessfully = properties ? YES : NO;
 		
-	} else {
+	} else if ((useTypeConformance && [workspace type:typeName conformsToType:SKTDocumentNewVersion1TypeName]) || [typeName isEqualToString:SKTDocumentOldVersion1TypeName]) {
 		NSParameterAssert((useTypeConformance && [workspace type:typeName conformsToType:SKTDocumentNewVersion1TypeName]) || [typeName isEqualToString:SKTDocumentOldVersion1TypeName]);
 		
 		// The file uses Sketch's old format. Sketch is still a work in progress.
-		graphics = @[];
-		printInfo = [[NSPrintInfo alloc] init];
-		readSuccessfully = YES;
+		NSDictionary *doc = [self oldDrawDocumentDictionaryFromData:data];
+		if (!doc) {
+			if (outError) {
+				*outError = SKTErrorWithCode(SKTErrorUnknownFileRead);
+			}
+			return NO;
+		}
+		graphics = [self graphicsFromOldDrawDocumentDictionary:doc];
 		
+		data = [doc objectForKey:SKTOldPrintInfoKey];
+		if (data) {
+			NSPrintInfo *printInfo2 = [NSUnarchiver unarchiveObjectWithData:data];
+			if (printInfo2) {
+				printInfo = printInfo2;
+			}
+		}
+		if (!printInfo) {
+			printInfo = [[NSPrintInfo alloc] init];
+		}
+		
+		readSuccessfully = YES;
+	} else {
+		readSuccessfully = NO;
+		if (outError) {
+			*outError = SKTErrorWithCode(SKTErrorUnknownFileRead);
+		}
 	}
 	
 	// Did the reading work? In this method we ought to either do nothing and return an error or overwrite every property of the document. Don't leave the document in a half-baked state.
@@ -379,11 +407,11 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 
 
 - (void)makeWindowControllers {
-
+#if !defined(BUILDING_QUICKLOOK) || BUILDING_QUICKLOOK == 0
     // Start off with one document window.
     SKTWindowController *windowController = [[SKTWindowController alloc] init];
     [self addWindowController:windowController];
-
+#endif
 }
 
 
@@ -1038,3 +1066,27 @@ static NSInteger SKTDocumentCurrentVersion = 2;
 @end
 
 
+@implementation SKTDocument(OldImporting)
+
+- (NSDictionary<NSString*,id> *)oldDrawDocumentDictionaryFromData:(NSData *)data
+{
+	NSString *string = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+	NSDictionary *doc = [string propertyList];
+	
+	return doc;
+}
+
+- (NSArray<SKTGraphic*> *)graphicsFromOldDrawDocumentDictionary:(NSDictionary<NSString*,id> *)doc
+{
+	NSArray *graphicDicts = [doc objectForKey:SKTOldGraphicsListKey];
+	NSUInteger i, c = [graphicDicts count];
+	NSMutableArray *graphics = [NSMutableArray arrayWithCapacity:c];
+	
+	for (i=0; i<c; i++) {
+		[graphics addObject:[SKTGraphic graphicWithPropertyListRepresentation:[graphicDicts objectAtIndex:i]]];
+	}
+	
+	return graphics;
+}
+
+@end

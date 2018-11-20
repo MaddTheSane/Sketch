@@ -177,11 +177,11 @@ extern CGFloat SKTGraphicHandleHalfWidth;
 
 // Accessors for properties that this class stores as instance variables. These methods provide readable KVC-compliance for several of the keys mentioned in comments above, but that's not why they're here (KVC direct instance variable access makes them unnecessary for that). They're here just for invoking and overriding by subclass code.
 @property  NSRect bounds;
-@property (getter=isDrawingFill, readonly) BOOL drawingFill;
-@property (readonly, copy) NSColor *fillColor;
-@property (getter=isDrawingStroke, readonly) BOOL drawingStroke;
-@property (readonly, copy) NSColor *strokeColor;
-@property (readonly) CGFloat strokeWidth;
+@property (getter=isDrawingFill, readwrite) BOOL drawingFill;
+@property (readwrite, copy) NSColor *fillColor;
+@property (getter=isDrawingStroke, readwrite) BOOL drawingStroke;
+@property (readwrite, copy) NSColor *strokeColor;
+@property (readwrite) CGFloat strokeWidth;
 
 #pragma mark *** Drawing ***
 
@@ -270,4 +270,9 @@ extern CGFloat SKTGraphicHandleHalfWidth;
 // An informal protocol to which scriptable containers of SKTGraphics must conform. We declare this instead of just making it an SKTDocument method because that would needlessly reduce SKTGraphic's reusability (they would only be containable by SKTDocuments).
 - (NSScriptObjectSpecifier *)objectSpecifierForGraphic:(SKTGraphic *)graphic;
 
+@end
+
+@interface SKTGraphic (OldReading)
++ (id)graphicWithPropertyListRepresentation:(NSDictionary *)dict;
+- (void)loadOldPropertyListRepresentation:(NSDictionary *)dict;
 @end

@@ -320,3 +320,27 @@ static NSString *SKTImageContentsKey = @"contents";
 
 
 @end
+
+@implementation SKTImage (OldReading)
+NSString *SKTOldImageContentsKey = @"Image";
+NSString *SKTOldFlippedHorizontallyKey = @"FlippedHorizontally";
+NSString *SKTOldFlippedVerticallyKey = @"FlippedVertically";
+- (void)loadOldPropertyListRepresentation:(NSDictionary *)dict {
+	id obj;
+	
+	[super loadOldPropertyListRepresentation:dict];
+	
+	obj = [dict objectForKey:SKTOldImageContentsKey];
+	if (obj) {
+		_contents = [NSUnarchiver unarchiveObjectWithData:obj];
+	}
+	obj = [dict objectForKey:SKTOldFlippedHorizontallyKey];
+	if (obj) {
+		[self setFlippedHorizontally:[obj isEqualToString:@"YES"]];
+	}
+	obj = [dict objectForKey:SKTOldFlippedVerticallyKey];
+	if (obj) {
+		[self setFlippedVertically:[obj isEqualToString:@"YES"]];
+	}
+}
+@end

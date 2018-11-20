@@ -360,3 +360,23 @@ NSString *SKTLineEndPointKey = @"endPoint";
 
 
 @end
+
+@implementation SKTLine (OldReading)
+NSString *SKTOldLineStartsAtLowerLeftKey = @"LineStartsAtLowerLeft";
+- (void)loadOldPropertyListRepresentation:(NSDictionary *)dict {
+	id obj;
+	
+	[super loadOldPropertyListRepresentation:dict];
+	
+	obj = [dict objectForKey:SKTOldLineStartsAtLowerLeftKey];
+	if (obj) {
+		BOOL startLowerLeft = [obj isEqualToString:@"YES"];
+		NSRect bounds = self.bounds;
+		if (startLowerLeft) {
+			[self setBounds: [SKTLine boundsWithBeginPoint:NSMakePoint(NSMinX(bounds), NSMinY(bounds)) endPoint:NSMakePoint(NSMaxX(bounds), NSMaxY(bounds)) pointsRight:&_pointsRight down:&_pointsDown]];
+		} else {
+			[self setBounds: [SKTLine boundsWithBeginPoint:NSMakePoint(NSMaxX(bounds), NSMinY(bounds)) endPoint:NSMakePoint(NSMinX(bounds), NSMaxY(bounds)) pointsRight:&_pointsRight down:&_pointsDown]];
+		}
+	}
+}
+@end

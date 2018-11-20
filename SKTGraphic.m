@@ -1000,3 +1000,65 @@ CGFloat SKTGraphicHandleHalfWidth = 6.0f / 2.0f;
 @end
 
 
+@implementation SKTGraphic (OldReading)
+const NSString *const SKTOldClassKey = @"Class";
+const NSString *const SKTOldBoundsKey = @"Bounds";
+const NSString *const SKTOldDrawsFillKey = @"DrawsFill";
+const NSString *const SKTOldFillColorKey = @"FillColor";
+const NSString *const SKTOldDrawsStrokeKey = @"DrawsStroke";
+const NSString *const SKTOldStrokeColorKey = @"StrokeColor";
+const NSString *const SKTOldStrokeLineWidthKey = @"StrokeLineWidth";
+
++ (id)graphicWithPropertyListRepresentation:(NSDictionary *)dict
+{
+	NSString *classStr = [dict objectForKey:SKTOldClassKey];
+	Class theClass = NSClassFromString(classStr);
+	id theGraphic = nil;
+	
+	// Prepend SKT to the class name if we did not find it literally.  When we write the classname key we strip the prefix.  We try it first without the prefix because for a short time Sketch did not strip the prefix so there could be documents that do not need it prepended.
+	if (!theClass) {
+		theClass = NSClassFromString([@"SKT" stringByAppendingString:[dict objectForKey:SKTOldClassKey]]);
+	}
+	if (!theClass && ([@"SKTTextArea" isEqualToString:classStr] || [classStr isEqualToString:@"TextArea"])) {
+		theClass = NSClassFromString(@"SKTText");
+	}
+	if (theClass) {
+		theGraphic = [[theClass alloc] init];
+		if (theGraphic) {
+			[theGraphic loadOldPropertyListRepresentation:dict];
+		}
+	}
+	return theGraphic;
+}
+
+- (void)loadOldPropertyListRepresentation:(NSDictionary *)dict {
+	id obj;
+	
+	obj = [dict objectForKey:SKTOldBoundsKey];
+	if (obj) {
+		[self setBounds:NSRectFromString(obj)];
+	}
+	obj = [dict objectForKey:SKTOldFillColorKey];
+	if (obj) {
+		self.fillColor = [NSUnarchiver unarchiveObjectWithData:obj];
+	}
+	obj = [dict objectForKey:SKTOldDrawsFillKey];
+	if (obj) {
+		[self setDrawingFill:[obj isEqualToString:@"YES"]];
+	}
+	obj = [dict objectForKey:SKTOldStrokeColorKey];
+	if (obj) {
+		[self setStrokeColor:[NSUnarchiver unarchiveObjectWithData:obj]];
+	}
+	obj = [dict objectForKey:SKTOldStrokeLineWidthKey];
+	if (obj) {
+		[self setStrokeWidth:[obj floatValue]];
+	}
+	obj = [dict objectForKey:SKTOldDrawsStrokeKey];
+	if (obj) {
+		[self setDrawingStroke:[obj isEqualToString:@"YES"]];
+	}
+	return;
+}
+
+@end

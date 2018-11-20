@@ -473,3 +473,18 @@ NSString *SKTTextContentsKey = @"contents";
 
 
 @end
+
+@implementation SKTText (OldReading)
+NSString *SKTOldTextAreaContentsKey = @"Text";
+- (void)loadOldPropertyListRepresentation:(NSDictionary *)dict {
+	id obj;
+	
+	[super loadOldPropertyListRepresentation:dict];
+	
+	obj = [dict objectForKey:SKTOldTextAreaContentsKey];
+	if (obj) {
+		[[self contents] setAttributedString:[NSUnarchiver unarchiveObjectWithData:obj]];
+	}
+}
+
+@end

@@ -31,6 +31,22 @@
 				<string>public.tiff</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeIconFile</key>
+			<string>Draw2File</string>
+			<key>CFBundleTypeName</key>
+			<string>Apple Sketch 1 document</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.apple.sketch1</string>
+			</array>
+			<key>LSTypeIsPackage</key>
+			<false/>
+			<key>NSDocumentClass</key>
+			<string>SKTDocument</string>
+		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
@@ -76,6 +92,26 @@
 				<key>public.filename-extension</key>
 				<array>
 					<string>sketch2</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>Old Apple Sketch document</string>
+			<key>UTTypeIconFile</key>
+			<string>Draw2File</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.apple.sketch1</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>sketch</string>
+					<string>draw2</string>
 				</array>
 			</dict>
 		</dict>
