@@ -131,7 +131,7 @@ extern CGFloat SKTGraphicHandleHalfWidth;
     CGFloat _strokeWidth;
 
     // The object that contains the graphic (unretained), from the point of view of scriptability. This is here only for use by this class' override of scripting's -objectSpecifier method. In Sketch this is an SKTDocument.
-    id<SKTGraphicScriptingContainer> _scriptingContainer;
+    __weak id<SKTGraphicScriptingContainer> _scriptingContainer;
 
 }
 
@@ -261,7 +261,7 @@ extern CGFloat SKTGraphicHandleHalfWidth;
 #pragma mark *** Scripting ***
 
 // Given that the receiver is now contained by some other object, or is no longer contained by another, take a pointer to its container, but do not retain it.
-@property (nonatomic, strong) id<SKTGraphicScriptingContainer> scriptingContainer;
+@property (nonatomic, weak) id<SKTGraphicScriptingContainer> scriptingContainer;
 
 @end
 

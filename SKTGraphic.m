@@ -284,7 +284,7 @@ CGFloat SKTGraphicHandleHalfWidth = 6.0f / 2.0f;
 
     // Because this data may have come from outside this process, don't assume that any property list object we get back is the right type.
     NSArray *graphics = nil;
-    NSArray *propertiesArray = [NSPropertyListSerialization propertyListFromData:data mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:NULL];
+    NSArray *propertiesArray = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable format:NULL error:outError];
     if (![propertiesArray isKindOfClass:[NSArray class]]) {
 	propertiesArray = nil;
     }
@@ -317,6 +317,9 @@ CGFloat SKTGraphicHandleHalfWidth = 6.0f / 2.0f;
 	    NSString *className = properties[SKTGraphicClassNameKey];
 	    if ([className isKindOfClass:[NSString class]]) {
 		Class class = NSClassFromString(className);
+			if (!class && [className isEqualToString:@"SKTTextArea"]) {
+				class = NSClassFromString(@"SKTText");
+			}
 		if (class) {
 
 		    // Create a new graphic. If it doesn't work then just do nothing. We could return an NSError, but doing things this way 1) means that a user might be able to rescue graphics from a partially corrupted document, and 2) is easier.

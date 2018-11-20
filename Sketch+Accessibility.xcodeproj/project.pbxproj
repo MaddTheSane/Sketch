@@ -167,12 +167,12 @@
 		53D61C540FD15E42004A1A2F /* SKTGraphicAccessibilityProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTGraphicAccessibilityProxy.m; sourceTree = "<group>"; };
 		53ED745E0FD6F65E000D4D64 /* SKTPixelSliderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTPixelSliderCell.h; sourceTree = "<group>"; };
 		53ED745F0FD6F65E000D4D64 /* SKTPixelSliderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTPixelSliderCell.m; sourceTree = "<group>"; };
+		550B079721A49E0B00629FAD /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ToolPalette.xib; sourceTree = "<group>"; };
 		553C3F25219C910200405A36 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/Draw2.xib; sourceTree = "<group>"; };
 		553C3F26219C910200405A36 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/DrawWindow.xib; sourceTree = "<group>"; };
 		553C3F27219C910200405A36 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/Inspector.xib; sourceTree = "<group>"; };
 		553C3F28219C910200405A36 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/GridPanel.xib; sourceTree = "<group>"; };
 		553C3F29219C910300405A36 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/Preferences.xib; sourceTree = "<group>"; };
-		553C3F2A219C910300405A36 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/ToolPalette.xib; sourceTree = "<group>"; };
 		553C3F2C219C911B00405A36 /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Draw2.strings; sourceTree = "<group>"; };
 		553C3F2F219C919B00405A36 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/GridPanel.strings; sourceTree = "<group>"; };
 		553C3F31219C91A400405A36 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Inspector.strings; sourceTree = "<group>"; };
@@ -577,7 +577,7 @@
 		0A3ECEF6FE888A39C02AAC07 /* ToolPalette.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				553C3F2A219C910300405A36 /* Base */,
+				550B079721A49E0B00629FAD /* en */,
 			);
 			name = ToolPalette.xib;
 			sourceTree = "<group>";

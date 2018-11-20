@@ -260,7 +260,7 @@ static NSString *const SKTOldPrintInfoKey = @"PrintInfo";
 	if ((useTypeConformance && [workspace type:typeName conformsToType:SKTDocumentNewTypeName]) || [typeName isEqualToString:SKTDocumentOldTypeName]) {
 		
 		// The file uses Sketch 2's new format. Read in the property list.
-		NSDictionary *properties = [NSPropertyListSerialization propertyListFromData:data mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:NULL];
+		NSDictionary *properties = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable format:NULL error:outError];
 		if (properties) {
 			
 			// Get the graphics. Strictly speaking the property list of an empty document should have an empty graphics array, not no graphics array, but we cope easily with either. Don't trust the type of something you get out of a property list unless you know your process created it or it was read from your application or framework's resources.
@@ -444,13 +444,9 @@ static NSString *const SKTOldPrintInfoKey = @"PrintInfo";
 - (void)startObservingGraphics:(NSArray *)graphics {
 
     // Each graphic can have a different set of properties that need to be observed.
-    NSUInteger graphicCount = [graphics count];
-    for (NSUInteger index = 0; index<graphicCount; index++) {
-	SKTGraphic *graphic = graphics[index];
+    for (SKTGraphic *graphic in graphics) {
 	NSSet *keys = [graphic keysForValuesToObserveForUndo];
-	NSEnumerator *keyEnumerator = [keys objectEnumerator];
-	NSString *key;
-	while (key = [keyEnumerator nextObject]) {
+	for (NSString *key in keys) {
 
 	    // We use NSKeyValueObservingOptionOld because when something changes we want to record the old value, which is what has to be set in the undo operation. We use NSKeyValueObservingOptionNew because we compare the new value against the old value in an attempt to ignore changes that aren't really changes.
 	    [graphic addObserver:self forKeyPath:key options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:(__bridge void *)(SKTDocumentUndoObservationContext)];
