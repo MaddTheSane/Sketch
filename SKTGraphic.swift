@@ -231,7 +231,7 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 	}
 	
 	@objc(graphicsWithProperties:)
-	static func graphicsWithProperties(propertiesArray: [[String: Any]]) -> [SKTGraphic]? {
+	static func graphicsWithProperties(_ propertiesArray: [[String: Any]]) -> [SKTGraphic]? {
 		return GraphicsWithProperties(propertiesArray)
 	}
 
@@ -411,7 +411,7 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 	}
 	
 	// Return the number of the handle that the user is dragging when they move the mouse after clicking to create a new instance of the receiving class. The default implementation of this method returns a number that corresponds to one of the corners of the graphic's bounds. Subclasses that override this should probably override -resizeByMovingHandle:toPoint: too.
-	@objc var creationSizingHandle: Int {
+	@objc class var creationSizingHandle: Int {
 		// Return the number of the handle for the lower-right corner. If the user drags it so that it's no longer in the lower-right, -resizeByMovingHandle:toPoint: will deal with it.
 		return SKTGraphicLowerRightHandle;
 	}
@@ -645,5 +645,60 @@ func PropertiesWithGraphics(_ graphics: [SKTGraphic]) -> [[String: Any]]? {
 			NSException(name: .internalInconsistencyException, reason: "A scriptable graphic has no scriptable container, or one that doesn't implement -objectSpecifierForGraphic: correctly.", userInfo: nil).raise()
 		}
 		return objectSpecifier;
+	}
+}
+
+private let SKTClassKey = "Class";
+private let SKTBoundsKey = "Bounds";
+private let SKTDrawsFillKey = "DrawsFill";
+private let SKTFillColorKey = "FillColor";
+private let SKTDrawsStrokeKey = "DrawsStroke";
+private let SKTStrokeColorKey = "StrokeColor";
+private let SKTStrokeLineWidthKey = "StrokeLineWidth";
+
+extension SKTGraphic {
+	static func withOldPropertyListRepresentation(_ dict: [String: Any]) -> SKTGraphic? {
+		guard let classKey = dict[SKTClassKey] as? String else {
+		return nil
+		}
+		var theClass: AnyClass? = NSClassFromString(classKey)
+		
+		// Prepend SKT to the class name if we did not find it literally.  When we write the classname key we strip the prefix.  We try it first without the prefix because for a short time Sketch did not strip the prefix so there could be documents that do not need it prepended.
+		if theClass == nil {
+			theClass = NSClassFromString("SKT"+classKey)
+		}
+		// SKTText was originally called SKTTextArea
+		if theClass == nil && (classKey == "SKTTextArea" || classKey == "TextArea") {
+			theClass = SKTText.self
+		}
+		guard let theClass2 = theClass as? SKTGraphic.Type else {
+			return nil
+		}
+		let theGraphic = theClass2.init()
+		theGraphic.loadOldPropertyListRepresentation(dict)
+		return theGraphic
+	}
+	
+	@objc func loadOldPropertyListRepresentation(_ dict: [String: Any]) {
+		if let obj = dict[SKTBoundsKey] as? String {
+			bounds = NSRectFromString(obj)
+		}
+		if let obj = dict[SKTFillColorKey] as? Data {
+			fillColor = NSUnarchiver.unarchiveObject(with: obj) as? NSColor
+		}
+		if let obj = dict[SKTDrawsFillKey] as? String {
+			drawingFill = obj == "YES"
+		}
+		if let obj = dict[SKTStrokeColorKey] as? Data {
+			strokeColor = NSUnarchiver.unarchiveObject(with: obj) as? NSColor
+		}
+		if let obj = dict[SKTStrokeLineWidthKey] as? CGFloat {
+			strokeWidth = obj
+		} else if let obj = dict[SKTStrokeLineWidthKey] as? String, let obj2 = CGFloat.NativeType(obj) {
+			strokeWidth = CGFloat(floatLiteral: obj2)
+		}
+		if let obj = dict[SKTDrawsStrokeKey] as? String {
+			drawingStroke = obj == "YES"
+		}
 	}
 }

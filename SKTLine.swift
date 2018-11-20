@@ -242,3 +242,25 @@ private let presentablePropertyNamesByKey: [String: String] = [SKTLineBeginPoint
 	}
 	
 }
+
+private let SKTLineStartsAtLowerLeftKey = "LineStartsAtLowerLeft";
+
+extension SKTLine {
+	override func loadOldPropertyListRepresentation(_ dict: [String: Any]) {
+		super.loadOldPropertyListRepresentation(dict)
+		
+		if let obj = dict[SKTLineStartsAtLowerLeftKey] as? String {
+			let startsLowerLeft = obj == "YES"
+			var beginPoint: NSPoint
+			var endPoint: NSPoint
+			if startsLowerLeft {
+				beginPoint = NSPoint(x: bounds.minX, y: bounds.minY)
+				endPoint = NSPoint(x: bounds.maxX, y: bounds.maxY)
+			} else {
+				beginPoint = NSPoint(x: bounds.maxX, y: bounds.maxY)
+				endPoint = NSPoint(x: bounds.minX, y: bounds.minY)
+			}
+			self.bounds = SKTLine.boundsWith(beginPoint: beginPoint, endPoint: endPoint, pointsRight: &pointsRight, down: &pointsDown)
+		}
+	}
+}

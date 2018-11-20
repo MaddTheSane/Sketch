@@ -328,3 +328,15 @@ private var layoutManager: NSLayoutManager = {
 		}
 	}
 }
+
+private let SKTTextAreaContentsKey = "Text";
+
+extension SKTText {
+	override func loadOldPropertyListRepresentation(_ dict: [String: Any]) {
+		super.loadOldPropertyListRepresentation(dict)
+		if let obj = dict[SKTTextAreaContentsKey] as? NSAttributedString {
+			contents.setAttributedString(obj)
+		}
+	}
+}
+

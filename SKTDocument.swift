@@ -23,6 +23,10 @@ private let SKTDocumentVersionKey = "version";
 private let SKTDocumentPrintInfoKey = "printInfo";
 private let SKTDocumentCurrentVersion = 2;
 
+private let SKTOldGraphicsListKey = "GraphicsList";
+private let SKTOldDrawDocumentVersionKey = "DrawDocumentVersion";
+private let SKTOldCurrentDrawDocumentVersion = 1;
+private let SKTOldPrintInfoKey = "PrintInfo";
 
 private class MapTableOwner {
 	let mapTable = NSMapTable<NSObject, NSObject>(keyOptions: [], valueOptions: [], capacity: 0)
@@ -164,6 +168,14 @@ private class MapTableOwner {
 	}
 	
 	func stopObservingGraphics(_ agraph: [SKTGraphic]) {
+		// Do the opposite of what's done in -startObservingGraphics:.
+		for graphic in graphics {
+			graphic.removeObserver(self, forKeyPath: SKTGraphicKeysForValuesToObserveForUndoKey)
+			let keys = graphic.keysForValuesToObserveForUndo
+			for key in keys {
+				graphic.removeObserver(self, forKeyPath: key)
+			}
+		}
 	}
 	
 	func startObservingGraphics(_ agraph: [SKTGraphic]) {
@@ -221,10 +233,51 @@ private class MapTableOwner {
     }
 	
 	override func read(from data: Data, ofType typeName: String) throws {
-        // Insert code here to read your document from the given data of the specified type. If outError != NULL, ensure that you create and set an appropriate error when returning NO.
-        // You can also choose to override -readFromFileWrapper:ofType:error: or -readFromURL:ofType:error: instead.
-        // If you override either of these, you should also override -isEntireFileLoaded to return NO if the contents are lazily loaded.
-		throw NSError(domain: NSOSStatusErrorDomain, code: unimpErr, userInfo: nil)
+		// This application's Info.plist only declares two document types, which go by the names SKTDocumentOldTypeName/SKTDocumentOldVersion1TypeName (on Mac OS 10.4) or SKTDocumentNewTypeName/SKTDocumentNewVersion1TypeName (on 10.5), for which it can play the "editor" role, and none for which it can play the "viewer" role, so the type better match one of those. Notice that we don't compare uniform type identifiers (UTIs) with -isEqualToString:. We use -[NSWorkspace type:conformsToType:] (new in 10.5), which is nearly always the correct thing to do with UTIs.
+		let workspace = NSWorkspace.shared
+		var printInfo: NSPrintInfo
+		var graphics = [SKTGraphic]()
+		if workspace.type(typeName, conformsToType: SKTDocumentNewTypeName) || typeName == SKTDocumentOldTypeName {
+			// The file uses Sketch 2's new format. Read in the property list.
+			guard let properties: [String: Any] = try PropertyListSerialization.propertyList(from: data, options: [], format: nil) as? [String : Any] else {
+				throw SKTErrorWithCode(.unknownFileReadError)
+			}
+			
+			// Get the graphics. Strictly speaking the property list of an empty document should have an empty graphics array, not no graphics array, but we cope easily with either. Don't trust the type of something you get out of a property list unless you know your process created it or it was read from your application or framework's resources.
+			let graphicPropertiesArray = properties[SKTDocumentGraphicsKey] as? [[String: Any]]
+			graphics = graphicPropertiesArray != nil ? SKTGraphic.graphicsWithProperties(graphicPropertiesArray!) ?? [] : []
+			if let printInfoData = properties[SKTDocumentPrintInfoKey] as? Data {
+				printInfo = NSUnarchiver.unarchiveObject(with: printInfoData) as! NSPrintInfo
+			} else {
+				printInfo = NSPrintInfo()
+			}
+			//printInfo
+		} else if workspace.type(typeName, conformsToType: SKTDocumentNewVersion1TypeName) || typeName == SKTDocumentOldVersion1TypeName  {
+			// TODO: The file uses Sketch's old format. Sketch is still a work in progress.
+			
+			guard let dicts = oldDrawDocumentDictionary(from: data) else {
+				throw CocoaError(.fileReadCorruptFile)
+			}
+			
+			graphics = oldGraphicsFromDrawDocument(dicts)
+			if let data2 = dicts[SKTOldPrintInfoKey] as? Data, let printInfoOld = NSUnarchiver.unarchiveObject(with: data2) as? NSPrintInfo {
+				printInfo = printInfoOld
+			} else {
+				printInfo = NSPrintInfo();
+			}
+		} else {
+			throw SKTErrorWithCode(.unknownFileReadError)
+		}
+		
+		// Did the reading work? In this method we ought to either do nothing and return an error or overwrite every property of the document. Don't leave the document in a half-baked state.
+
+		// Update the document's list of graphics by going through KVC-compliant mutation methods. KVO notifications will be automatically sent to observers (which does matter, because this might be happening at some time other than document opening; reverting, for instance). Update its page setup the regular way. Don't let undo actions get registered while doing any of this. The fact that we have to explicitly protect against useless undo actions is considered an NSDocument bug nowadays, and will someday be fixed.
+
+		undoManager?.disableUndoRegistration()
+		removeGraphics(at: IndexSet(integersIn: 0 ..< self.graphics.count))
+		insert(graphics, at: IndexSet(integersIn: 0 ..< graphics.count))
+		self.printInfo = printInfo
+		undoManager?.enableUndoRegistration()
     }
 
     override class var autosavesInPlace: Bool {
@@ -291,5 +344,30 @@ private class MapTableOwner {
 		return graphics.compactMap({
 				return $0 as? SKTImage
 				})
+	}
+	
+	//MARK: Old Sketch importing
+	private func oldDrawDocumentDictionary(from data: Data) -> [String: Any]? {
+		guard let string = NSString(data: data, encoding: String.Encoding.ascii.rawValue) else {
+			return nil
+		}
+		let doc = string.propertyList()
+		return doc as? [String: Any]
+	}
+	
+	private func oldGraphicsFromDrawDocument(_ doc: [String: Any]) -> [SKTGraphic] {
+		var graphics = [SKTGraphic]()
+		guard let graphicsDicts = doc[SKTOldGraphicsListKey] as? [[String: Any]] else {
+			return graphics
+		}
+		graphics.reserveCapacity(graphicsDicts.count)
+		
+		for graphicDict in graphicsDicts {
+			if let newGraph = SKTGraphic.withOldPropertyListRepresentation(graphicDict) {
+				graphics.append(newGraph)
+			}
+		}
+		
+		return graphics
 	}
 }

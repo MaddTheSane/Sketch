@@ -163,3 +163,22 @@ private let presentablePropertyNamesByKey = [SKTImageIsFlippedHorizontallyKey: N
 	}
 
 }
+
+private let SKTOldImageContentsKey = "Image";
+private let SKTFlippedHorizontallyKey = "FlippedHorizontally";
+private let SKTFlippedVerticallyKey = "FlippedVertically";
+
+extension SKTImage {
+	override func loadOldPropertyListRepresentation(_ dict: [String: Any]) {
+		super.loadOldPropertyListRepresentation(dict)
+		if let obj = dict[SKTOldImageContentsKey] as? Data, let img = NSUnarchiver.unarchiveObject(with: obj) as? NSImage {
+			contents = img
+		}
+		if let obj = dict[SKTFlippedHorizontallyKey] as? String {
+			flippedHorizontally = obj == "YES"
+		}
+		if let obj = dict[SKTFlippedVerticallyKey] as? String {
+			flippedVertically = obj == "YES"
+		}
+	}
+}
